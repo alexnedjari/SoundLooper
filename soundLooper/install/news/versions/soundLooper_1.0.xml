@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<news>
+	<add>
+		<content langage="fr">Prise en charge des formats AIFF, AU, AVI, GSM, MIDI, MP2, MP3, QT, RMF, WA</content>
+		<content langage="fr">Lecture en boucle d'une section de piste</content>
+		<content langage="fr">Possibilité d'ajouter des pistes aux favoris</content>
+		<content langage="fr">Possibilité d'enregistrer des positions de curseurs sur les pistes favorites</content>
+		<content langage="fr">Possibilité de jouer sur la vitesse de lecture sans altérer la tonalité (50% à 200%)</content>
+	</add>
+	<correction>
+		<content langage="fr">Correction de l'installeur pour Windows 8</content>
+	</correction>
+</news>
