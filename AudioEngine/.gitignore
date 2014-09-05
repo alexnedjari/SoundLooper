@@ -1,3 +1,6 @@
 /test/
 /.settings/
 /bin/
+/target
+.idea
+*.iml
