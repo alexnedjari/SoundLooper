@@ -4,28 +4,12 @@
   <artifactId>soundLooper</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Sound Looper</name>
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <resources>
-      <resource>
-        <directory>src</directory>
-        <excludes>
-          <exclude>**/*.java</exclude>
-        </excludes>
-      </resource>
-    </resources>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source/>
-          <target/>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
   <dependencies>
+      <dependency>
+          <groupId>soundLooper</groupId>
+          <artifactId>audio-engine</artifactId>
+          <version>0.0.1-SNAPSHOT</version>
+      </dependency>
   	<dependency>
   		<groupId>log4j</groupId>
   		<artifactId>log4j</artifactId>
@@ -41,5 +25,39 @@
   		<artifactId>h2</artifactId>
   		<version>1.3.175</version>
   	</dependency>
+      <dependency>
+          <groupId>nativefmod</groupId>
+          <artifactId>NativeFmodEx</artifactId>
+          <version>1.0</version>
+      </dependency>
   </dependencies>
+  <profiles>
+        <profile>
+            <id>windows32</id>
+            <activation>
+                <os>
+                    <name>Windows XP</name>
+                    <family>Windows</family>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+
+        </profile>
+        <profile>
+            <id>linux32</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                    <arch>x64</arch>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>nativefmod</groupId>
+                    <artifactId>NativeFmodEx-linux</artifactId>
+                    <version>1.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

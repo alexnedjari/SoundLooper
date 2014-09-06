@@ -360,9 +360,9 @@ public class Player {
 	}
 
 	/**
-	 * Désalloue le player
-	 * 	- Stoppe la chanson en cours et la désaloue
-	 *  - Désalloue le Système FMOD
+	 * Dï¿½salloue le player
+	 * 	- Stoppe la chanson en cours et la dï¿½saloue
+	 *  - Dï¿½salloue le Systï¿½me FMOD
 	 * 	- Stoppe la file d'attente
 	 */
 	public void deallocatePlayer() {
