@@ -368,7 +368,7 @@ public class PanelToolbar extends JPanel {
 			this.buttonBeginAlignment.setBorderPainted(true);
 			this.buttonBeginAlignment.setToolTipText("Placer le début de la zone de lecture sur la lecture courante");
 			this.buttonBeginAlignment.setContentAreaFilled(true);
-			this.buttonBeginAlignment.setIcon(new ImageIcon("icons/beginAlignment_32.png"));
+			this.buttonBeginAlignment.setIcon(ImageGetter.getImageIcon(ImageGetter.ICONE_BEGIN_ALIGNMENT_32));
 		}
 		return this.buttonBeginAlignment;
 	}
@@ -385,7 +385,7 @@ public class PanelToolbar extends JPanel {
 			this.buttonEndAlignment.setBorderPainted(true);
 			this.buttonEndAlignment.setToolTipText("Placer la fin de la zone de lecture sur la lecture courante");
 			this.buttonEndAlignment.setContentAreaFilled(true);
-			this.buttonEndAlignment.setIcon(new ImageIcon("icons/endAlignment_32.png"));
+			this.buttonEndAlignment.setIcon(ImageGetter.getImageIcon(ImageGetter.ICONE_END_ALIGNMENT_32));
 		}
 		return this.buttonEndAlignment;
 	}
@@ -396,8 +396,7 @@ public class PanelToolbar extends JPanel {
 	 */
 	protected JSwitchButton getButtonAlwaysOnTop() {
 		if (this.buttonAlwaysOnTop == null) {
-			this.buttonAlwaysOnTop = new JSwitchButton("", Preferences.getInstance().isAlwaisOnTop(), new ImageIcon("icons/alwaisOnTopDisabled-32.gif"), new ImageIcon(
-					"icons/alwaisOnTopEnabled-32.png"), new SwitchButtonActionListener() {
+			this.buttonAlwaysOnTop = new JSwitchButton("", Preferences.getInstance().isAlwaisOnTop(), ImageGetter.getImageIcon(ImageGetter.ICONE_ALWAYS_ON_TOP_DISABLED_32), ImageGetter.getImageIcon(ImageGetter.ICONE_ALWAYS_ON_TOP_ENABLED_32), new SwitchButtonActionListener() {
 				@Override
 				public boolean actionPerformed(ActionEvent e, boolean newEnabled) {
 					Preferences.getInstance().setAlwaysOnTop(newEnabled);

@@ -8,7 +8,7 @@
       <dependency>
           <groupId>soundLooper</groupId>
           <artifactId>audio-engine</artifactId>
-          <version>0.0.1-SNAPSHOT</version>
+          <version>1.0.0</version>
       </dependency>
   	<dependency>
   		<groupId>log4j</groupId>
@@ -25,11 +25,6 @@
   		<artifactId>h2</artifactId>
   		<version>1.3.175</version>
   	</dependency>
-      <dependency>
-          <groupId>nativefmod</groupId>
-          <artifactId>NativeFmodEx</artifactId>
-          <version>1.0</version>
-      </dependency>
   </dependencies>
   <profiles>
         <profile>
@@ -41,7 +36,6 @@
                     <arch>x86</arch>
                 </os>
             </activation>
-
         </profile>
         <profile>
             <id>linux32</id>

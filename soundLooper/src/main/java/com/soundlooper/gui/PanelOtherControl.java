@@ -80,7 +80,7 @@ public class PanelOtherControl extends JPanel {
 		this.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
 
 		JPanel panelVolume = new JPanel();
-		panelVolume.add(new JLabel(new ImageIcon("icons/volume_16.png")));
+		panelVolume.add(new JLabel(ImageGetter.getImageIcon(ImageGetter.ICONE_VOLUME_16)));
 		panelVolume.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
 		panelVolume.add(this.getSliderVolume());
 		panelVolume.setBorder(new LineBorder(Color.BLACK, 1, true));

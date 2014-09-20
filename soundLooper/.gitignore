@@ -10,3 +10,5 @@
 /target
 .idea
 *.iml
+.project
+.classpath

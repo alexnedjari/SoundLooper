@@ -35,6 +35,7 @@ import com.aned.audio.player.Player.PlayerState;
 import com.aned.audio.player.PlayerMessagesListener;
 import com.aned.exception.PlayerException;
 import com.aned.exception.PlayerRuntimeException;
+import com.soundlooper.aide.AideFileGetter;
 import com.soundlooper.exception.SoundLooperExceptionHandler;
 import com.soundlooper.gui.action.favorite.SearchFavoriteAction;
 import com.soundlooper.gui.action.favorite.SwitchFavoriteAction;
@@ -280,7 +281,7 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 		this.setLocationRelativeTo(null);
 		this.setCompleteTitle("");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setIconImage(new ImageIcon("icons/soundLooper64.png").getImage());
+		this.setIconImage(ImageGetter.getImage(ImageGetter.ICONE_SOUND_LOOPER_64));
 
 		this.addWindowListener(new WindowAdapter() {
 
@@ -390,7 +391,7 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new FenetreAide(WindowPlayer.this, new File("aide/aide.html"), "Aide").setVisible(true);
+				new FenetreAide(WindowPlayer.this, AideFileGetter.getHelpFile(AideFileGetter.HELP_FILE_HELP), "Aide").setVisible(true);
 			}
 		});
 		menuAide.add(menuAideGeneral);
@@ -400,7 +401,7 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new FenetreAide(WindowPlayer.this, new File("aide/listeRaccourciClavier.html"), "Liste des raccourcis claviers disponibles").setVisible(true);
+				new FenetreAide(WindowPlayer.this, AideFileGetter.getHelpFile(AideFileGetter.HELP_FILE_SHORTCUT_LIST), "Liste des raccourcis claviers disponibles").setVisible(true);
 			}
 		});
 		menuAide.add(menuAideRaccourcisClavier);
@@ -412,7 +413,7 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 			public void actionPerformed(ActionEvent e) {
 				InformationLogiciel informationLogiciel = new InformationLogiciel("Alexandre NEDJARI", "Soundlooper", SoundLooperProperties.getInstance().getCompleteVersion(),
 						SoundLooperProperties.getInstance().getIteration());
-				new FenAPropos(informationLogiciel, WindowPlayer.this, new ImageIcon("icons/aPropos.png").getImage()).setVisible(true);
+				new FenAPropos(informationLogiciel, WindowPlayer.this, ImageGetter.getImage(ImageGetter.IMAGE_A_PROPOS_164_314)).setVisible(true);
 			}
 		});
 		menuAide.add(menuItemAPropos);
@@ -675,11 +676,11 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 			public void run() {
 				if (isFavorite) {
 					//TODO créer une classe bouton switch plutot
-					WindowPlayer.this.panelToolbar.getBoutonFavori().setIcon(new ImageIcon("icons/favori_selectionne_32.png"));
-					WindowPlayer.this.panelToolbar.getBoutonFavori().setRolloverIcon(new ImageIcon("icons/favori_selectionne_over_32.png"));
+					WindowPlayer.this.panelToolbar.getBoutonFavori().setIcon(ImageGetter.getImageIcon(ImageGetter.ICONE_FAVORI_SELECTIONNE_32));
+					WindowPlayer.this.panelToolbar.getBoutonFavori().setRolloverIcon(ImageGetter.getImageIcon(ImageGetter.ICONE_FAVORI_SELECTIONNE_OVER_32));
 				} else {
-					WindowPlayer.this.panelToolbar.getBoutonFavori().setIcon(new ImageIcon("icons/favori_deselectionne_32.png"));
-					WindowPlayer.this.panelToolbar.getBoutonFavori().setRolloverIcon(new ImageIcon("icons/favori_deselectionne_over_32.png"));
+					WindowPlayer.this.panelToolbar.getBoutonFavori().setIcon(ImageGetter.getImageIcon(ImageGetter.ICONE_FAVORI_DESELECTIONNE_32));
+					WindowPlayer.this.panelToolbar.getBoutonFavori().setRolloverIcon(ImageGetter.getImageIcon(ImageGetter.ICONE_FAVORI_DESELECTIONNE_OVER_32));
 				}
 				WindowPlayer.this.panelToolbar.updateMarkButtonsState(isFavorite);
 			}

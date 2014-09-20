@@ -22,6 +22,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
+import com.soundlooper.gui.ImageGetter;
 import com.soundlooper.gui.WindowWaiting;
 import com.soundlooper.system.mail.MailMessage;
 import com.soundlooper.system.mail.MailSender;
@@ -136,7 +137,7 @@ public class WindowsException extends JDialog {
 	 */
 	protected ImageIcon getImageIcon() {
 		if (this.icon == null) {
-			this.icon = new ImageIcon("redcross-16.png");
+			this.icon = ImageGetter.getImageIcon(ImageGetter.ICONE_ERREUR_16);
 		}
 		return this.icon;
 	}

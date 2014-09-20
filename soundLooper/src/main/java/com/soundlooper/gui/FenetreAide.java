@@ -53,7 +53,7 @@ public class FenetreAide extends JDialog {
 		this.setModal(false);
 		this.setTitle(title);
 
-		this.setIconImage(new ImageIcon("icons/aide.png").getImage());
+		this.setIconImage(ImageGetter.getImage(ImageGetter.ICONE_AIDE_16));
 
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -69,7 +69,6 @@ public class FenetreAide extends JDialog {
 	private JTextPane getTextPane() {
 		if (this.textPane == null) {
 			this.textPane = new JTextPane();
-			this.textPane.setText("<html><b>test</b><html>");
 			this.textPane.setEditable(false);
 			this.textPane.setContentType("text/html");
 			this.textPane.setText(this.getContent());
@@ -83,8 +82,9 @@ public class FenetreAide extends JDialog {
 	 * @return file content
 	 */
 	private String getContent() {
+		BufferedReader reader =null;
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(this.file));
+			reader = new BufferedReader(new FileReader(this.file));
 			StringBuffer stringBuffer = new StringBuffer();
 			String line = reader.readLine();
 			while (line != null) {
@@ -94,6 +94,14 @@ public class FenetreAide extends JDialog {
 			return stringBuffer.toString();
 		} catch (IOException e) {
 			return "Fichier d'aide introuvable";
+		} finally {
+			if (reader != null) {
+				try {
+					reader.close();
+				} catch (IOException e) {
+					// buffer will not be closed
+				}
+			}
 		}
 	}
 }

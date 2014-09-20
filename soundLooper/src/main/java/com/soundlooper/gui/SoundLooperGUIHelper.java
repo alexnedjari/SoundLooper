@@ -85,9 +85,9 @@ public final class SoundLooperGUIHelper {
 	 * @return the created JButton
 	 */
 	public static JButton getBouton(Action action, String actionName, String tooltip, boolean enabled, int taille) {
-		ImageIcon icon = new ImageIcon("icons/" + actionName + "_" + taille + ".png");
-		ImageIcon rolloverIcon = new ImageIcon("icons/" + actionName + "_over_" + taille + ".png");
-		if (rolloverIcon.getIconHeight() == -1) {
+		ImageIcon icon = ImageGetter.getImageIcon("/icons/" + actionName + "_" + taille + ".png");
+		ImageIcon rolloverIcon = ImageGetter.getImageIcon("/icons/" + actionName + "_over_" + taille + ".png");
+		if (rolloverIcon == null) {
 			rolloverIcon = icon;
 		}
 

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -75,7 +76,7 @@ public class SoundLooperProperties {
 	/**
 	 * The property file
 	 */
-	private File propertyFile = new File("SoundLooper.properties");
+	private File propertyFile;
 
 	/**
 	 * The logger for this class
@@ -87,6 +88,12 @@ public class SoundLooperProperties {
 	 */
 	private SoundLooperProperties() {
 		try {
+			try {
+				propertyFile = new File(Preferences.class.getResource("/SoundLooper.properties").toURI());
+			} catch (URISyntaxException e) {
+				instance.logger.error("Impossible de lire le fichier SoundLooper.properties", e);
+			}
+			
 			if (!this.propertyFile.exists()) {
 				this.propertyFile.createNewFile();
 				this.properties.setProperty(SoundLooperProperties.KEY_MAJOR_VERSION, "0");

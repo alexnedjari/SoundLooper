@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -116,7 +117,7 @@ public final class Preferences {
 	/**
 	 * The properties file
 	 */
-	private File propertieFile = new File("preferences.properties");
+	private File propertieFile;
 
 	/**
 	 * Get the instance
@@ -125,6 +126,7 @@ public final class Preferences {
 	public synchronized static Preferences getInstance() {
 		if (Preferences.instance == null) {
 			Preferences.instance = new Preferences();
+			
 		}
 		return Preferences.instance;
 	}
@@ -133,6 +135,12 @@ public final class Preferences {
 	 * Private constructor
 	 */
 	private Preferences() {
+		try {
+			propertieFile = new File(Preferences.class.getResource("/preferences.properties").toURI());
+		} catch (URISyntaxException e) {
+			instance.logger.error("Impossible de lire le fichier preferences.propoerties", e);
+		}
+		
 		try {
 			this.properties = new Properties();
 

@@ -287,14 +287,6 @@ public class SoundFile {
 			nbReadBuffer.clear();
 		} while (resultat != FMOD_RESULT.FMOD_ERR_FILE_EOF);
 
-		//		File outputfile = new File("saved.png");
-		//		try {
-		//			ImageIO.write(off_Image, "png", outputfile);
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-
 		dataBuffer.clear();
 		return off_Image;
 	}
