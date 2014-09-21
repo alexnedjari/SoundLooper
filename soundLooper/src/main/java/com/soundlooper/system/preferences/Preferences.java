@@ -135,11 +135,7 @@ public final class Preferences {
 	 * Private constructor
 	 */
 	private Preferences() {
-		try {
-			propertieFile = new File(Preferences.class.getResource("/preferences.properties").toURI());
-		} catch (URISyntaxException e) {
-			instance.logger.error("Impossible de lire le fichier preferences.propoerties", e);
-		}
+			propertieFile = new File("preferences.properties");
 		
 		try {
 			this.properties = new Properties();

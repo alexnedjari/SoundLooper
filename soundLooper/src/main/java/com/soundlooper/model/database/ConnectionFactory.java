@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -127,6 +129,18 @@ public final class ConnectionFactory {
 		}
 	}
 
+	private static File getFile(String path) {
+		URL resource = ConnectionFactory.class.getClassLoader().getResource(path);
+		
+		try {
+			return new File(resource.toURI());
+		} catch (URISyntaxException e) {
+			logger.error("Unable to get resource '" + path + "'", e);
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * Update the db is needed
 	 * @throws SQLException if an SQL Exception is threw
@@ -137,7 +151,7 @@ public final class ConnectionFactory {
 		if (!new File("data" + File.separator + "datas.h2.db").exists()) {
 			//La base n'existe pas encore
 			ConnectionFactory.logger.info("Création de la base de données");
-			ConnectionFactory.executeScript(new File("db" + File.separator + "CREATE_TABLE_DB_UPDATE.sql"));
+			ConnectionFactory.executeScript(getFile("db/CREATE_TABLE_DB_UPDATE.sql"));
 		}
 
 		if (!SoundLooperProperties.getInstance().isDbToUpdate()) {
@@ -153,11 +167,11 @@ public final class ConnectionFactory {
 		while (result.next()) {
 			String nomFichier = result.getString("filename");
 			ConnectionFactory.logger.info("le fichier '" + nomFichier + "' a déjà été exécuté");
-			listeFichierExecute.add(new File("db" + File.separator + nomFichier));
+			listeFichierExecute.add(getFile("db" + File.separator + nomFichier));
 		}
 
 		//Récupère la liste des fichiers à exécuter
-		File[] sqlFiles = new File("db").listFiles(new FileFilter() {
+		File[] sqlFiles = getFile("db").listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
 				return pathname.getName().endsWith(".sql") && !listeFichierExecute.contains(pathname);
@@ -173,86 +187,9 @@ public final class ConnectionFactory {
 		ConnectionFactory.logger.info("Met à jour les propriétés");
 		SoundLooperProperties.getInstance().setDbToUpdate(false);
 		SoundLooperProperties.getInstance().save();
+		
 	}
 
-	//	/**
-	//	 * init the unexisting tables
-	//	 *
-	//	 * @throws SQLException
-	//	 *             if a {@link SQLException} is threw
-	//	 * @throws IOException
-	//	 *             If an {@link IOException} is threw
-	//	 */
-	//	private static void executeScripts() throws SQLException, IOException {
-	//		//		Statement statement = getNewStatement();
-	//		//		ArrayList<String> tablesToFind = new ArrayList<String>();
-	//		//		tablesToFind.add(TABLE_SONG);
-	//		//		tablesToFind.add(TABLE_MARKS);
-	//		//		ResultSet result = statement.executeQuery("SHOW TABLES");
-	//		//		while (result.next()) {
-	//		//			String tableName = result.getString(1);
-	//		//			tablesToFind.remove(tableName);
-	//		//		}
-	//		//		for (String tableNameToCreate : tablesToFind) {
-	//		//			logger.info("Table '" + tableNameToCreate + "' must be created");
-	//		//			File scriptFile = new File("db/CREATE_TABLE_" + tableNameToCreate + ".sql");
-	//		//			if (!scriptFile.exists()) {
-	//		//				throw new FileNotFoundException("Impossible de trouver le script de création de table : " + scriptFile.getAbsolutePath());
-	//		//			}
-	//		//			executeScript(scriptFile);
-	//		//		}
-	//		File[] sqlFiles = new File("db").listFiles(new FileFilter() {
-	//			@Override
-	//			public boolean accept(File pathname) {
-	//				return pathname.getName().endsWith(".sql");
-	//			}
-	//		});
-	//		if (sqlFiles.length == 0) {
-	//			return;
-	//		}
-	//
-	//		for (File file : sqlFiles) {
-	//			//check that it was not already executed
-	//			File archiveFile = new File(archiveDirectoryPath + File.separator + file.getName());
-	//			if (archiveFile.exists()) {
-	//				//script was already executed, so delete it from script directory
-	//				if (!file.delete()) {
-	//					file.deleteOnExit();
-	//				}
-	//				ConnectionFactory.logger.info("delete script '" + file.getAbsolutePath() + "' because this script was already executed");
-	//			} else {
-	//				ConnectionFactory.executeScript(file);
-	//				FileUtils.copyFile(file, archiveFile);
-	//				if (!file.delete()) {
-	//					file.deleteOnExit();
-	//				}
-	//			}
-	//		}
-	//
-	//		//String archiveDirectoryPath = "db" + File.separator + "archives";
-	//		//File archiveDirectory = new File(archiveDirectoryPath);
-	//		//if (!archiveDirectory.exists()) {
-	//		//	archiveDirectory.mkdir();
-	//		//}
-	//
-	//		//		for (File file : sqlFiles) {
-	//		//			//check that it was not already executed
-	//		//			File archiveFile = new File(archiveDirectoryPath + File.separator + file.getName());
-	//		//			if (archiveFile.exists()) {
-	//		//				//script was already executed, so delete it from script directory
-	//		//				if (!file.delete()) {
-	//		//					file.deleteOnExit();
-	//		//				}
-	//		//				ConnectionFactory.logger.info("delete script '" + file.getAbsolutePath() + "' because this script was already executed");
-	//		//			} else {
-	//		//				ConnectionFactory.executeScript(file);
-	//		//				FileUtils.copyFile(file, archiveFile);
-	//		//				if (!file.delete()) {
-	//		//					file.deleteOnExit();
-	//		//				}
-	//		//			}
-	//		//		}
-	//	}
 
 	/**
 	 * Execute a script from a file

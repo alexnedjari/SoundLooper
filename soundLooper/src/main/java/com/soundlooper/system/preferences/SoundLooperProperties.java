@@ -88,11 +88,7 @@ public class SoundLooperProperties {
 	 */
 	private SoundLooperProperties() {
 		try {
-			try {
-				propertyFile = new File(Preferences.class.getResource("/SoundLooper.properties").toURI());
-			} catch (URISyntaxException e) {
-				instance.logger.error("Impossible de lire le fichier SoundLooper.properties", e);
-			}
+				propertyFile = new File("SoundLooper.properties");
 			
 			if (!this.propertyFile.exists()) {
 				this.propertyFile.createNewFile();
@@ -100,6 +96,7 @@ public class SoundLooperProperties {
 				this.properties.setProperty(SoundLooperProperties.KEY_MINOR_VERSION, "0");
 				this.properties.setProperty(SoundLooperProperties.KEY_ITERATION, "0");
 				this.properties.setProperty(SoundLooperProperties.KEY_APPLICATION_NAME, "Sound Looper");
+				this.properties.setProperty(SoundLooperProperties.KEY_DB_TO_UPDATE, "1");
 				this.properties.store(new FileOutputStream(this.propertyFile), "");
 			}
 			this.properties.load(new FileInputStream(this.propertyFile));
@@ -155,7 +152,7 @@ public class SoundLooperProperties {
 	 * get the db update flag
 	 * @return the db update flag
 	 */
-	public boolean isDbToUpdate() {
+	public boolean isDbToUpdate() { 
 		return !(this.properties.getProperty(SoundLooperProperties.KEY_DB_TO_UPDATE, "0").equals("0"));
 	}
 

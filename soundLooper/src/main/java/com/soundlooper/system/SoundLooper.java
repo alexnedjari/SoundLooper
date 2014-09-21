@@ -84,8 +84,10 @@ public class SoundLooper {
 			ConnectionFactory.updateDB();
 		} catch (SQLException e) {
 			SoundLooper.logger.error("Error when try to initialize db", e);
+			e.printStackTrace();
 		} catch (IOException e) {
 			SoundLooper.logger.error("Error when try to initialize db", e);
+			e.printStackTrace();
 		}
 		//init the database connection (au cas où il n'y ai pas eu de mise à jour dans le updateUD)
 		SwingWorker<Object, Object> databaseInitWorker = new SwingWorker<Object, Object>() {
