@@ -129,18 +129,18 @@ public final class ConnectionFactory {
 		}
 	}
 
-	private static File getFile(String path) {
-		URL resource = ConnectionFactory.class.getClassLoader().getResource(path);
-		
-		try {
-			return new File(resource.toURI());
-		} catch (URISyntaxException e) {
-			logger.error("Unable to get resource '" + path + "'", e);
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
+//	private static File getFile(String path) {
+//		URL resource = ConnectionFactory.class.getClassLoader().getResource(path);
+//		
+//		try {
+//			return new File(resource.toURI());
+//		} catch (URISyntaxException e) {
+//			logger.error("Unable to get resource '" + path + "'", e);
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+//	
 	/**
 	 * Update the db is needed
 	 * @throws SQLException if an SQL Exception is threw
@@ -151,7 +151,7 @@ public final class ConnectionFactory {
 		if (!new File("data" + File.separator + "datas.h2.db").exists()) {
 			//La base n'existe pas encore
 			ConnectionFactory.logger.info("Création de la base de données");
-			ConnectionFactory.executeScript(getFile("db/CREATE_TABLE_DB_UPDATE.sql"));
+			ConnectionFactory.executeScript(new File("db/CREATE_TABLE_DB_UPDATE.sql"));
 		}
 
 		if (!SoundLooperProperties.getInstance().isDbToUpdate()) {
@@ -167,11 +167,11 @@ public final class ConnectionFactory {
 		while (result.next()) {
 			String nomFichier = result.getString("filename");
 			ConnectionFactory.logger.info("le fichier '" + nomFichier + "' a déjà été exécuté");
-			listeFichierExecute.add(getFile("db" + File.separator + nomFichier));
+			listeFichierExecute.add(new File("db" + File.separator + nomFichier));
 		}
 
 		//Récupère la liste des fichiers à exécuter
-		File[] sqlFiles = getFile("db").listFiles(new FileFilter() {
+		File[] sqlFiles = new File("db").listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
 				return pathname.getName().endsWith(".sql") && !listeFichierExecute.contains(pathname);
