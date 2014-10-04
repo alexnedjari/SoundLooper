@@ -76,6 +76,8 @@ public class GererMarkService {
 	 * @throws SoundLooperException if there is an exception
 	 */
 	public Mark delete(Mark mark) throws SoundLooperException {
-		return MarkService.getInstance().delete(mark);
+		Mark delete = MarkService.getInstance().delete(mark);
+		
+		return delete;
 	}
 }

@@ -77,4 +77,5 @@ public interface PlayerActionListener {
 	 * Called when the song image generation start
 	 */
 	public void onEndGenerateImage(BufferedImage image);
+
 }

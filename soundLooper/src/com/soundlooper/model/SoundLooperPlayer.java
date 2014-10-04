@@ -52,10 +52,7 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	 */
 	private Song song;
 
-	/**
-	 * Listener list
-	 */
-	private List<SoundLooperPlayerListener> listSoundLooperPlayerListener = new ArrayList<SoundLooperPlayerListener>();
+	
 
 	/**
 	 * @return the song
@@ -67,7 +64,7 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	public static SoundLooperPlayer getInstance() {
 		if (Player.instance == null) {
 			Player.instance = new SoundLooperPlayer();
-			Player.instance.addToListPlayerActionListener((SoundLooperPlayer) Player.instance);
+			Player.getInstance().addToListPlayerActionListener((SoundLooperPlayer)instance);
 		}
 		return (SoundLooperPlayer) Player.instance;
 	}
@@ -86,73 +83,11 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 			return;
 		}
 		GererSongService.getInstance().switchSongToFavorite(this.song);
-
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onFavoriteUpdated(this.song);
-		}
 	}
 
-	/**
-	 * Add a listener to the player
-	 * @param listener listener
-	 */
-	public void addToListSoundLooperPlayerListener(SoundLooperPlayerListener listener) {
-		this.listSoundLooperPlayerListener.add(listener);
-	}
+	
 
-	/**
-	 * Remove a listener from the player
-	 * @param listener listener
-	 */
-	public void removeFromListSoundLooperPlayerListener(SoundLooperPlayerListener listener) {
-		this.listSoundLooperPlayerListener.remove(listener);
-	}
-
-	@Override
-	public void onPlayLocationChanged(int newMillisecondLocation) {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onPlayLocationChanged(newMillisecondLocation);
-		}
-	}
-
-	@Override
-	public void onLoopPointChanged(int beginPoint, int endPoint) {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onLoopPointChanged(beginPoint, endPoint);
-		}
-
-	}
-
-	@Override
-	public void onVolumeUpdate(int percent) {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onVolumeUpdate(percent);
-		}
-
-	}
-
-	@Override
-	public void onTimestretchUpdated(int percent) {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onTimestretchUpdated(percent);
-		}
-	}
-
-	@Override
-	public void onSongLoaded(File songFile) {
-		Preferences.getInstance().setLastPathUsed(songFile.getAbsolutePath());
-		Preferences.getInstance().addFileToRecentFileList(songFile.getAbsolutePath());
-		try {
-			this.song = GererSongService.getInstance().getSong(songFile);
-			//TODO créer un type d'exception particulier quand un objet n'existe pas
-		} catch (SoundLooperException e) {
-			//La chanson n'est pas encore enregistrée, on crée un nouvel objet
-			this.song = GererSongService.getInstance().createNewSong(songFile);
-		}
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onSongLoaded(this.song);
-		}
-	}
+	
 
 	/**
 	 * @param idMark the mark id
@@ -161,9 +96,7 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	public void deleteMarkOnCurrentSong(String idMark) throws SoundLooperException {
 		Mark mark = this.getMarkFromId(idMark);
 		GererMarkService.getInstance().delete(mark);
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onMarkDeleted(this.song, mark);
-		}
+		
 
 	}
 
@@ -219,28 +152,63 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 
 	}
 
+
+
+	public void setSong(Song song) {
+		this.song=song;
+		
+	}
+
+	@Override
+	public void onPlayLocationChanged(int newMillisecondLocation) {
+		SoundLooperPlayerSupport.getInstance().firePlayLocationChanged(newMillisecondLocation);
+		
+	}
+
+	@Override
+	public void onLoopPointChanged(int beginPoint, int endPoint) {
+		SoundLooperPlayerSupport.getInstance().fireLoopPointChanged(beginPoint, endPoint);
+	}
+
+	@Override
+	public void onVolumeUpdate(int percent) {
+		SoundLooperPlayerSupport.getInstance().fireVolumeUpdate(percent);
+		
+	}
+
+	@Override
+	public void onTimestretchUpdated(int percent) {
+		SoundLooperPlayerSupport.getInstance().fireTimestretchUpdated(percent);
+	}
+
+	@Override
+	public void onSongLoaded(File songFile) {
+		Preferences.getInstance().setLastPathUsed(songFile.getAbsolutePath());
+		Preferences.getInstance().addFileToRecentFileList(songFile.getAbsolutePath());
+		try {
+			SoundLooperPlayer.getInstance().setSong(GererSongService.getInstance().getSong(songFile));
+			//TODO créer un type d'exception particulier quand un objet n'existe pas
+		} catch (SoundLooperException e) {
+			//La chanson n'est pas encore enregistrée, on crée un nouvel objet
+			SoundLooperPlayer.getInstance().setSong(GererSongService.getInstance().createNewSong(songFile));
+		}
+		SoundLooperPlayerSupport.getInstance().fireSongLoaded(songFile);
+	}
+
 	@Override
 	public void onFatalError(PlayerRuntimeException e) {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onFatalError(e);
-		}
-
+		SoundLooperPlayerSupport.getInstance().fireFatalError(e);
+		
 	}
 
 	@Override
 	public void onBeginGenerateImage() {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onBeginGenerateImage();
-		}
-
+		SoundLooperPlayerSupport.getInstance().fireBeginGenerateImage();
+		
 	}
 
 	@Override
 	public void onEndGenerateImage(BufferedImage image) {
-		for (SoundLooperPlayerListener listener : this.listSoundLooperPlayerListener) {
-			listener.onEndGenerateImage(image);
-		}
-
+		SoundLooperPlayerSupport.getInstance().fireEndGenerateImage(image);
 	}
-
 }

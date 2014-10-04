@@ -53,6 +53,7 @@ public class SearchFavoriteAction extends AbstractAction {
 		this.windowPlayer = windowPlayer;
 	}
 
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		List<Song> favoriteSongList = GererSongService.getInstance().getFavoriteSongList();

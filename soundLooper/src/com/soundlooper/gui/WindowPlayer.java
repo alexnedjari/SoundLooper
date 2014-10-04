@@ -36,6 +36,7 @@ import com.aned.audio.player.PlayerMessagesListener;
 import com.aned.exception.PlayerException;
 import com.aned.exception.PlayerRuntimeException;
 import com.soundlooper.exception.SoundLooperExceptionHandler;
+import com.soundlooper.gui.action.favorite.OpenWindowFavoriteAction;
 import com.soundlooper.gui.action.favorite.SearchFavoriteAction;
 import com.soundlooper.gui.action.favorite.SwitchFavoriteAction;
 import com.soundlooper.gui.action.mark.AddMarkAction;
@@ -56,8 +57,13 @@ import com.soundlooper.gui.fenapropos.InformationLogiciel;
 import com.soundlooper.gui.jplayer.JPlayerListener;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.SoundLooperPlayerListener;
+import com.soundlooper.model.SoundLooperPlayerSupport;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
+import com.soundlooper.service.entite.mark.MarkListener;
+import com.soundlooper.service.entite.mark.MarkSupport;
+import com.soundlooper.service.entite.song.SongListener;
+import com.soundlooper.service.entite.song.SongSupport;
 import com.soundlooper.system.preferences.Preferences;
 import com.soundlooper.system.preferences.PreferencesListener;
 import com.soundlooper.system.preferences.SoundLooperProperties;
@@ -103,7 +109,7 @@ import com.soundlooper.system.util.TimeMeasurer;
  * @since 6 avr. 2011
  * -------------------------------------------------------
  */
-public class WindowPlayer extends JFrame implements PlayerMessagesListener, PreferencesListener, SoundLooperPlayerListener, JPlayerListener {
+public class WindowPlayer extends JFrame implements SongListener,MarkListener, PlayerMessagesListener, PreferencesListener, SoundLooperPlayerListener, JPlayerListener {
 
 	/**
 	 * The lock name
@@ -176,7 +182,9 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 	public WindowPlayer() {
 		WindowPlayer.timeMeasurer.startMeasure("Window creation");
 
-		SoundLooperPlayer.getInstance().addToListSoundLooperPlayerListener(this);
+		SoundLooperPlayerSupport.getInstance().addToListSoundLooperPlayerListener(this);
+		SongSupport.getInstance().addToListSongListener(this);
+		MarkSupport.getInstance().addToListMarkListener(this);
 
 		((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0),
 				SetPlayPositionOnLoopBeginAction.class.getName());
@@ -370,6 +378,13 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 		});
 		this.menuFichier.add(menuItemQuitter);
 
+		Menu menuEdition = new Menu("Edition");
+		MenuItem menuEditionGererFavoris = new MenuItem("Gérer les favoris...");
+		menuEditionGererFavoris.addActionListener(new OpenWindowFavoriteAction(this));
+		menuEdition.add(menuEditionGererFavoris);
+		this.menuBar.add(menuEdition);
+		
+		
 		Menu menuRecherche = new Menu("Recherches");
 		MenuItem menuItemRechercheFavoris = new MenuItem("Rechercher dans les favoris...");
 		menuItemRechercheFavoris.setShortcut(new MenuShortcut(KeyEvent.VK_F));
@@ -380,7 +395,10 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 		this.menuItemRechercheMark.setShortcut(new MenuShortcut(KeyEvent.VK_M));
 		this.menuItemRechercheMark.addActionListener(new SearchMarkAction(this));
 		menuRecherche.add(this.menuItemRechercheMark);
-
+		
+		
+		
+		
 		this.menuBar.add(menuRecherche);
 
 		Menu menuAide = new Menu("?");
@@ -669,6 +687,10 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 	 * @param song the song
 	 */
 	protected void updateFavoriteGUI(Song song) {
+		if (!song.equals(SoundLooperPlayer.getInstance().getSong())) {
+			//The updated song is not the current song, so there is no update to do
+			return;
+		}
 		final boolean isFavorite = song.isFavorite();
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -724,6 +746,12 @@ public class WindowPlayer extends JFrame implements PlayerMessagesListener, Pref
 	@Override
 	public void onNewValeur(double valeur) {
 		SoundLooperPlayer.getInstance().setMediaTime(new Double(valeur).intValue());
+	}
+
+	@Override
+	public void onMarkAdded(Song song, Mark mark) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

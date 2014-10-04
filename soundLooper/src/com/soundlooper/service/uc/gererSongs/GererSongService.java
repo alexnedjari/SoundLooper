@@ -10,8 +10,11 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.soundlooper.exception.SoundLooperException;
+import com.soundlooper.model.SoundLooperPlayerListener;
+import com.soundlooper.model.SoundLooperPlayerSupport;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.service.entite.song.SongService;
+import com.soundlooper.service.entite.song.SongSupport;
 
 /**
  *-------------------------------------------------------
@@ -76,6 +79,10 @@ public class GererSongService {
 		}
 		return GererSongService.instance;
 	}
+	
+	public void deleteFavorite(Song song) throws SoundLooperException {
+		setSongFavorite(song, false);
+	}
 
 	/**
 	 * Delete all the song that are not favorite
@@ -91,8 +98,14 @@ public class GererSongService {
 	 */
 	public void switchSongToFavorite(Song song) throws SoundLooperException {
 		this.favoriteSongListMustBeUpdated = true;
-		song.setFavorite(!song.isFavorite());
+		setSongFavorite(song, !song.isFavorite());
+	}
+	
+	public void setSongFavorite(Song song, boolean isFavorite) throws SoundLooperException {
+		this.favoriteSongListMustBeUpdated = true;
+		song.setFavorite(isFavorite);
 		SongService.getInstance().validateSong(song);
+		SongSupport.getInstance().fireFavoriteUpdated(song);
 	}
 
 	/**

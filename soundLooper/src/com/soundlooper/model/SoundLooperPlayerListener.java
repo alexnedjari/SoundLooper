@@ -67,18 +67,6 @@ public interface SoundLooperPlayerListener {
 	public void onSongLoaded(Song song);
 
 	/**
-	 * Called when favorite attribute is updated
-	 * @param song the updated song
-	 */
-	public void onFavoriteUpdated(Song song);
-
-	/**
-	 * @param song the current sond
-	 * @param mark the deleted mark
-	 */
-	public void onMarkDeleted(Song song, Mark mark);
-
-	/**
 	 * @param e
 	 */
 	public void onFatalError(PlayerRuntimeException e);
