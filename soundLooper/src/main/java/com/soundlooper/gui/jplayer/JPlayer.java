@@ -2,6 +2,8 @@ package com.soundlooper.gui.jplayer;
 
 import java.awt.Color;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
@@ -82,6 +84,13 @@ public class JPlayer extends JComponent {
 		super();
 		this.jPlayerUI = new JPlayerUI(this);
 		this.setUI(this.jPlayerUI);
+		this.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				requestFocus();
+				super.mouseClicked(e);
+			}
+		});
 	}
 
 	/**
