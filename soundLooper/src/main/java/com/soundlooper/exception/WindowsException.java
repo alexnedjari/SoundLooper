@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 
 import javax.mail.internet.InternetAddress;

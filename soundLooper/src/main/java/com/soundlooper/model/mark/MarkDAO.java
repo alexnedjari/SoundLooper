@@ -11,12 +11,10 @@ import java.util.ArrayList;
 
 import com.soundlooper.exception.SoundLooperDatabaseException;
 import com.soundlooper.exception.SoundLooperException;
-import com.soundlooper.exception.SoundLooperRecordNotFoundException;
 import com.soundlooper.model.SoundLooperObject;
 import com.soundlooper.model.database.ConnectionFactory;
 import com.soundlooper.model.database.SoundLooperDAO;
 import com.soundlooper.model.song.Song;
-import com.soundlooper.model.song.SongDAO;
 
 /**
  * -------------------------------------------------------
@@ -73,31 +71,31 @@ public class MarkDAO extends SoundLooperDAO<Mark> {
 		return new Mark();
 	}
 
-	@Override
-	public Mark getById(long id) throws SoundLooperException {
-		// get a mar from his id
-		try {
-			ResultSet marksQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT id, id_song, name begintime, endtime FROM mark WHERE id='" + id + "'");
-			if (marksQuery.next()) {
-				String name = marksQuery.getString("name");
-				int beginTime = marksQuery.getInt("begintime");
-				int endTime = marksQuery.getInt("endtime");
-				Song song = SongDAO.getInstance().getById(marksQuery.getLong("id"));
-
-				Mark mark = this.createNew();
-				mark.setId(id);
-				mark.setName(name);
-				mark.setBeginMillisecond(beginTime);
-				mark.setEndMillisecond(endTime);
-				mark.setSong(song);
-				return mark;
-			}
-		} catch (SQLException e) {
-			throw new SoundLooperDatabaseException("Error when trying to get mark with i='" + id + "'", e);
-		}
-
-		throw new SoundLooperRecordNotFoundException("chanson", "id = '" + id + "'");
-	}
+//	@Override
+//	public Mark getById(long id) throws SoundLooperException {
+//		// get a mar from his id
+//		try {
+//			ResultSet marksQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT id, id_song, name begintime, endtime FROM mark WHERE id='" + id + "'");
+//			if (marksQuery.next()) {
+//				String name = marksQuery.getString("name");
+//				int beginTime = marksQuery.getInt("begintime");
+//				int endTime = marksQuery.getInt("endtime");
+//				Song song = SongDAO.getInstance().getById(marksQuery.getLong("id"));
+//
+//				Mark mark = this.createNew();
+//				mark.setId(id);
+//				mark.setName(name);
+//				mark.setBeginMillisecond(beginTime);
+//				mark.setEndMillisecond(endTime);
+//				mark.setSong(song);
+//				return mark;
+//			}
+//		} catch (SQLException e) {
+//			throw new SoundLooperDatabaseException("Error when trying to get mark with i='" + id + "'", e);
+//		}
+//
+//		throw new SoundLooperRecordNotFoundException("chanson", "id = '" + id + "'");
+//	}
 
 	@Override
 	protected void insert(Mark mark) {
@@ -220,32 +218,32 @@ public class MarkDAO extends SoundLooperDAO<Mark> {
 		}
 	}
 
-	@Override
-	public ArrayList<Mark> getList() throws SoundLooperException {
-		ArrayList<Mark> markList = new ArrayList<Mark>();
-		try {
-			// récupère la liste des chansons créées
-			ResultSet marksQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT ID, name, begintime,endtime,id_song FROM mark");
-			while (marksQuery.next()) {
-				long id = marksQuery.getLong("id");
-				String name = marksQuery.getString("name");
-				int beginTime = marksQuery.getInt("begintime");
-				int endTime = marksQuery.getInt("endtime");
-				Song song = SongDAO.getInstance().getById(marksQuery.getLong("id"));
-
-				Mark mark = this.createNew();
-				mark.setId(id);
-				mark.setName(name);
-				mark.setBeginMillisecond(beginTime);
-				mark.setEndMillisecond(endTime);
-				mark.setSong(song);
-				markList.add(mark);
-			}
-		} catch (SQLException e) {
-			throw new SoundLooperDatabaseException("Error when get the marks list", e);
-		}
-		return markList;
-	}
+//	@Override
+//	public ArrayList<Mark> getList() throws SoundLooperException {
+//		ArrayList<Mark> markList = new ArrayList<Mark>();
+//		try {
+//			// récupère la liste des chansons créées
+//			ResultSet marksQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT ID, name, begintime,endtime,id_song FROM mark");
+//			while (marksQuery.next()) {
+//				long id = marksQuery.getLong("id");
+//				String name = marksQuery.getString("name");
+//				int beginTime = marksQuery.getInt("begintime");
+//				int endTime = marksQuery.getInt("endtime");
+//				Song song = SongDAO.getInstance().getById(marksQuery.getLong("id"));
+//
+//				Mark mark = this.createNew();
+//				mark.setId(id);
+//				mark.setName(name);
+//				mark.setBeginMillisecond(beginTime);
+//				mark.setEndMillisecond(endTime);
+//				mark.setSong(song);
+//				markList.add(mark);
+//			}
+//		} catch (SQLException e) {
+//			throw new SoundLooperDatabaseException("Error when get the marks list", e);
+//		}
+//		return markList;
+//	}
 
 	/**
 	 * Get the list of marks for a song

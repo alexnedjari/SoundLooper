@@ -8,33 +8,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
 
-import com.aned.exception.PlayerRuntimeException;
 import com.soundlooper.gui.action.favorite.DeleteFavoriteAction;
-import com.soundlooper.model.SoundLooperPlayerListener;
-import com.soundlooper.model.SoundLooperPlayerSupport;
-import com.soundlooper.model.mark.Mark;
+import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.service.entite.song.SongListener;
-import com.soundlooper.service.entite.song.SongService;
 import com.soundlooper.service.entite.song.SongSupport;
 
 public class WindowFavorite extends JDialog implements SongListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JTree favoriteTree;
 	private JPanel mainPanel;
 	private JPanel actionPanel;
@@ -80,7 +75,7 @@ public class WindowFavorite extends JDialog implements SongListener {
 	
 	private JTree getFavoriteTree() {
 		if (this.favoriteTree == null) {
-			ArrayList<Song> songList = SongService.getInstance().getFavoriteSongList();
+			List<Song> songList = SoundLooperPlayer.getInstance().getFavoriteSongList();
 			this.favoriteTree = new JTree(songList.toArray());
 		}
 		return this.favoriteTree;

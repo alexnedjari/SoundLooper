@@ -18,7 +18,6 @@ import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.exception.SoundLooperRecordNotFoundException;
 import com.soundlooper.model.SoundLooperObject;
 import com.soundlooper.model.database.ConnectionFactory;
-import com.soundlooper.model.database.MarkDatabaseAccess;
 import com.soundlooper.model.database.SoundLooperDAO;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.mark.MarkDAO;
@@ -78,29 +77,29 @@ public class SongDAO extends SoundLooperDAO<Song> {
 		return new Song();
 	}
 
-	@Override
-	public Song getById(long id) throws SoundLooperException {
-		// récupère la liste des chansons créées
-		try {
-			ResultSet songsQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT id, file, lastuse, isfavorite FROM song WHERE id='" + id + "'");
-			if (songsQuery.next()) {
-				File file = new File(songsQuery.getString("file"));
-				Timestamp lastUseDate = songsQuery.getTimestamp("lastuse");
-				boolean isFavorite = this.getBoolean(songsQuery.getLong("isfavorite"));
-				Song song = new Song();
-
-				song.setId(id);
-				song.setLastUseDate(lastUseDate);
-				song.setFile(file);
-				song.setFavorite(isFavorite);
-				return song;
-			}
-		} catch (SQLException e) {
-			throw new SoundLooperDatabaseException("Error when trying to get song with i='" + id + "'", e);
-		}
-
-		throw new SoundLooperRecordNotFoundException("chanson", "id = '" + id + "'");
-	}
+//	@Override
+//	public Song getById(long id) throws SoundLooperException {
+//		// récupère la liste des chansons créées
+//		try {
+//			ResultSet songsQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT id, file, lastuse, isfavorite FROM song WHERE id='" + id + "'");
+//			if (songsQuery.next()) {
+//				File file = new File(songsQuery.getString("file"));
+//				Timestamp lastUseDate = songsQuery.getTimestamp("lastuse");
+//				boolean isFavorite = this.getBoolean(songsQuery.getLong("isfavorite"));
+//				Song song = new Song();
+//
+//				song.setId(id);
+//				song.setLastUseDate(lastUseDate);
+//				song.setFile(file);
+//				song.setFavorite(isFavorite);
+//				return song;
+//			}
+//		} catch (SQLException e) {
+//			throw new SoundLooperDatabaseException("Error when trying to get song with i='" + id + "'", e);
+//		}
+//
+//		throw new SoundLooperRecordNotFoundException("chanson", "id = '" + id + "'");
+//	}
 
 	@Override
 	protected void insert(Song song) {
@@ -135,7 +134,7 @@ public class SongDAO extends SoundLooperDAO<Song> {
 			HashMap<String, Mark> marks = song.getMarks();
 			for (String markName : marks.keySet()) {
 				Mark mark = marks.get(markName);
-				MarkDatabaseAccess.getInstance().createNewMark(mark);
+				MarkDAO.getInstance().persist(mark);
 			}
 			ConnectionFactory.commit();
 		} catch (SQLException e) {
@@ -144,7 +143,7 @@ public class SongDAO extends SoundLooperDAO<Song> {
 		} catch (SoundLooperDatabaseException e) {
 			this.rollbackCurrentTransaction();
 			throw e;
-		}
+		} 
 	}
 
 	@Override
@@ -216,7 +215,7 @@ public class SongDAO extends SoundLooperDAO<Song> {
 				Mark mark = song.getMarks().get(markName);
 				if (mark.getId() != SoundLooperObject.ID_NOT_INITIALIZED) {
 					//delete only the persisted marks
-					MarkDatabaseAccess.getInstance().deleteMark(mark);
+					MarkDAO.getInstance().delete(mark);
 				}
 			}
 
@@ -233,7 +232,7 @@ public class SongDAO extends SoundLooperDAO<Song> {
 		}
 	}
 
-	@Override
+//	@Override
 	public ArrayList<Song> getList() {
 		ArrayList<Song> songList = new ArrayList<Song>();
 		try {

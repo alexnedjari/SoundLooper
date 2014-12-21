@@ -5,7 +5,6 @@ package com.soundlooper.model.database;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
 
@@ -50,7 +49,7 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 	 * @throws SoundLooperException If an error occured
 	 * @return the persisted object
 	 */
-	public T persist(T object) throws SoundLooperException {
+	public T persist(T object) {
 		if (object.getId() == SoundLooperObject.ID_NOT_INITIALIZED) {
 			this.insert(object);
 		} else {
@@ -105,7 +104,7 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 	 *            the object to insert
 	 * @throws SoundLooperException if an error occured
 	 */
-	protected abstract void insert(T object) throws SoundLooperException;
+	protected abstract void insert(T object) ;
 
 	/**
 	 * Update an existing object
@@ -114,7 +113,7 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 	 *            the object
 	 * @throws SoundLooperException If an error occured
 	 */
-	protected abstract void update(T object) throws SoundLooperException;
+	protected abstract void update(T object) ;
 
 	/**
 	 * Rollback the current transaction
@@ -138,13 +137,13 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 		return "0";
 	}
 
-	/**
-	 * Get a object by id
-	 * @param id the id object
-	 * @return the object
-	 * @throws SoundLooperException if an error occured
-	 */
-	public abstract T getById(long id) throws SoundLooperException;
+//	/**
+//	 * Get a object by id
+//	 * @param id the id object
+//	 * @return the object
+//	 * @throws SoundLooperException if an error occured
+//	 */
+//	public abstract T getById(long id) throws SoundLooperException;
 
 	/**
 	 * Create a new objec instance
@@ -164,11 +163,11 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 	 */
 	public abstract T delete(T object) throws SoundLooperException;
 
-	/**
-	 * Get the list of all the database object
-	 *
-	 * @return the list of readed objects
-	 * @throws SoundLooperException If a {@link SoundLooperException} is threw
-	 */
-	public abstract ArrayList<T> getList() throws SoundLooperException;
+//	/**
+//	 * Get the list of all the database object
+//	 *
+//	 * @return the list of readed objects
+//	 * @throws SoundLooperException If a {@link SoundLooperException} is threw
+//	 */
+//	public abstract ArrayList<T> getList() throws SoundLooperException;
 }

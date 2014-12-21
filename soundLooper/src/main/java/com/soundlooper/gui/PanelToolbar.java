@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -37,7 +36,6 @@ import com.soundlooper.gui.jswitchbutton.SwitchButtonActionListener;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
-import com.soundlooper.service.uc.gererSongs.GererSongService;
 import com.soundlooper.system.preferences.Preferences;
 import com.soundlooper.system.util.TimeConverter;
 
@@ -248,7 +246,7 @@ public class PanelToolbar extends JPanel {
 				public void actionPerformed(ActionEvent arg0) {
 
 					//if (GererSongService.getInstance().isFavoriteSongListMustBeUpdated()) {
-					List<Song> favoriteSongList = GererSongService.getInstance().getFavoriteSongList();
+					List<Song> favoriteSongList = SoundLooperPlayer.getInstance().getFavoriteSongList();
 					this.createPopup(favoriteSongList);
 					//}
 					this.menu.show(PanelToolbar.this.getBoutonPopupFavori(), 0, PanelToolbar.this.getBoutonPopupFavori().getHeight());
