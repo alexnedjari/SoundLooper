@@ -26,6 +26,8 @@ import org.apache.log4j.Logger;
 
 import com.soundlooper.gui.action.favorite.SwitchFavoriteAction;
 import com.soundlooper.gui.action.mark.AddMarkAction;
+import com.soundlooper.gui.action.mark.DeleteMarkAction;
+import com.soundlooper.gui.action.mark.SaveMarkAction;
 import com.soundlooper.gui.action.mark.SelectMarkAction;
 import com.soundlooper.gui.action.player.OpenFileFromDialogAction;
 import com.soundlooper.gui.action.player.SetBeginAlignmentOnCurrentPositionAction;
@@ -108,6 +110,12 @@ public class PanelToolbar extends JPanel {
 	 * The fav mark bouton
 	 */
 	JButton boutonMark = null;
+	
+    /**
+     * The mark save bouton
+     */
+    JButton boutonSaveMark = null;
+
 
 	/**
 	 * The button to open the all marks popup
@@ -175,6 +183,7 @@ public class PanelToolbar extends JPanel {
 		mgr.setHgap(0);
 		mgr.setVgap(0);
 		panelMark.setLayout(mgr);
+        panelMark.add(this.getBoutonSaveMark());
 		panelMark.add(this.getBoutonMark());
 		panelMark.add(this.getBoutonPopupMark());
 		return panelMark;
@@ -280,6 +289,23 @@ public class PanelToolbar extends JPanel {
 		this.boutonMark.setContentAreaFilled(true);
 		return this.boutonMark;
 	}
+	
+    /**
+     * Button to save changes on a mark
+     * @return the button
+     */
+    public JButton getBoutonSaveMark() {
+        if (this.boutonSaveMark == null) {
+            this.boutonSaveMark = SoundLooperGUIHelper.getBouton(new SaveMarkAction(this.windowPlayer), "saveMark", "Sauvegarder le marqueur courant", true);
+        }
+        this.boutonSaveMark.setEnabled(false);
+        this.boutonSaveMark.setFocusable(false);
+        this.boutonSaveMark.setPreferredSize(new Dimension(32, 32));
+        this.boutonSaveMark.setBorderPainted(true);
+        this.boutonSaveMark.setContentAreaFilled(true);
+        return this.boutonSaveMark;
+    }
+
 
 	/**
 	 * Button to open the favorite popup
@@ -328,7 +354,7 @@ public class PanelToolbar extends JPanel {
 								+ TimeConverter.getTimeInformationStringMMSS(mark.getEndMillisecond()) + ")");
 						menuItem.setActionCommand(String.valueOf(mark.getId()));
 
-						JButton boutonSuppression = SoundLooperGUIHelper.getBouton(new com.soundlooper.gui.action.mark.DeleteMarkAction(), "supprimerMark",
+                        JButton boutonSuppression = SoundLooperGUIHelper.getBouton(new DeleteMarkAction(), "supprimerMark",
 								"Supprimer ce marqueur", true, 16);
 						boutonSuppression.setActionCommand(String.valueOf(mark.getId()));
 						menuItem.add(boutonSuppression, BorderLayout.EAST);
@@ -434,6 +460,7 @@ public class PanelToolbar extends JPanel {
 
 		//TODO voir si utile
 		this.updateMarkButtonsState(false);
+        this.getBoutonSaveMark().setEnabled(false);
 	}
 
 	/**
@@ -455,6 +482,7 @@ public class PanelToolbar extends JPanel {
 		if (!active) {
 			this.getBoutonMark().setEnabled(false);
 			this.getBoutonPopupMark().setEnabled(false);
+            this.getBoutonSaveMark().setEnabled(false);
 			this.windowPlayer.getMenuItemRechercheMark().setEnabled(false);
 		} else {
 			this.getBoutonMark().setEnabled(true);

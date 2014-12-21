@@ -80,4 +80,15 @@ public class GererMarkService {
 		
 		return delete;
 	}
+	
+    /**
+     * Save a mark
+     * @param mark the mark to save
+     * @throws SoundLooperException 
+     */
+    public void saveMark(Mark mark) throws SoundLooperException {
+        MarkService.getInstance().validateMark(mark);
+        
+    }
+
 }

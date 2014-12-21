@@ -16,6 +16,7 @@ import com.aned.exception.PlayerRuntimeException;
 import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
+import com.soundlooper.service.entite.mark.MarkSupport;
 import com.soundlooper.service.entite.song.SongService;
 import com.soundlooper.service.uc.gererMarks.GererMarkService;
 import com.soundlooper.service.uc.gererSongs.GererSongService;
@@ -52,6 +53,12 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	 */
 	private Song song;
 
+    /**
+     * The current mark
+     * This mark is NEVER an element of the mark list of the current song, but a copy
+     * to avoid problems when the user update it but without savin it
+     */
+    private Mark mark;
 	
 
 	/**
@@ -60,6 +67,15 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	public Song getSong() {
 		return this.song;
 	}
+	
+    /**
+     * Get the current Mark
+     * @return the current mark or null if there is no current mark
+     */
+    public Mark getCurrentMark() {
+        return mark;
+    }
+
 
 	public static SoundLooperPlayer getInstance() {
 		if (Player.instance == null) {
@@ -105,18 +121,8 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	 * @throws SoundLooperException if error is detected
 	 */
 	public void createNewMarkAtCurrentPosition(String nom) throws SoundLooperException {
-		GererMarkService.getInstance().createNewMark(this.song, nom, this.getLoopPointBegin(), this.getLoopPointEnd());
-
-	}
-
-	/**
-	 * @param mark the mark to select id
-	 * @throws SoundLooperException if error is detected
-	 */
-	public void selectMark(Mark mark) throws SoundLooperException {
-		if (mark != null) {
-			this.setLoopPoints(mark.getBeginMillisecond(), mark.getEndMillisecond());
-		}
+        Mark mark = GererMarkService.getInstance().createNewMark(this.song, nom, this.getLoopPointBegin(), this.getLoopPointEnd());
+        this.selectMark(mark);
 	}
 
 	/**
@@ -167,6 +173,14 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 
 	@Override
 	public void onLoopPointChanged(int beginPoint, int endPoint) {
+        if (this.mark != null) {
+            if (beginPoint != this.mark.getBeginMillisecond()) {
+                this.mark.setBeginMillisecond(beginPoint);
+            }
+            if (endPoint != this.mark.getEndMillisecond()) {
+                this.mark.setEndMillisecond(endPoint);
+            }
+        }
 		SoundLooperPlayerSupport.getInstance().fireLoopPointChanged(beginPoint, endPoint);
 	}
 
@@ -186,14 +200,41 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 		Preferences.getInstance().setLastPathUsed(songFile.getAbsolutePath());
 		Preferences.getInstance().addFileToRecentFileList(songFile.getAbsolutePath());
 		try {
-			SoundLooperPlayer.getInstance().setSong(GererSongService.getInstance().getSong(songFile));
+            setSong(GererSongService.getInstance().getSong(songFile));
 			//TODO créer un type d'exception particulier quand un objet n'existe pas
 		} catch (SoundLooperException e) {
 			//La chanson n'est pas encore enregistrée, on crée un nouvel objet
-			SoundLooperPlayer.getInstance().setSong(GererSongService.getInstance().createNewSong(songFile));
+            setSong(GererSongService.getInstance().createNewSong(songFile));
 		}
+        this.selectMark(null);
 		SoundLooperPlayerSupport.getInstance().fireSongLoaded(songFile);
 	}
+	
+    /**
+     * @param mark the mark to select id
+     */
+    public void selectMark(Mark mark)  {
+        if (mark != null) {
+        	this.mark = mark.clone();
+            this.setLoopPoints(mark.getBeginMillisecond(), mark.getEndMillisecond());
+        } else {
+        	this.mark = null;
+        }
+        MarkSupport.getInstance().fireMarkLoaded(mark);
+    }
+    
+    /**
+     * Set the loop points of the song
+     * @param beginTime the begin time in milliseconds
+     * @param endTime the end time in milliseconds
+     */
+    public void setLoopPoints(int beginTime, int endTime) {
+        super.setLoopPoints(beginTime, endTime);
+        if (mark != null) {
+            MarkSupport.getInstance().fireDirtyChanged(mark);
+        }
+    }
+
 
 	@Override
 	public void onFatalError(PlayerRuntimeException e) {
@@ -211,4 +252,16 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	public void onEndGenerateImage(BufferedImage image) {
 		SoundLooperPlayerSupport.getInstance().fireEndGenerateImage(image);
 	}
+	
+
+    public void saveCurrentMark() throws SoundLooperException {
+        if (mark == null) {
+            return;
+        }
+        
+        Mark clone = mark.clone();
+		GererMarkService.getInstance().saveMark(clone);
+		song.getMarks().put(clone.getName(), clone);
+    }
+
 }

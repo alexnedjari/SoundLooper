@@ -56,6 +56,7 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 		} else {
 			this.update(object);
 		}
+        object.setDirty(false);
 		return object;
 	}
 

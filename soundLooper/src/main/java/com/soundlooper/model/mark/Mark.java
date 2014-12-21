@@ -6,6 +6,7 @@ package com.soundlooper.model.mark;
 import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
 import com.soundlooper.model.SoundLooperObject;
 import com.soundlooper.model.song.Song;
+import com.soundlooper.service.entite.mark.MarkSupport;
 import com.soundlooper.system.search.Searchable;
 
 /**
@@ -55,22 +56,6 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 */
 	private Song song;
 
-	//	/**
-	//	 * Create a new mark
-	//	 *
-	//	 * @param song the containing song
-	//	 * @param name the mark name
-	//	 * @param beginMillisecond the begin time of the mark
-	//	 * @param endMillisecond the end time of the mark
-	//	 * @throws SoundLooperObjectAlreadyExistsException If a {@link SoundLooperObjectAlreadyExistsException} is threw
-	//	 */
-	//	public Mark(Song song, String name, long beginMillisecond, long endMillisecond) throws SoundLooperObjectAlreadyExistsException {
-	//		this.beginMillisecond = beginMillisecond;
-	//		this.endMillisecond = endMillisecond;
-	//		this.song = song;
-	//		this.name = name;
-	//		song.addMark(this);
-	//	}
 
 	/**
 	 * Create a new Mark
@@ -81,7 +66,14 @@ public class Mark extends SoundLooperObject implements Searchable {
 
 	public void setSong(Song song) {
 		this.song = song;
+        setDirty(true);
 	}
+	
+    @Override
+    protected void fireDirtyChanged() {
+        MarkSupport.getInstance().fireDirtyChanged(this);
+    }
+
 
 	/**
 	 * Get the begin time of the mark
@@ -100,6 +92,8 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 */
 	public void setBeginMillisecond(int newBeginMillisecond) {
 		this.beginMillisecond = newBeginMillisecond;
+        setDirty(true);
+
 	}
 
 	/**
@@ -119,6 +113,8 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 */
 	public void setEndMillisecond(int newEndMillisecond) {
 		this.endMillisecond = newEndMillisecond;
+        setDirty(true);
+
 	}
 
 	@Override
@@ -155,6 +151,7 @@ public class Mark extends SoundLooperObject implements Searchable {
 			this.getSong().getMarks().remove(this.name);
 			this.name = newName;
 			this.getSong().addMark(this);
+	        setDirty(true);
 		}
 	}
 
@@ -167,5 +164,17 @@ public class Mark extends SoundLooperObject implements Searchable {
 	public String toString() {
 		return this.getName();
 	}
+	
+	@Override
+	public Mark clone() {
+		Mark clone = new Mark();
+		clone.name = name;
+		clone.setBeginMillisecond(beginMillisecond);
+		clone.setDirty(isDirty());
+		clone.setEndMillisecond(endMillisecond);
+		clone.setId(id);
+		clone.setSong(song);
+		return clone;
+	} 
 
 }

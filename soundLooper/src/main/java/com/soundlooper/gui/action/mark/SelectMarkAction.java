@@ -52,11 +52,6 @@ public class SelectMarkAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String idMark = e.getActionCommand();
-		try {
-			SoundLooperPlayer.getInstance().selectMark(this.mark);
-		} catch (SoundLooperException e1) {
-			// TODO gérer l'erreur
-		}
+        SoundLooperPlayer.getInstance().selectMark(this.mark);
 	}
 }

@@ -36,4 +36,17 @@ public class MarkSupport {
 			listener.onMarkAdded(song, mark);
 		}
 	}
+	
+    public void fireDirtyChanged(Mark mark) {
+        for (MarkListener listener : this.listMarkListener) {
+            listener.onDirtyChanged(mark);
+        }
+        
+    }
+    public void fireMarkLoaded(Mark mark) {
+        for (MarkListener listener : this.listMarkListener) {
+            listener.onMarkLoaded(mark);
+        }
+    }
+
 }

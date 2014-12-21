@@ -8,5 +8,9 @@ public interface MarkListener {
 	void onMarkDeleted(Song song, Mark mark);
 
 	void onMarkAdded(Song song, Mark mark);
+
+    void onDirtyChanged(Mark mark);
+
+    void onMarkLoaded(Mark mark);
 	
 }

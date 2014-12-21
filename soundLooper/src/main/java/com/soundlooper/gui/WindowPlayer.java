@@ -754,5 +754,15 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		// TODO Auto-generated method stub
 		
 	}
+	
+    @Override
+    public void onDirtyChanged(Mark mark) {
+        this.panelToolbar.getBoutonSaveMark().setEnabled(mark.isDirty());
+    }
 
+    @Override
+    public void onMarkLoaded(Mark mark) {
+        this.panelToolbar.getBoutonSaveMark().setEnabled(false);
+        
+    }
 }

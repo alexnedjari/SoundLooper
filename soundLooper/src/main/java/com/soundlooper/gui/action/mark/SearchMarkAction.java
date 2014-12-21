@@ -58,11 +58,8 @@ public class SearchMarkAction extends AbstractAction {
 		DialogSearch dialogSearch = new DialogSearch(this.windowPlayer, markList, 0, "Recherche dans les marqueurs");
 		dialogSearch.setVisible(true);
 		Mark mark = (Mark) dialogSearch.getResultat();
-		try {
-			SoundLooperPlayer.getInstance().selectMark(mark);
-		} catch (SoundLooperException e1) {
-			//TODO gérer erreur
-		}
+        SoundLooperPlayer.getInstance().selectMark(mark);
+
 	}
 
 	/* (non-Javadoc)

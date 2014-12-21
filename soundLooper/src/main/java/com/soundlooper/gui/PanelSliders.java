@@ -261,9 +261,7 @@ public class PanelSliders extends JPanel {
 	 * @param endPoint the loop end point
 	 */
 	public void setLoopPointsPositions(int beginPoint, int endPoint) {
-		this.sliderInterval.setValeurSliderGauche(beginPoint);
-		this.sliderInterval.setValeurSliderDroite(endPoint);
-
+		this.sliderInterval.setValeurSlider(beginPoint, endPoint);
 	}
 
 	/**

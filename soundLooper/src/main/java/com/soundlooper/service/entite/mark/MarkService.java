@@ -91,7 +91,8 @@ public class MarkService {
 	 * @throws SoundLooperException if an error occured
 	 */
 	public Mark validateMark(Mark mark) throws SoundLooperException {
-		return MarkDAO.getInstance().persist(mark);
-
+        mark = MarkDAO.getInstance().persist(mark);
+        mark.setDirty(false);
+        return mark;
 	}
 }

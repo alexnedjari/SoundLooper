@@ -41,6 +41,12 @@ public abstract class SoundLooperObject {
 	 * Database id
 	 */
 	protected long id;
+    
+    /**
+     * dirty state
+     */
+    private boolean dirty;
+
 
 	/**
 	 * Constructor
@@ -56,6 +62,31 @@ public abstract class SoundLooperObject {
 	 * @return the description
 	 */
 	public abstract String getDescription();
+	
+    /**
+     * Get the dirty state
+     * @return the dirty state
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    /**
+     * Set the dirty state
+     * @param dirty the new state
+     */
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+        this.fireDirtyChanged();
+    }
+
+    /**
+     * Child class can override this to fire the support class
+     */
+    protected void fireDirtyChanged() {
+        //Default, do nothing
+    }
+
 
 	/**
 	 * Get the ID

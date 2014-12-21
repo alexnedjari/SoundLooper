@@ -101,6 +101,32 @@ public class JPlayer extends JComponent {
 	}
 
 	/**
+	 * Affecte la valeur des deux sliders
+	 *
+	 * @param valeurSliderGauche  la nouvelle valeur gauche
+	 * @param valeurSliderDroite  la nouvelle valeur droite
+	 */
+	public void setValeurSlider(double valeurSliderGauche, double valeurSliderDroite) {
+		if (valeurSliderGauche == this.valeurSliderGauche && valeurSliderDroite == this.valeurSliderDroite) {
+			//même valeur qu'avant
+			return;
+		}
+		
+		if (valeurSliderGauche > valeurSliderDroite || valeurSliderDroite < valeurSliderGauche) {
+			//valeurs incohérentes
+			return;
+		}
+		
+		
+		
+		this.valeurSliderDroite = valeurSliderDroite;
+		this.valeurSliderGauche = valeurSliderGauche;
+		this.jPlayerUI.positionneCurseurs();
+		this.repaint();
+	
+	}
+	
+	/**
 	 * Affecte la valeur du curseur de gauche
 	 *
 	 * @param valeurSliderGauche  la nouvelle valeur
