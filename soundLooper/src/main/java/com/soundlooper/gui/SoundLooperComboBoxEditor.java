@@ -83,6 +83,11 @@ public class SoundLooperComboBoxEditor extends JTextField implements ComboBoxEdi
 
 	private static class UpperCaseDocument extends PlainDocument {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		protected boolean numericOnly = false;
 
 		protected int maxLength = -1;

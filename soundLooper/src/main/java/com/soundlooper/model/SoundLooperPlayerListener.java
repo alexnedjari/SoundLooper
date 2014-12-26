@@ -6,7 +6,6 @@ package com.soundlooper.model;
 import java.awt.image.BufferedImage;
 
 import com.aned.exception.PlayerRuntimeException;
-import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
 
 /**

@@ -7,11 +7,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import com.soundlooper.exception.SoundLooperException;
-import com.soundlooper.gui.WindowAddMark;
 import com.soundlooper.gui.WindowFavorite;
 import com.soundlooper.gui.WindowPlayer;
-import com.soundlooper.model.SoundLooperPlayer;
 
 /**
  *-------------------------------------------------------

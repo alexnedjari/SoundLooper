@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import javax.swing.AbstractAction;
 
-import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.gui.DialogSearch;
 import com.soundlooper.gui.WindowPlayer;
 import com.soundlooper.model.SoundLooperPlayer;

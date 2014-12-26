@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.soundlooper.gui.action.player.PlayPauseAction;
 import com.soundlooper.model.SoundLooperPlayer;
 
 /**
@@ -59,27 +60,10 @@ public class PanelPlayerControls extends JPanel {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		this.setLayout(flowLayout);
 
-		this.boutonStart = SoundLooperGUIHelper.getBouton("lecture", "Lecture");
-		this.boutonStart.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (SoundLooperPlayer.getInstance().isSoundInitialized()) {
-					SoundLooperPlayer.getInstance().play();
-				}
-			}
-		});
+		this.boutonStart = SoundLooperGUIHelper.getBouton(new PlayPauseAction(PlayPauseAction.PLAY_ONLY),"lecture", "Lecture", false);
 		this.add(this.boutonStart);
 
-		this.boutonPause = SoundLooperGUIHelper.getBouton("pause", "Pause");
-		this.boutonPause.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				if (SoundLooperPlayer.getInstance().isSoundInitialized()) {
-					SoundLooperPlayer.getInstance().pause();
-				}
-
-			}
-		});
+		this.boutonPause = SoundLooperGUIHelper.getBouton(new PlayPauseAction(PlayPauseAction.PAUSE_ONLY), "pause", "Pause", false);
 		this.add(this.boutonPause);
 		this.setPreferredSize(new Dimension(400, 40));
 	}

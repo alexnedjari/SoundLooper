@@ -313,6 +313,9 @@ public class JPlayerUI extends ComponentUI implements MouseListener, MouseMotion
 
 	@Override
 	public void mouseReleased(MouseEvent MouseEvent_Arg) {
+		if (elementDrag == poigneeDroite || elementDrag == poigneeGauche || elementDrag == rectangleSegment) {
+			this.jPlayer.changeLoopPoints();
+		}
 		this.elementDrag = null;
 	}
 

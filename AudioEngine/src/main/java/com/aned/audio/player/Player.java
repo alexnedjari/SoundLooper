@@ -209,21 +209,6 @@ public class Player {
 	}
 
 	/**
-	 * Set the position in the song
-	 * @param millisecondTime the new position in milliseconds
-	 */
-	//	public void setPosition(long millisecondTime) {
-	//		//addActionToQueue(new PlayerActionSetPosition(this, millisecondTime));
-	//		try {
-	//			this.checkCurrentSoundInitialized();
-	//			this.getCurrentSound().setMediaTime(new Time(millisecondTime));
-	//		} catch (PlayerException e) {
-	//			LOGGER.error(StackTracer.getStackTrace(e));
-	//			this.getMessageNotifier().sendError(e.getMessage());
-	//		}
-	//	}
-
-	/**
 	 * Set the loop points of the song
 	 * @param beginTime the begin time in milliseconds
 	 * @param endTime the end time in milliseconds
@@ -365,10 +350,10 @@ public class Player {
 	 *  - D�salloue le Syst�me FMOD
 	 * 	- Stoppe la file d'attente
 	 */
-	public void deallocatePlayer() {
-		this.addActionToQueue(new PlayerActionDesallocatePlayer(this));
-		this.queue.killProcess();
-	}
+//	public void deallocatePlayer() {
+//		this.addActionToQueue(new PlayerActionDesallocatePlayer(this));
+//		this.queue.killProcess();
+//	}
 
 	/**
 	 * Check if the result is corresponding to an error

@@ -84,24 +84,6 @@ public class PanelSliders extends JPanel {
 	}
 
 	/**
-	 *
-	 * @return the begin time of the slider interval
-	 */
-	@Deprecated
-	public int getBeginTime() {
-		return new Double(this.sliderInterval.getValeurSliderGauche()).intValue();
-	}
-
-	/**
-	 *
-	 * @return the end time of the slider interval
-	 */
-	@Deprecated
-	public int getEndTime() {
-		return new Double(this.sliderInterval.getValeurSliderDroite()).intValue();
-	}
-
-	/**
 	 * Get the interval slider
 	 * @return the interval slider
 	 */
@@ -111,52 +93,9 @@ public class PanelSliders extends JPanel {
 			this.sliderInterval.setOpaque(false);
 			this.sliderInterval.setColor(new Color(36, 168, 206));
 			this.sliderInterval.addJPlayerListener(this.windowPlayer);
-			//this.sliderInterval.setPreferredSize(new Dimension(800, 30));
-			//this.sliderInterval.setPreferredSize(new Dimension(800, 76));
 			this.sliderInterval.setPreferredSize(new Dimension(800, 126));
-			this.sliderInterval.addMouseListener(new MouseAdapter() {
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					int beginMsValue = new Double(PanelSliders.this.sliderInterval.getValeurSliderGauche()).intValue();
-					int endMsValue = new Double(PanelSliders.this.sliderInterval.getValeurSliderDroite()).intValue();
-					SoundLooperPlayer.getInstance().setLoopPoints(beginMsValue, endMsValue);
-				}
-			});
-
 		}
 		return this.sliderInterval;
-	}
-
-	/**
-	 * Set the player loop points from the slider values
-	 */
-	@Deprecated
-	public void setLoopPointsFromSlider() {
-		int beginMsValue = new Double(this.sliderInterval.getValeurSliderGauche()).intValue();
-		int endMsValue = new Double(this.sliderInterval.getValeurSliderDroite()).intValue();
-		SoundLooperPlayer.getInstance().setLoopPoints(beginMsValue, endMsValue);
-		this.checkCurrentTimeIsInInteval();
-	}
-
-	/**
-	 * Check that the current play cursor position is in the interval
-	 */
-	@Deprecated
-	protected void checkCurrentTimeIsInInteval() {
-		System.out.println("Début checkCurrentTime");
-		int beginMsValue = new Double(this.sliderInterval.getValeurSliderGauche()).intValue();
-		int endMsValue = new Double(this.sliderInterval.getValeurSliderDroite()).intValue();
-		int mediaTime = SoundLooperPlayer.getInstance().getMediaTime();
-		if (mediaTime < beginMsValue || mediaTime > endMsValue) {
-			System.out.println("Recalé sur : " + beginMsValue + "/" + mediaTime);
-			SoundLooperPlayer.getInstance().setMediaTime(beginMsValue);
-			SoundLooperPlayer.getInstance().waitForQueueEnd();
-			this.placeCursor();
-		} else {
-			System.out.println("Pas recalé " + mediaTime + ">" + beginMsValue);
-		}
-		System.out.println("Fin checkCurrentTime");
 	}
 
 	/**
@@ -202,37 +141,6 @@ public class PanelSliders extends JPanel {
 		this.sliderInterval.setValeurSliderGauche(0);
 		this.sliderInterval.setValeur(0);
 		//this.sliderMediaTime.setValue(0);
-	}
-
-	/**
-	 * Set the sliders time
-	 * @param beginMillisecond the position in millisecond of the left position
-	 * @param endMillisecond the position in millisecond of the right position
-	 */
-	@Deprecated
-	public void setSliderPosition(long beginMillisecond, long endMillisecond) {
-		this.sliderInterval.setValeurSliderDroite(endMillisecond);
-		this.sliderInterval.setValeurSliderGauche(beginMillisecond);
-		this.sliderMediaTime.setValue(0);
-		this.setLoopPointsFromSlider();
-	}
-
-	/**
-	 * Place the play cursor
-	 */
-	@Deprecated
-	protected void placeCursor() {
-		try {
-			if (!this.isSliderMediaTimePressed) {
-				long millisecondDuration = SoundLooperPlayer.getInstance().getCurrentSound().getDuration();
-				long millisecondMediaTime = SoundLooperPlayer.getInstance().getMediaTime();
-				long value = millisecondMediaTime * 1000 / millisecondDuration;
-				this.sliderMediaTime.setValue(new Long(value).intValue());
-			}
-		} catch (PlayerException e) {
-			this.logger.error(StackTracer.getStackTrace(e));
-			this.windowPlayer.onError(e.getMessage());
-		}
 	}
 
 	/**

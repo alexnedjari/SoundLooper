@@ -12,7 +12,6 @@ import com.soundlooper.gui.DialogSearch;
 import com.soundlooper.gui.WindowPlayer;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.song.Song;
-import com.soundlooper.service.uc.gererSongs.GererSongService;
 
 /**
  *-------------------------------------------------------
@@ -56,7 +55,7 @@ public class SearchFavoriteAction extends AbstractAction {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		List<Song> favoriteSongList = GererSongService.getInstance().getFavoriteSongList();
+		List<Song> favoriteSongList = SoundLooperPlayer.getInstance().getFavoriteSongList();
 		DialogSearch dialogSearch = new DialogSearch(this.windowPlayer, favoriteSongList, 0, "Recherche dans les favoris");
 		dialogSearch.setVisible(true);
 		Song song = (Song) dialogSearch.getResultat();

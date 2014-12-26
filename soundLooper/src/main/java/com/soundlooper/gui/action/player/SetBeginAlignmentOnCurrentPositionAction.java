@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import com.aned.audio.player.Player;
+import com.soundlooper.model.SoundLooperPlayer;
 
 /**
  *-------------------------------------------------------
@@ -43,7 +44,7 @@ public class SetBeginAlignmentOnCurrentPositionAction extends AbstractAction {
 	public void actionPerformed(ActionEvent e) {
 		int milliSecondsTime = Player.getInstance().getMediaTime();
 		int endTime = Player.getInstance().getLoopPointEnd();
-		Player.getInstance().setLoopPoints(milliSecondsTime, endTime);
+		SoundLooperPlayer.getInstance().setLoopPoints(milliSecondsTime, endTime);
 	}
 
 	@Override

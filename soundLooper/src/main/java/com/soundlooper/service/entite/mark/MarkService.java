@@ -63,7 +63,10 @@ public class MarkService {
 	 * @throws SoundLooperException if there is an exception
 	 */
 	public Mark delete(Mark mark) throws SoundLooperException {
-		return MarkDAO.getInstance().delete(mark);
+		long idMark = mark.getId();
+		Mark result = MarkDAO.getInstance().delete(mark);
+		MarkSupport.getInstance().fireMarkDeleted(mark.getSong(), mark, idMark);
+		return result;
 	}
 
 	/**
@@ -81,7 +84,9 @@ public class MarkService {
 		mark.setEndMillisecond(endMillisecond);
 		mark.setSong(song);
 		mark.setName(name);
-		return this.validateMark(mark);
+		Mark result = this.validateMark(mark);
+		MarkSupport.getInstance().fireMarkAdded(song, mark);
+		return result;
 	}
 
 	/**

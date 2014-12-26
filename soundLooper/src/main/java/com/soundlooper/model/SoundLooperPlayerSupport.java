@@ -5,11 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aned.audio.player.PlayerActionListener;
 import com.aned.exception.PlayerRuntimeException;
-import com.soundlooper.exception.SoundLooperException;
-import com.soundlooper.service.uc.gererSongs.GererSongService;
-import com.soundlooper.system.preferences.Preferences;
 
 public class SoundLooperPlayerSupport {
 	/**

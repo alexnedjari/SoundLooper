@@ -62,4 +62,20 @@ public class JPlayerSupport {
 			jPlayerListener.onNewValeur(valeur);
 		}
 	}
+	
+	/**
+	 * When the player value is changed
+	 * @param valeur
+	 */
+	public void fireNewLoopPoints(double valeurGauche, double valeurDroite) {
+		// For security, make a synchronized copy to avoid concurents access
+		Set<JPlayerListener> listener;
+		synchronized (this) {
+			listener = new HashSet<JPlayerListener>(this.jPlayerListeners);
+		}
+
+		for (JPlayerListener jPlayerListener : listener) {
+			jPlayerListener.onNewLoopPoints(valeurGauche, valeurDroite);
+		}
+	}
 }

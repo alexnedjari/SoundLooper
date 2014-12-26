@@ -6,6 +6,9 @@ package com.soundlooper.service.entite.song;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.model.song.Song;
@@ -36,11 +39,26 @@ import com.soundlooper.model.song.SongDAO;
  *-------------------------------------------------------
  */
 public class SongService {
+	
+	/**
+	 * flag to know is the cached favorite song list is out of date
+	 */
+	private boolean favoriteSongListMustBeUpdated = true;
 
 	/**
 	 * The instance
 	 */
 	private static SongService instance;
+	
+	/**
+	 * the cache for the favorite song list
+	 */
+	private ArrayList<Song> cachedFavoriteSongList = null;
+
+	/**
+	 * Logger for this class
+	 */
+	private Logger logger = Logger.getLogger(this.getClass());
 
 	/**
 	 * Private constructor to avoid instanciation
@@ -98,15 +116,9 @@ public class SongService {
 	 * @throws SoundLooperException if an error occured
 	 */
 	public Song validateSong(Song song) throws SoundLooperException {
+		favoriteSongListMustBeUpdated = true;
 		return SongDAO.getInstance().persist(song);
 
-	}
-
-	/**
-	 * @return the list of files that are in favorites
-	 */
-	public ArrayList<Song> getFavoriteSongList() {
-		return SongDAO.getInstance().getFavoriteSongList();
 	}
 
 	/**
@@ -119,5 +131,22 @@ public class SongService {
 				this.delete(song);
 			}
 		}
+	}
+	
+	
+	
+	/**
+	 * Get the list of songs that are favorite
+	 * @return the list of songs that are favorite
+	 */
+	public List<Song> getFavoriteSongList() {
+		if (this.favoriteSongListMustBeUpdated) {
+			this.logger.info("Get favorite song list from database");
+			this.cachedFavoriteSongList = SongDAO.getInstance().getFavoriteSongList();
+			this.favoriteSongListMustBeUpdated = false;
+		} else {
+			this.logger.info("Get favorite song list from cache");
+		}
+		return this.cachedFavoriteSongList;
 	}
 }

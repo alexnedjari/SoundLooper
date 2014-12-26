@@ -271,9 +271,16 @@ public class JPlayer extends JComponent {
 	 * @param valeur the valeur to set
 	 */
 	public void changeValeur(double newValeur) {
-		this.valeur = newValeur;
-		this.repaint();
+		setValeur(newValeur);
 		this.jplayerSupport.fireNewValeur(newValeur);
+	}
+
+	/**
+	 * Change the loop points value. The listener are notified
+	 * @param valeur the valeur to set
+	 */
+	public void changeLoopPoints() {
+		this.jplayerSupport.fireNewLoopPoints(valeurSliderGauche, valeurSliderDroite);
 	}
 
 	/**
