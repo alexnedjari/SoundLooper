@@ -93,19 +93,7 @@ public class PanelSliders extends JPanel {
 			this.sliderInterval.setOpaque(false);
 			this.sliderInterval.setColor(new Color(36, 168, 206));
 			this.sliderInterval.addJPlayerListener(this.windowPlayer);
-			//this.sliderInterval.setPreferredSize(new Dimension(800, 30));
-			//this.sliderInterval.setPreferredSize(new Dimension(800, 76));
 			this.sliderInterval.setPreferredSize(new Dimension(800, 126));
-			this.sliderInterval.addMouseListener(new MouseAdapter() {
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-					int beginMsValue = new Double(PanelSliders.this.sliderInterval.getValeurSliderGauche()).intValue();
-					int endMsValue = new Double(PanelSliders.this.sliderInterval.getValeurSliderDroite()).intValue();
-					SoundLooperPlayer.getInstance().setLoopPoints(beginMsValue, endMsValue);
-				}
-			});
-
 		}
 		return this.sliderInterval;
 	}

@@ -5,6 +5,7 @@ package com.soundlooper.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
@@ -313,57 +315,10 @@ public class PanelToolbar extends JPanel {
 		if (this.boutonPopupMark == null) {
 			this.boutonPopupMark = SoundLooperGUIHelper.getBouton("mark_popup", "Lister les marqueurs", true);
 			this.boutonPopupMark.addActionListener(new ActionListener() {
-
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					this.createPopup();
-					PanelToolbar.this.getMarkMenu().show(PanelToolbar.this.getBoutonPopupMark(), 0, PanelToolbar.this.getBoutonPopupMark().getHeight());
-
+					createPopupMark();
 				}
-
-				private void createPopup() {
-					PanelToolbar.this.markMenu = new JPopupMenu();
-
-					List<Mark> listeMark = new ArrayList<Mark>(SoundLooperPlayer.getInstance().getSong().getMarks().values());
-					Collections.sort(listeMark, new Comparator<Mark>() {
-
-						@Override
-						public int compare(Mark o1, Mark o2) {
-							if (o1.getBeginMillisecond() > o2.getBeginMillisecond()) {
-								return 1;
-							}
-							if (o1.getBeginMillisecond() < o2.getBeginMillisecond()) {
-								return -1;
-							}
-							if (o1.getEndMillisecond() > o2.getEndMillisecond()) {
-								return 1;
-							}
-							if (o1.getEndMillisecond() < o2.getEndMillisecond()) {
-								return -1;
-							}
-							return 0;
-						}
-					});
-
-					for (final Mark mark : listeMark) {
-						JMenuItem menuItem = new JMenuItem(new SelectMarkAction(mark));
-						menuItem.setLayout(new BorderLayout());
-						menuItem.setText(mark.getName() + " (" + TimeConverter.getTimeInformationStringMMSS(mark.getBeginMillisecond()) + " à "
-								+ TimeConverter.getTimeInformationStringMMSS(mark.getEndMillisecond()) + ")");
-						menuItem.setActionCommand(String.valueOf(mark.getId()));
-
-                        JButton boutonSuppression = SoundLooperGUIHelper.getBouton(new DeleteMarkAction(), "supprimerMark",
-								"Supprimer ce marqueur", true, 16);
-						boutonSuppression.setActionCommand(String.valueOf(mark.getId()));
-						menuItem.add(boutonSuppression, BorderLayout.EAST);
-
-						PanelToolbar.this.getMarkMenu().add(menuItem);
-					}
-					PanelToolbar.this.getMarkMenu().setPreferredSize(
-							new Dimension(new Float(PanelToolbar.this.getMarkMenu().getPreferredSize().getWidth() + 20).intValue(), new Float(PanelToolbar.this.getMarkMenu()
-									.getPreferredSize().getHeight()).intValue()));
-				}
-
 			});
 		}
 		this.boutonPopupMark.setFocusable(false);
@@ -371,6 +326,50 @@ public class PanelToolbar extends JPanel {
 		this.boutonPopupMark.setBorderPainted(true);
 		this.boutonPopupMark.setContentAreaFilled(true);
 		return this.boutonPopupMark;
+	}
+	
+	protected void createPopupMark() {
+		PanelToolbar.this.markMenu = new JPopupMenu();
+
+		List<Mark> listeMark = new ArrayList<Mark>(SoundLooperPlayer.getInstance().getSong().getMarks().values());
+		Collections.sort(listeMark, new Comparator<Mark>() {
+
+			@Override
+			public int compare(Mark o1, Mark o2) {
+				if (o1.getBeginMillisecond() > o2.getBeginMillisecond()) {
+					return 1;
+				}
+				if (o1.getBeginMillisecond() < o2.getBeginMillisecond()) {
+					return -1;
+				}
+				if (o1.getEndMillisecond() > o2.getEndMillisecond()) {
+					return 1;
+				}
+				if (o1.getEndMillisecond() < o2.getEndMillisecond()) {
+					return -1;
+				}
+				return 0;
+			}
+		});
+
+		for (final Mark mark : listeMark) {
+			JMenuItem menuItem = new JMenuItem(new SelectMarkAction(mark));
+			menuItem.setLayout(new BorderLayout());
+			menuItem.setText(mark.getName() + " (" + TimeConverter.getTimeInformationStringMMSS(mark.getBeginMillisecond()) + " à "
+					+ TimeConverter.getTimeInformationStringMMSS(mark.getEndMillisecond()) + ")");
+			menuItem.setActionCommand(String.valueOf(mark.getId()));
+
+            JButton boutonSuppression = SoundLooperGUIHelper.getBouton(new DeleteMarkAction(), "supprimerMark",
+					"Supprimer ce marqueur", true, 16);
+			boutonSuppression.setActionCommand(String.valueOf(mark.getId()));
+			menuItem.add(boutonSuppression, BorderLayout.EAST);
+
+			PanelToolbar.this.getMarkMenu().add(menuItem);
+		}
+		PanelToolbar.this.getMarkMenu().setPreferredSize(
+				new Dimension(new Float(PanelToolbar.this.getMarkMenu().getPreferredSize().getWidth() + 20).intValue(), new Float(PanelToolbar.this.getMarkMenu()
+						.getPreferredSize().getHeight()).intValue()));
+		PanelToolbar.this.getMarkMenu().show(PanelToolbar.this.getBoutonPopupMark(), 0, PanelToolbar.this.getBoutonPopupMark().getHeight());
 	}
 
 	/**
@@ -497,5 +496,9 @@ public class PanelToolbar extends JPanel {
 		this.getButtonEndAlignment().setEnabled(true);
 		this.getBoutonFavori().setEnabled(true);
 		//this.getBoutonPopupFavori().setEnabled(true);
+	}
+
+	public void updateMarkListAfterDelete(long idMarkSupprime) {
+		createPopupMark();
 	}
 }

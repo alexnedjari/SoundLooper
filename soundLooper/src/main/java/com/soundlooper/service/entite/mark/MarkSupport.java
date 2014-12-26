@@ -25,9 +25,9 @@ public class MarkSupport {
 		this.listMarkListener.remove(markListener);
 	}
 	
-	public void fireMarkDeleted(Song song, Mark mark) {
+	public void fireMarkDeleted(Song song, Mark mark,long idMark) {
 		for (MarkListener listener : this.listMarkListener) {
-			listener.onMarkDeleted(song, mark);
+			listener.onMarkDeleted(song, mark, idMark);
 		}
 	}
 	

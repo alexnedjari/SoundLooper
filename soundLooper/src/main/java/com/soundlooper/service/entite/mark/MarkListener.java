@@ -5,7 +5,7 @@ import com.soundlooper.model.song.Song;
 
 public interface MarkListener {
 
-	void onMarkDeleted(Song song, Mark mark);
+	void onMarkDeleted(Song song, Mark mark, long idMark);
 
 	void onMarkAdded(Song song, Mark mark);
 

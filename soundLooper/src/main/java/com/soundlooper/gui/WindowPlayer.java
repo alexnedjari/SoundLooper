@@ -41,6 +41,7 @@ import com.soundlooper.gui.action.favorite.SearchFavoriteAction;
 import com.soundlooper.gui.action.favorite.SwitchFavoriteAction;
 import com.soundlooper.gui.action.mark.AddMarkAction;
 import com.soundlooper.gui.action.mark.SearchMarkAction;
+import com.soundlooper.gui.action.player.OpenFileAction;
 import com.soundlooper.gui.action.player.OpenFileFromDialogAction;
 import com.soundlooper.gui.action.player.PlayPauseAction;
 import com.soundlooper.gui.action.player.SetBeginAlignmentOnCurrentPositionAction;
@@ -449,7 +450,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		for (final RecentFile recentFile : recentFileList) {
 			if (recentFile.getFile().exists()) {
 				MenuItem menuItemRecentFile = new MenuItem(recentFile.getFile().getName());
-				menuItemRecentFile.addActionListener(new com.soundlooper.gui.action.player.OpenFileAction());
+				menuItemRecentFile.addActionListener(new OpenFileAction());
 				menuItemRecentFile.setActionCommand(recentFile.getFile().getAbsolutePath());
 				this.menuRecent.insert(menuItemRecentFile, 0);
 			}
@@ -709,11 +710,12 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	}
 
 	@Override
-	public void onMarkDeleted(Song song, Mark mark) {
+	public void onMarkDeleted(Song song, Mark mark, final long idMarkSupprime) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				WindowPlayer.this.panelToolbar.getMarkMenu().setVisible(false);
+				//WindowPlayer.this.panelToolbar.getMarkMenu().setVisible(false);
+				WindowPlayer.this.panelToolbar.updateMarkListAfterDelete(idMarkSupprime);
 			}
 		});
 	}
@@ -764,4 +766,10 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
         this.panelToolbar.getBoutonSaveMark().setEnabled(false);
         
     }
+
+	@Override
+	public void onNewLoopPoints(double valeurGauche, double valeurDroite) {
+		SoundLooperPlayer.getInstance().setLoopPoints(new Double(valeurGauche).intValue(), new Double(valeurDroite).intValue());
+		
+	}
 }

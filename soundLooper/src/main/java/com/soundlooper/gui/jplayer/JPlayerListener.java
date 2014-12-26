@@ -32,4 +32,6 @@ public interface JPlayerListener extends java.util.EventListener {
 	 * @param valeur the new value
 	 */
 	public abstract void onNewValeur(double valeur);
+	
+	public abstract void onNewLoopPoints(double valeurGauche, double valeurDroite);
 }

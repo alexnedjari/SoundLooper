@@ -35,6 +35,20 @@ import com.aned.audio.player.Player.PlayerState;
  */
 public class PlayPauseAction extends AbstractAction {
 
+	public final static int PAUSE_ONLY = 0; 
+	public final static int PLAY_ONLY = 1;
+	public final static int PLAY_PAUSE = 2;
+	
+	private int mode = PLAY_PAUSE;
+	
+	public PlayPauseAction() {
+		super();
+	}
+	
+	public PlayPauseAction(int mode) {
+		this.mode = mode;
+	}
+	
 	/**
 	 * serial
 	 */
@@ -43,10 +57,20 @@ public class PlayPauseAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int state = Player.getInstance().getState();
-		if (state == PlayerState.STATE_PAUSED || state == PlayerState.STATE_SONG_LOADED) {
-			Player.getInstance().play();
-		} else if (state == PlayerState.STATE_PLAYING) {
-			Player.getInstance().pause();
+		if (mode == PLAY_PAUSE) {
+			if (state == PlayerState.STATE_PAUSED || state == PlayerState.STATE_SONG_LOADED) {
+				Player.getInstance().play();
+			} else if (state == PlayerState.STATE_PLAYING) {
+				Player.getInstance().pause();
+			}
+		} else if (mode == PLAY_ONLY) {
+			if (state == PlayerState.STATE_PAUSED || state == PlayerState.STATE_SONG_LOADED) {
+				Player.getInstance().play();
+			}
+		} else if (mode == PAUSE_ONLY) {
+			if (state == PlayerState.STATE_PLAYING) {
+				Player.getInstance().pause();
+			}
 		}
 	}
 
