@@ -106,10 +106,6 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 		SongSupport.getInstance().fireFavoriteUpdated(song);
 	}
 
-	
-
-	
-
 	/**
 	 * @param idMark the mark id
 	 * @throws SoundLooperException if an error es detected
@@ -249,9 +245,6 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
         this.selectMark(null);
 		SoundLooperPlayerSupport.getInstance().fireSongLoaded(songFile);
 	}
-	
-    
-
 
 	@Override
 	public void onFatalError(PlayerRuntimeException e) {
@@ -261,16 +254,11 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 
 	@Override
 	public void onBeginGenerateImage() {
-		SoundLooperPlayerSupport.getInstance().fireBeginGenerateImage();
-		
+		SoundLooperPlayerSupport.getInstance().fireBeginGenerateImage();		
 	}
 
 	@Override
 	public void onEndGenerateImage(BufferedImage image) {
 		SoundLooperPlayerSupport.getInstance().fireEndGenerateImage(image);
 	}
-	
-
-    
-
 }
