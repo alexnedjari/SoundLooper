@@ -336,6 +336,13 @@ public class PanelToolbar extends JPanel {
 
 			@Override
 			public int compare(Mark o1, Mark o2) {
+				if (o1.isEditable() && !o2.isEditable()) {
+					return 1;
+				}
+				if (!o1.isEditable() && o2.isEditable()) {
+					return -1;
+				}
+				
 				if (o1.getBeginMillisecond() > o2.getBeginMillisecond()) {
 					return 1;
 				}
@@ -359,10 +366,12 @@ public class PanelToolbar extends JPanel {
 					+ TimeConverter.getTimeInformationStringMMSS(mark.getEndMillisecond()) + ")");
 			menuItem.setActionCommand(String.valueOf(mark.getId()));
 
-            JButton boutonSuppression = SoundLooperGUIHelper.getBouton(new DeleteMarkAction(), "supprimerMark",
-					"Supprimer ce marqueur", true, 16);
-			boutonSuppression.setActionCommand(String.valueOf(mark.getId()));
-			menuItem.add(boutonSuppression, BorderLayout.EAST);
+			if (mark.isEditable()) {
+	            JButton boutonSuppression = SoundLooperGUIHelper.getBouton(new DeleteMarkAction(), "supprimerMark",
+						"Supprimer ce marqueur", true, 16);
+				boutonSuppression.setActionCommand(String.valueOf(mark.getId()));
+				menuItem.add(boutonSuppression, BorderLayout.EAST);
+			}
 
 			PanelToolbar.this.getMarkMenu().add(menuItem);
 		}

@@ -7,6 +7,7 @@ import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.mark.MarkDAO;
 import com.soundlooper.model.song.Song;
+import com.soundlooper.system.util.StringUtil;
 
 /**
  *-------------------------------------------------------
@@ -100,4 +101,24 @@ public class MarkService {
         mark.setDirty(false);
         return mark;
 	}
+	
+	/**
+	 * Get an unique valid name for mark for this song
+	 * @param song the song
+	 * @param nom the wanted name
+	 * @return a valid unique name
+	 */
+	public String getNomValide(Song song, String nom) {
+		while (song.getMarks().keySet().contains(nom)) {
+			String[] prefixeEtIncrement = StringUtil.getInstance().getNomEtIncrement(nom);
+			String prefixe = prefixeEtIncrement[0];
+			String increment = prefixeEtIncrement[1];
+			int incrementNumeric = Integer.valueOf(increment).intValue();
+			incrementNumeric++;
+			nom = prefixe + incrementNumeric;
+		}
+		return nom;
+	}
+	
+	
 }

@@ -55,6 +55,11 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 * The containing song
 	 */
 	private Song song;
+	
+	/**
+	 * flag to know if it s possible to edit/delete this mark
+	 */
+	private boolean editable = true;
 
 
 	/**
@@ -63,6 +68,28 @@ public class Mark extends SoundLooperObject implements Searchable {
 	public Mark() {
 
 	}
+	
+	public Mark(String name, int beginMillisecond, int endMillisecond, Song song, boolean editable) throws SoundLooperObjectAlreadyExistsException {
+		super();
+		this.beginMillisecond = beginMillisecond;
+		this.endMillisecond = endMillisecond;
+		this.song = song;
+		this.editable = editable;
+		this.setName(name);
+	}
+
+
+
+	public boolean isEditable() {
+		return editable;
+	}
+	
+	
+	
+	public void setEditable(boolean editable) {
+		this.editable = editable;
+	}
+
 
 	public void setSong(Song song) {
 		this.song = song;
@@ -174,6 +201,7 @@ public class Mark extends SoundLooperObject implements Searchable {
 		clone.setEndMillisecond(endMillisecond);
 		clone.setId(id);
 		clone.setSong(song);
+		clone.setEditable(editable);
 		return clone;
 	} 
 

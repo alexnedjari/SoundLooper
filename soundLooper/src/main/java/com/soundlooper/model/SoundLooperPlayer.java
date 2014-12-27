@@ -11,8 +11,10 @@ import java.util.Set;
 
 import com.aned.audio.player.Player;
 import com.aned.audio.player.PlayerActionListener;
+import com.aned.exception.PlayerException;
 import com.aned.exception.PlayerRuntimeException;
 import com.soundlooper.exception.SoundLooperException;
+import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.service.entite.mark.MarkService;
@@ -200,6 +202,16 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 		this.song=song;
 		
 	}
+	
+	/**
+	 * Get an unique valid name for mark for this song
+	 * @param song the song
+	 * @param nom the wanted name
+	 * @return a valid unique name
+	 */
+	public String getNomValideForMark(Song song, String name) {
+		return MarkService.getInstance().getNomValide(song, name);
+	}
 
 	@Override
 	public void onPlayLocationChanged(int newMillisecondLocation) {
@@ -232,7 +244,7 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	}
 
 	@Override
-	public void onSongLoaded(File songFile) {
+	public void onSongLoaded(File songFile) throws PlayerException {
 		Preferences.getInstance().setLastPathUsed(songFile.getAbsolutePath());
 		Preferences.getInstance().addFileToRecentFileList(songFile.getAbsolutePath());
 		try {
@@ -242,7 +254,17 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 			//La chanson n'est pas encore enregistrée, on crée un nouvel objet
             setSong(SongService.getInstance().createSong(songFile));
 		}
-        this.selectMark(null);
+		
+		//création du marqueur par défaut
+		
+		try {
+			Mark mark = new Mark(getNomValideForMark(song, "[Piste complète]"), 0, this.getCurrentSound().getDuration(), song, false);
+			this.selectMark(mark);
+		} catch (SoundLooperObjectAlreadyExistsException e) {
+			//Impossible case
+			
+		}
+
 		SoundLooperPlayerSupport.getInstance().fireSongLoaded(songFile);
 	}
 

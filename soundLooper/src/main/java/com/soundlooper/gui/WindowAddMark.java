@@ -23,8 +23,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.system.util.GUIHelper;
+import com.soundlooper.system.util.StringUtil;
 
 /**
  *-------------------------------------------------------
@@ -109,7 +111,7 @@ public class WindowAddMark extends JDialog {
 	}
 
 	private void updateLabelNouveauNom() {
-		this.labelNouveauNom.setText("Nom final : " + this.getNomValide());
+		this.labelNouveauNom.setText("Nom final : " + SoundLooperPlayer.getInstance().getNomValideForMark(song, this.comboBoxLabel.getSelectedItem().toString()));
 	}
 
 	/**
@@ -120,7 +122,7 @@ public class WindowAddMark extends JDialog {
 		if (this.comboBoxLabel == null) {
 			List<String> listeLabel = new ArrayList<String>(Arrays.asList(new String[] { "Intro", "Couplet", "Refrain", "Solo", "Pont", "Break", "Outtro" }));
 			for (String markName : this.song.getMarks().keySet()) {
-				if (!listeLabel.contains(this.getNomEtIncrement(markName)[0])) {
+				if (!listeLabel.contains(StringUtil.getInstance().getNomEtIncrement(markName)[0]) && this.song.getMarks().get(markName).isEditable()) {
 					listeLabel.add(markName);
 				}
 			}
@@ -178,48 +180,14 @@ public class WindowAddMark extends JDialog {
 		return this.boutonValider;
 	}
 
-	protected String getNomValide() {
-		String nom = this.comboBoxLabel.getSelectedItem().toString();
-		while (this.song.getMarks().keySet().contains(nom)) {
-			String[] prefixeEtIncrement = this.getNomEtIncrement(nom);
-			String prefixe = prefixeEtIncrement[0];
-			String increment = prefixeEtIncrement[1];
-			int incrementNumeric = Integer.valueOf(increment).intValue();
-			incrementNumeric++;
-			nom = prefixe + incrementNumeric;
-		}
-		return nom;
-	}
-
-	/**
-	 * @param nom
-	 * @return
-	 */
-	private String[] getNomEtIncrement(String nom) {
-		String increment = "";
-		String prefixe = nom;
-		try {
-			while (prefixe.length() > 0) {
-				String incrementATester = prefixe.substring(prefixe.length() - 1);
-				Integer numericIncrement = Integer.valueOf(incrementATester);
-				increment = numericIncrement.toString() + increment;
-				prefixe = prefixe.substring(0, prefixe.length() - 1);
-			}
-		} catch (NumberFormatException e) {
-			//trouvé la fin de l'incrément
-		}
-		if (increment.equals("")) {
-			increment = "1";
-		}
-		return new String[] { prefixe, increment };
-	}
+	
 
 	public String getNomSaisi() {
 		return this.nomSaisi;
 	}
 
 	private void valider() {
-		WindowAddMark.this.nomSaisi = WindowAddMark.this.getNomValide();
+		WindowAddMark.this.nomSaisi = SoundLooperPlayer.getInstance().getNomValideForMark(song, this.comboBoxLabel.getSelectedItem().toString());
 		WindowAddMark.this.dispose();
 	}
 

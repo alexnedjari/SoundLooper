@@ -758,7 +758,11 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	
     @Override
     public void onDirtyChanged(Mark mark) {
-        this.panelToolbar.getBoutonSaveMark().setEnabled(mark.isDirty());
+    	if (mark.isEditable()) {
+    		this.panelToolbar.getBoutonSaveMark().setEnabled(mark.isDirty());
+    	} else {
+    		this.panelToolbar.getBoutonSaveMark().setEnabled(false);
+    	}
     }
 
     @Override

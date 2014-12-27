@@ -6,6 +6,7 @@ package com.aned.audio.player;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
+import com.aned.exception.PlayerException;
 import com.aned.exception.PlayerRuntimeException;
 
 /**
@@ -60,8 +61,9 @@ public interface PlayerActionListener {
 	/**
 	 * Called when the song is loaded
 	 * @param songFile the loaded file
+	 * @throws PlayerException 
 	 */
-	public void onSongLoaded(File songFile);
+	public void onSongLoaded(File songFile) throws PlayerException;
 
 	/**
 	 * @param e
