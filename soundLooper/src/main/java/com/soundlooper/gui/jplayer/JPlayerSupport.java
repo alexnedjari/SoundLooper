@@ -29,6 +29,20 @@ import java.util.Set;
  *-------------------------------------------------------
  */
 public class JPlayerSupport {
+    private static JPlayerSupport instance;
+    
+    private JPlayerSupport() {
+        
+    }
+    
+    public static synchronized JPlayerSupport getInstance() {
+        if (instance == null) {
+            instance = new JPlayerSupport();
+        }
+        return instance;
+    }
+
+	
 	private Set<JPlayerListener> jPlayerListeners = new HashSet<JPlayerListener>();
 
 	/**

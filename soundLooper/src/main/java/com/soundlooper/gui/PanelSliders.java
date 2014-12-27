@@ -6,17 +6,18 @@ package com.soundlooper.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
 import com.aned.exception.PlayerException;
 import com.soundlooper.gui.jplayer.JPlayer;
+import com.soundlooper.gui.jplayer.JPlayerUI;
+import com.soundlooper.gui.jtimefield.JTimeField;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.system.util.StackTracer;
 
@@ -66,6 +67,17 @@ public class PanelSliders extends JPanel {
 	 * The player windows
 	 */
 	protected WindowPlayer windowPlayer;
+	
+    /**
+     * time field for left cursor
+     */
+    JTimeField jTimeFieldLeft = null;
+
+    /**
+     * time field for right cursor
+     */
+    JTimeField jTimeFieldRight = null;
+
 
 	/**
 	 * The logger for this class
@@ -79,10 +91,44 @@ public class PanelSliders extends JPanel {
 	public PanelSliders(WindowPlayer windowPlayer) {
 		this.windowPlayer = windowPlayer;
 		this.setLayout(new BorderLayout());
-		this.add(this.getSliderInterval(), BorderLayout.NORTH);
+        
+		JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
+        contentPanel.setOpaque(false);
+        
+        contentPanel.add(this.getSliderInterval(), BorderLayout.NORTH);
+        
+        BorderLayout layoutTimeField = new BorderLayout();
+        
+        JPanel panelTimeField = new JPanel(layoutTimeField);
+        panelTimeField.add(getTimeFieldLeft(), BorderLayout.WEST);
+        panelTimeField.add(getTimeFieldRight(), BorderLayout.EAST);
+        panelTimeField.setOpaque(false);
+        panelTimeField.setBorder(new EmptyBorder(0, JPlayerUI.MARGE_GAUCHE, 0, JPlayerUI.MARGE_DROITE));
+        contentPanel.add(panelTimeField, BorderLayout.SOUTH);
+        
+        this.add(contentPanel, BorderLayout.NORTH);
+        
 		this.setOpaque(false);
 	}
 
+    public JTimeField getTimeFieldLeft() {
+        if (this.jTimeFieldLeft == null) {
+            this.jTimeFieldLeft = new JTimeField(JTimeField.CHAMP_GAUCHE);
+            this.jTimeFieldLeft.addJTimeFieldListener(this.windowPlayer);
+        }
+        return this.jTimeFieldLeft;
+    }
+
+    public JTimeField getTimeFieldRight() {
+        if (this.jTimeFieldRight == null) {
+            this.jTimeFieldRight = new JTimeField(JTimeField.CHAMP_DROITE);
+            this.jTimeFieldRight.addJTimeFieldListener(this.windowPlayer);
+        }
+        return this.jTimeFieldRight;
+    }
+
+	
 	/**
 	 * Get the interval slider
 	 * @return the interval slider

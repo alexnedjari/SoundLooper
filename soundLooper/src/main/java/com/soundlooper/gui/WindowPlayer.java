@@ -30,6 +30,7 @@ import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
+import com.aned.audio.player.Player;
 import com.aned.audio.player.Player.PlayerState;
 import com.aned.audio.player.PlayerMessagesListener;
 import com.aned.exception.PlayerException;
@@ -56,6 +57,8 @@ import com.soundlooper.gui.action.volume.Remove5PercentToVolumeAction;
 import com.soundlooper.gui.fenapropos.FenAPropos;
 import com.soundlooper.gui.fenapropos.InformationLogiciel;
 import com.soundlooper.gui.jplayer.JPlayerListener;
+import com.soundlooper.gui.jtimefield.JTimeField;
+import com.soundlooper.gui.jtimefield.JTimeFieldListener;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.SoundLooperPlayerListener;
 import com.soundlooper.model.SoundLooperPlayerSupport;
@@ -110,7 +113,7 @@ import com.soundlooper.system.util.TimeMeasurer;
  * @since 6 avr. 2011
  * -------------------------------------------------------
  */
-public class WindowPlayer extends JFrame implements SongListener,MarkListener, PlayerMessagesListener, PreferencesListener, SoundLooperPlayerListener, JPlayerListener {
+public class WindowPlayer extends JFrame implements SongListener,MarkListener, PlayerMessagesListener, PreferencesListener, SoundLooperPlayerListener, JPlayerListener, JTimeFieldListener {
 
 	/**
 	 * The lock name
@@ -233,7 +236,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		((JComponent) this.getContentPane()).getActionMap().put(AddMarkAction.class.getName(), new AddMarkAction(this));
 
 		WindowPlayer.logger.info("Launching " + SoundLooperProperties.getInstance().getApplicationPresentation());
-		this.setPreferredSize(new Dimension(700, 310));
+		this.setPreferredSize(new Dimension(700, 330));
 
 		WindowPlayer.timeMeasurer.endAndStartNewMeasure("Set uncaught exception");
 		Thread.setDefaultUncaughtExceptionHandler(new SoundLooperExceptionHandler("SoundLooper", this));
@@ -253,7 +256,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		panelSud.setLayout(new BorderLayout());
 
 		this.getContentPane().setLayout(new BorderLayout(0, 8));
-		this.setMinimumSize(new Dimension(600, 310));
+		this.setMinimumSize(new Dimension(630, 330));
 
 		WindowPlayer.timeMeasurer.endAndStartNewMeasure("creation Panel player control");
 		this.panelPlayerControl = new PanelPlayerControls();
@@ -644,6 +647,8 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	@Override
 	public void onLoopPointChanged(int beginPoint, int endPoint) {
 		this.panelSliders.setLoopPointsPositions(beginPoint, endPoint);
+		this.panelSliders.getTimeFieldLeft().setTime(new Double(beginPoint).intValue());
+		this.panelSliders.getTimeFieldRight().setTime(new Double(endPoint).intValue());
 
 	}
 
@@ -774,6 +779,16 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	@Override
 	public void onNewLoopPoints(double valeurGauche, double valeurDroite) {
 		SoundLooperPlayer.getInstance().setLoopPoints(new Double(valeurGauche).intValue(), new Double(valeurDroite).intValue());
+		
+	}
+
+	@Override
+	public void onValueChanged(int newValeur, String signatureChamp) {
+		if (signatureChamp.equals(JTimeField.CHAMP_DROITE)) {
+			SoundLooperPlayer.getInstance().setLoopPoints(Player.getInstance().getLoopPointBegin(), newValeur);
+		} else if (signatureChamp.equals(JTimeField.CHAMP_GAUCHE)) {
+			SoundLooperPlayer.getInstance().setLoopPoints(newValeur, Player.getInstance().getLoopPointEnd());
+		}
 		
 	}
 }

@@ -80,9 +80,9 @@ public class JPlayerUI extends ComponentUI implements MouseListener, MouseMotion
 
 	// Dimensions fixes.
 	private final static int HAUTEUR_REGLE = 13;
-	private final static int MARGE_GAUCHE = 17;
+	public final static int MARGE_GAUCHE = 17;
 	private final static int MARGE_HAUT = 13;
-	private final static int MARGE_DROITE = 18;
+	public final static int MARGE_DROITE = 18;
 	private final static int MARGE_BAS = 3;
 	private final static int HAUT_IMAGE = JPlayerUI.MARGE_HAUT + JPlayerUI.HAUTEUR_REGLE;
 

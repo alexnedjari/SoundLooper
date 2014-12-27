@@ -41,8 +41,6 @@ public class JPlayer extends JComponent {
 	/** Gestion de l'affichage et des évènements*/
 	protected JPlayerUI jPlayerUI = null;
 
-	/** Evènements + listeners du player*/
-	protected JPlayerSupport jplayerSupport = new JPlayerSupport();
 
 	/** Valeur maxi*/
 	private double maximumValue = 100;
@@ -241,14 +239,15 @@ public class JPlayer extends JComponent {
 	 * @param l Le nouveau listener.
 	 */
 	public synchronized void addJPlayerListener(JPlayerListener l) {
-		this.jplayerSupport.addJPlayerListener(l);
+        JPlayerSupport.getInstance().addJPlayerListener(l);
+
 	}
 
 	/**
 	 * @param l le listener à supprimer.
 	 */
 	public synchronized void removeJPlayerListener(JPlayerListener l) {
-		this.jplayerSupport.removeJPLayerListener(l);
+		JPlayerSupport.getInstance().removeJPLayerListener(l);
 	}
 
 	/**
@@ -272,7 +271,7 @@ public class JPlayer extends JComponent {
 	 */
 	public void changeValeur(double newValeur) {
 		setValeur(newValeur);
-		this.jplayerSupport.fireNewValeur(newValeur);
+		JPlayerSupport.getInstance().fireNewValeur(newValeur);
 	}
 
 	/**
@@ -280,7 +279,7 @@ public class JPlayer extends JComponent {
 	 * @param valeur the valeur to set
 	 */
 	public void changeLoopPoints() {
-		this.jplayerSupport.fireNewLoopPoints(valeurSliderGauche, valeurSliderDroite);
+		JPlayerSupport.getInstance().fireNewLoopPoints(valeurSliderGauche, valeurSliderDroite);
 	}
 
 	/**
