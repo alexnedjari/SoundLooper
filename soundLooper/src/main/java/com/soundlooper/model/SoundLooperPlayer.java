@@ -258,7 +258,7 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 		//création du marqueur par défaut
 		
 		try {
-			Mark mark = new Mark(getNomValideForMark(song, "[Piste complète]"), 0, this.getCurrentSound().getDuration(), song, false);
+			Mark mark = new Mark(getNomValideForMark(song, "Piste complète"), 0, this.getCurrentSound().getDuration(), song, false);
 			this.selectMark(mark);
 		} catch (SoundLooperObjectAlreadyExistsException e) {
 			//Impossible case

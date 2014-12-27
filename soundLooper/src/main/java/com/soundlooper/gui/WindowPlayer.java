@@ -475,7 +475,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	protected void setCompleteTitle(String selectedFile) {
 		this.setTitle(SoundLooperProperties.getInstance().getApplicationPresentation());
 		if (selectedFile != null && selectedFile.length() > 0) {
-			this.setTitle(this.getTitle() + " : " + selectedFile);
+			this.setTitle(this.getTitle() + " : " + selectedFile + " (" + SoundLooperPlayer.getInstance().getCurrentMark().getName() + ")");
 		} else {
 			this.setTitle(this.getTitle() + " (Pas de fichier choisi)");
 		}
@@ -758,7 +758,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	
     @Override
     public void onDirtyChanged(Mark mark) {
-    	if (mark.isEditable()) {
+    	if (mark.isEditable() && mark.getSong() != null && mark.getSong().isFavorite()) {
     		this.panelToolbar.getBoutonSaveMark().setEnabled(mark.isDirty());
     	} else {
     		this.panelToolbar.getBoutonSaveMark().setEnabled(false);
@@ -768,7 +768,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
     @Override
     public void onMarkLoaded(Mark mark) {
         this.panelToolbar.getBoutonSaveMark().setEnabled(false);
-        
+        this.setCompleteTitle(mark.getSong().getFile().getName());
     }
 
 	@Override
