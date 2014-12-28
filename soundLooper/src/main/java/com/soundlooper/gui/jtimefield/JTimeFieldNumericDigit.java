@@ -57,30 +57,30 @@ public class JTimeFieldNumericDigit extends JTimeFieldDigit {
 		return Integer.valueOf(new Character(getValue()).toString());
 	}
 	
-	public boolean incrementValue() {
+	public boolean incrementValue(boolean notify) {
 		int newValue = getNumericValue() + 1;
 		
 		if (newValue > valeurMax) {
-			if (digitSuperieur == null || !digitSuperieur.incrementValue()) {
+			if (digitSuperieur == null || !digitSuperieur.incrementValue(false)) {
 				return false;
 			}
 			newValue -= valeurMax+1;
 		}
 		
-		changeValue(String.valueOf(newValue).charAt(0));
+		changeValue(String.valueOf(newValue).charAt(0), notify);
 		return true;
 	}
-	public boolean decrementValue() {
+	public boolean decrementValue(boolean notify) {
 		int newValue = getNumericValue() - 1;
 		
 		if (newValue < 0) {
-			if (digitSuperieur == null || !digitSuperieur.decrementValue()) {
+			if (digitSuperieur == null || !digitSuperieur.decrementValue(false)) {
 				return false;
 			}
 			newValue = valeurMax;
 		}
 		
-		changeValue(String.valueOf(newValue).charAt(0));
+		changeValue(String.valueOf(newValue).charAt(0), notify);
 		return true;
 	}
 
@@ -94,15 +94,17 @@ public class JTimeFieldNumericDigit extends JTimeFieldDigit {
 	
 	public void setNumericValue(int value) {
 		if (value <= valeurMax) {
-			changeValue(String.valueOf(value).charAt(0));
+			changeValue(String.valueOf(value).charAt(0), true);
 			
 		}
 	}
 
-	public void changeValue(char value) {
+	public void changeValue(char value, boolean notify) {
 		super.setValue(value);
 		jTimeField.refresh();
-		jTimeField.onValueChanged();
+		if (notify) {
+			jTimeField.onValueChanged();
+		}
 	}
 	
 	

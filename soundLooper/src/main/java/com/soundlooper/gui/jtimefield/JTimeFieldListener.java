@@ -2,6 +2,6 @@ package com.soundlooper.gui.jtimefield;
 
 public interface JTimeFieldListener {
 
-	void onValueChanged(int newValeur, String signatureChamp);
+	void onValueChanged(int newValeur, JTimeField jTimeField);
 
 }

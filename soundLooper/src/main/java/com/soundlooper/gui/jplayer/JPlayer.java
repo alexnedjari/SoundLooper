@@ -62,6 +62,9 @@ public class JPlayer extends JComponent {
 
 	/** Formatteur */
 	private DecimalFormat decimalFormater = new TimeDecimalFormat();
+	
+	/** Valeur maxi*/
+	private double minimumBetweenCursors = 0;
 
 	/**
 	 * Flag permettant de savoir si la génération de l'image est en cours
@@ -311,5 +314,13 @@ public class JPlayer extends JComponent {
 		this.image = image;
 		this.isGenerationEnCours = false;
 		this.repaint();
+	}
+
+	public double getMinimumBetweenCursors() {
+		return minimumBetweenCursors;
+	}
+
+	public void setMinimumBetweenCursors(double minimumBetweenCursors) {
+		this.minimumBetweenCursors = minimumBetweenCursors;
 	}
 }

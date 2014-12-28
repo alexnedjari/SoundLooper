@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -87,51 +88,54 @@ public class JTimeFieldNumericDigitUI extends JTimeFieldDigitUI implements Mouse
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_UP) {
-			digit.incrementValue();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			digit.decrementValue();
-		}
-		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			if (digit.getDigitSuperieur() != null) {
-				digit.getJTimeField().selectDigit(digit.getDigitSuperieur());
+		
+		if (!e.isControlDown()) {
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				digit.incrementValue(true);
 			}
-		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			if (digit.getDigitInferieur() != null) {
-				digit.getJTimeField().selectDigit(digit.getDigitInferieur());
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				digit.decrementValue(true);
 			}
-		}
-		if (e.getKeyCode() == KeyEvent.VK_DELETE || e.getKeyCode() == KeyEvent.VK_0 || e.getKeyCode() == KeyEvent.VK_NUMPAD0) {
-			digit.setNumericValue(0);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
-			digit.setNumericValue(1);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
-			digit.setNumericValue(2);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
-			digit.setNumericValue(3);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
-			digit.setNumericValue(4);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_5 || e.getKeyCode() == KeyEvent.VK_NUMPAD5) {
-			digit.setNumericValue(5);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_6 || e.getKeyCode() == KeyEvent.VK_NUMPAD6) {
-			digit.setNumericValue(6);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_7 || e.getKeyCode() == KeyEvent.VK_NUMPAD7) {
-			digit.setNumericValue(7);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_8 || e.getKeyCode() == KeyEvent.VK_NUMPAD8) {
-			digit.setNumericValue(8);
-		}
-		if (e.getKeyCode() == KeyEvent.VK_9 || e.getKeyCode() == KeyEvent.VK_NUMPAD9) {
-			digit.setNumericValue(9);
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				if (digit.getDigitSuperieur() != null) {
+					digit.getJTimeField().selectDigit(digit.getDigitSuperieur());
+				}
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				if (digit.getDigitInferieur() != null) {
+					digit.getJTimeField().selectDigit(digit.getDigitInferieur());
+				}
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DELETE || e.getKeyCode() == KeyEvent.VK_0 || e.getKeyCode() == KeyEvent.VK_NUMPAD0 ) {
+				digit.setNumericValue(0);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_1 || e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
+				digit.setNumericValue(1);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_2 || e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
+				digit.setNumericValue(2);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_3 || e.getKeyCode() == KeyEvent.VK_NUMPAD3) {
+				digit.setNumericValue(3);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_4 || e.getKeyCode() == KeyEvent.VK_NUMPAD4) {
+				digit.setNumericValue(4);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_5 || e.getKeyCode() == KeyEvent.VK_NUMPAD5) {
+				digit.setNumericValue(5);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_6 || e.getKeyCode() == KeyEvent.VK_NUMPAD6) {
+				digit.setNumericValue(6);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_7 || e.getKeyCode() == KeyEvent.VK_NUMPAD7) {
+				digit.setNumericValue(7);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_8 || e.getKeyCode() == KeyEvent.VK_NUMPAD8) {
+				digit.setNumericValue(8);
+			}
+			if (e.getKeyCode() == KeyEvent.VK_9 || e.getKeyCode() == KeyEvent.VK_NUMPAD9) {
+				digit.setNumericValue(9);
+			}
 		}
 		
 		e.consume();

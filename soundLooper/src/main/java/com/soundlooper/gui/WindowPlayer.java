@@ -58,7 +58,9 @@ import com.soundlooper.gui.fenapropos.FenAPropos;
 import com.soundlooper.gui.fenapropos.InformationLogiciel;
 import com.soundlooper.gui.jplayer.JPlayerListener;
 import com.soundlooper.gui.jtimefield.JTimeField;
+import com.soundlooper.gui.jtimefield.JTimeFieldLeft;
 import com.soundlooper.gui.jtimefield.JTimeFieldListener;
+import com.soundlooper.gui.jtimefield.JTimeFieldRight;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.SoundLooperPlayerListener;
 import com.soundlooper.model.SoundLooperPlayerSupport;
@@ -179,6 +181,8 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	 * Menu des fichiers récents
 	 */
 	Menu menuRecent = new Menu("Fichiers récents");
+	
+	public static final int MINIMUM_MS_BETWEEN_CURSOR=100;
 
 	/**
 	 * Constructor
@@ -783,10 +787,10 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 	}
 
 	@Override
-	public void onValueChanged(int newValeur, String signatureChamp) {
-		if (signatureChamp.equals(JTimeField.CHAMP_DROITE)) {
+	public void onValueChanged(int newValeur, JTimeField jTimeField) {
+		if (jTimeField instanceof JTimeFieldRight) {
 			SoundLooperPlayer.getInstance().setLoopPoints(Player.getInstance().getLoopPointBegin(), newValeur);
-		} else if (signatureChamp.equals(JTimeField.CHAMP_GAUCHE)) {
+		} else if (jTimeField instanceof JTimeFieldLeft) {
 			SoundLooperPlayer.getInstance().setLoopPoints(newValeur, Player.getInstance().getLoopPointEnd());
 		}
 		

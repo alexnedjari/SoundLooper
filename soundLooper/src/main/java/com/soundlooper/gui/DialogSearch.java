@@ -8,7 +8,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -75,7 +74,6 @@ public class DialogSearch extends JDialog implements SearchListener {
 	JPanel panelList = null;
 	private JPanel panelTextField;
 
-	private boolean accolades;
 	private int minimalTextSize;
 
 	/**
@@ -94,13 +92,8 @@ public class DialogSearch extends JDialog implements SearchListener {
 
 		this.search.addSearchListener(this);
 
-		//this.search.addTransformer(new StringTransformerTrim());
-		//this.search.addTransformer(new StringTransformerDeleteGenericWords());
-		//this.search.addTransformer(new StringTransformerDeletePonctuation());
 		this.search.addTransformer(new StringTransformerAccentuation());
 		this.search.addTransformer(new StringTransformerNoCase());
-
-		//this.setContentPane(this.getContentPane());
 
 		this.getContentPane().setBackground(Color.WHITE);
 		this.getContentPane().add(this.getPanelTextField(), BorderLayout.NORTH);
@@ -161,9 +154,7 @@ public class DialogSearch extends JDialog implements SearchListener {
 
 				@Override
 				public void keyReleased(KeyEvent e) {
-					if (e.getModifiers() == InputEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_ENTER) {
-						DialogSearch.this.validerResultatAvecAccolades();
-					} else if (e.getKeyCode() == KeyEvent.VK_ENTER && DialogSearch.this.getList().getSelectedIndex() != -1) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER && DialogSearch.this.getList().getSelectedIndex() != -1) {
 						DialogSearch.this.validerSearch();
 					} else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 						DialogSearch.this.annulerSearch();
@@ -231,9 +222,7 @@ public class DialogSearch extends JDialog implements SearchListener {
 				@Override
 				public void keyReleased(KeyEvent e) {
 
-					if (e.getModifiers() == InputEvent.CTRL_MASK && e.getKeyCode() == KeyEvent.VK_ENTER) {
-						DialogSearch.this.validerResultatAvecAccolades();
-					} else if (e.getKeyCode() == KeyEvent.VK_ENTER && DialogSearch.this.getList().getModel().getSize() == 1) {
+					if (e.getKeyCode() == KeyEvent.VK_ENTER && DialogSearch.this.getList().getModel().getSize() == 1) {
 						// il n'y a qu'un seul élement dans la liste, on le sélectionne
 						DialogSearch.this.getList().setSelectedIndex(0);
 						DialogSearch.this.validerSearch();
@@ -253,21 +242,11 @@ public class DialogSearch extends JDialog implements SearchListener {
 		return this.jTextField;
 	}
 
-	protected void validerResultatAvecAccolades() {
-		this.accolades = true;
-		this.resultat = (Searchable) this.getList().getSelectedValue();
-		this.dispose();
-	}
-
 	protected void validerSearch() {
-		this.accolades = false;
 		this.resultat = (Searchable) this.getList().getSelectedValue();
 		this.dispose();
 	}
 
-	public boolean isAccolades() {
-		return this.accolades;
-	}
 
 	protected void annulerSearch() {
 		this.dispose();

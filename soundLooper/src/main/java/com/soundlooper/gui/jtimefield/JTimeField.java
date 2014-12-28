@@ -11,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
-import com.soundlooper.gui.WindowPlayer;
-
 public class JTimeField extends JPanel {
 	
 	private List<JTimeFieldDigit> listDigit = new ArrayList<JTimeFieldDigit>();
@@ -31,15 +29,12 @@ public class JTimeField extends JPanel {
     public static final int LARGEUR = JTimeFieldDigitUI.LARGEUR_DIGIT * NOMBRE_DIGIT + MARGE_INTERNE*2;
 	public static final int HAUTEUR = JTimeFieldDigitUI.HAUTEUR_DIGIT + EPAISSEUR_BORDURE_HAUT + EPAISSEUR_BORDURE_BAS;
 	
-	public static final String CHAMP_GAUCHE = "GAUCHE";
-	public static final String CHAMP_DROITE = "DROITE";
-	private String signatureChamp ;
+	private int maxValue;
     
 	private JTimeFieldNumericDigit selectedDigit = null;
 	
-    public JTimeField(String signatureChamp) {
+    public JTimeField() {
         super();
-        this.signatureChamp = signatureChamp;
         this.setTime(0);
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0));
         this.setPreferredSize(new Dimension(LARGEUR, HAUTEUR));
@@ -106,6 +101,11 @@ public class JTimeField extends JPanel {
     }
 
     public void setTime(int millisecondTime) {
+    	System.out.println("JTimeField reçoit temps : " + millisecondTime);
+    	millisecondTime = getCheckedTime(millisecondTime);
+    	
+    	System.out.println("Après correction : " + millisecondTime);
+    	
         ArrayList<JTimeFieldDigit> listeInversee = new ArrayList<JTimeFieldDigit>(listDigit);
 		Collections.reverse(listeInversee);
 		for (JTimeFieldDigit jTimeFieldDigit : listeInversee) {
@@ -118,6 +118,14 @@ public class JTimeField extends JPanel {
 		}
 		refresh();
     }
+
+	protected int getCheckedTime(int millisecondTime) {
+		if (millisecondTime > maxValue) {
+    		millisecondTime = maxValue;
+    		System.out.println("Place la malue sur le max : " + maxValue);
+    	}
+		return millisecondTime;
+	}
     
     public void selectDigit(JTimeFieldNumericDigit jTimeFieldDigit) {
     	this.selectedDigit = jTimeFieldDigit;
@@ -145,11 +153,26 @@ public class JTimeField extends JPanel {
 	}
 
 	public void onValueChanged() {
-		JTimeFieldSupport.getInstance().fireValueChanged(calculateMillisecondValue(), signatureChamp);
+		int millisecondTime = calculateMillisecondValue();
+		int millisecondTimeCorrige = getCheckedTime(millisecondTime);
+		if (millisecondTime != millisecondTimeCorrige) {
+			//Replace value if needed
+			setTime(millisecondTimeCorrige);
+		}
+		System.out.println("JTimeField donne temps : " + millisecondTime + " corrigé : " + millisecondTimeCorrige);
+		JTimeFieldSupport.getInstance().fireValueChanged(millisecondTimeCorrige, this);
 		
 	}
 
 	public void addJTimeFieldListener(JTimeFieldListener listener) {
 		JTimeFieldSupport.getInstance().addJPlayerListener(listener);
+	}
+
+	public void setMaxValue(int maxValue) {
+		this.maxValue = maxValue;
+	}
+
+	public int getMaxValue() {
+		return maxValue;
 	}
 }

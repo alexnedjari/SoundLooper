@@ -39,7 +39,7 @@ public class JTimeFieldSupport {
 		this.jTimeFieldListeners.remove(l);
 	}
 	
-	public void fireValueChanged(int newValeur, String signatureChamp) {
+	public void fireValueChanged(int newValeur, JTimeField jTimeField) {
 		// For security, make a synchronized copy to avoid concurents access
 		Set<JTimeFieldListener> listener;
 		synchronized (this) {
@@ -47,7 +47,7 @@ public class JTimeFieldSupport {
 		}
 
 		for (JTimeFieldListener jTimeFieldListener : listener) {
-			jTimeFieldListener.onValueChanged(newValeur, signatureChamp);
+			jTimeFieldListener.onValueChanged(newValeur, jTimeField);
 		}
 	}
 }

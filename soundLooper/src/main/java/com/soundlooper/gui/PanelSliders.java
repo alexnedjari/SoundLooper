@@ -17,7 +17,8 @@ import org.apache.log4j.Logger;
 import com.aned.exception.PlayerException;
 import com.soundlooper.gui.jplayer.JPlayer;
 import com.soundlooper.gui.jplayer.JPlayerUI;
-import com.soundlooper.gui.jtimefield.JTimeField;
+import com.soundlooper.gui.jtimefield.JTimeFieldLeft;
+import com.soundlooper.gui.jtimefield.JTimeFieldRight;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.system.util.StackTracer;
 
@@ -71,12 +72,12 @@ public class PanelSliders extends JPanel {
     /**
      * time field for left cursor
      */
-    JTimeField jTimeFieldLeft = null;
+	JTimeFieldLeft jTimeFieldLeft = null;
 
     /**
      * time field for right cursor
      */
-    JTimeField jTimeFieldRight = null;
+    JTimeFieldRight jTimeFieldRight = null;
 
 
 	/**
@@ -112,17 +113,19 @@ public class PanelSliders extends JPanel {
 		this.setOpaque(false);
 	}
 
-    public JTimeField getTimeFieldLeft() {
+    public JTimeFieldLeft getTimeFieldLeft() {
         if (this.jTimeFieldLeft == null) {
-            this.jTimeFieldLeft = new JTimeField(JTimeField.CHAMP_GAUCHE);
+            this.jTimeFieldLeft = new JTimeFieldLeft(WindowPlayer.MINIMUM_MS_BETWEEN_CURSOR);
+            this.jTimeFieldLeft.setTimeFieldRight(getTimeFieldRight());
             this.jTimeFieldLeft.addJTimeFieldListener(this.windowPlayer);
         }
         return this.jTimeFieldLeft;
     }
 
-    public JTimeField getTimeFieldRight() {
+    public JTimeFieldRight getTimeFieldRight() {
         if (this.jTimeFieldRight == null) {
-            this.jTimeFieldRight = new JTimeField(JTimeField.CHAMP_DROITE);
+            this.jTimeFieldRight = new JTimeFieldRight(WindowPlayer.MINIMUM_MS_BETWEEN_CURSOR);
+            this.jTimeFieldRight.setTimeFieldLeft(getTimeFieldLeft());
             this.jTimeFieldRight.addJTimeFieldListener(this.windowPlayer);
         }
         return this.jTimeFieldRight;
@@ -138,6 +141,7 @@ public class PanelSliders extends JPanel {
 			this.sliderInterval = new JPlayer();
 			this.sliderInterval.setOpaque(false);
 			this.sliderInterval.setColor(new Color(36, 168, 206));
+			this.sliderInterval.setMinimumBetweenCursors(WindowPlayer.MINIMUM_MS_BETWEEN_CURSOR);
 			this.sliderInterval.addJPlayerListener(this.windowPlayer);
 			this.sliderInterval.setPreferredSize(new Dimension(800, 126));
 		}
@@ -181,11 +185,16 @@ public class PanelSliders extends JPanel {
 	 * @throws PlayerException If the player is not initialized
 	 */
 	public void initializedSlidersFromSong() throws PlayerException {
+		System.out.println("Song loaded");
 		long millisecondDuration = SoundLooperPlayer.getInstance().getCurrentSound().getDuration();
 		this.sliderInterval.setMaximumValue(millisecondDuration);
 		this.sliderInterval.setValeurSliderDroite(this.sliderInterval.getMaximumValue());
 		this.sliderInterval.setValeurSliderGauche(0);
 		this.sliderInterval.setValeur(0);
+		this.jTimeFieldLeft.setMaxValue(new Long(millisecondDuration).intValue());
+		this.jTimeFieldLeft.setTime(0);
+		this.jTimeFieldRight.setMaxValue(new Long(millisecondDuration).intValue());
+		this.jTimeFieldRight.setTime(new Long(millisecondDuration).intValue());
 		//this.sliderMediaTime.setValue(0);
 	}
 

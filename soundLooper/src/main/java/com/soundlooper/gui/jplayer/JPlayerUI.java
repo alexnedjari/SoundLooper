@@ -277,18 +277,22 @@ public class JPlayerUI extends ComponentUI implements MouseListener, MouseMotion
 	public void mouseDragged(MouseEvent event) {
 		//Nouvelle position de l'élement déplacé (valeur curseur gauche, droite ou gauche dans le cas d'un drag du segment)
 		int nouvellePositionPx = event.getX() - this.ecartSourisValeurDragPx;
+		int valueMinimumEntreCurseurPx = new Double(jPlayer.getMinimumBetweenCursors() * this.largeurGraduationPx).intValue();
+		if (valueMinimumEntreCurseurPx == 0) {
+			valueMinimumEntreCurseurPx = 1;
+		}
 
 		if (this.elementDrag == this.poigneeGauche) { // Drag de la valeur min
-			if (nouvellePositionPx > this.valeurSliderDroitePx) {
-				nouvellePositionPx = this.valeurSliderDroitePx;
+			if (nouvellePositionPx > this.valeurSliderDroitePx - valueMinimumEntreCurseurPx) {
+				nouvellePositionPx = this.valeurSliderDroitePx - valueMinimumEntreCurseurPx;
 			} else if (nouvellePositionPx < JPlayerUI.MARGE_GAUCHE) {
 				nouvellePositionPx = JPlayerUI.MARGE_GAUCHE;
 			}
 			this.jPlayer.setValeurs(Math.ceil(this.getValeurFromValeurPx(nouvellePositionPx)), this.jPlayer.getValeurSliderDroite());
 
 		} else if (this.elementDrag == this.poigneeDroite) { // Drag de la valeur max
-			if (nouvellePositionPx < this.valeurSliderGauchePx) {
-				nouvellePositionPx = this.valeurSliderGauchePx;
+			if (nouvellePositionPx < this.valeurSliderGauchePx + valueMinimumEntreCurseurPx) {
+				nouvellePositionPx = this.valeurSliderGauchePx + valueMinimumEntreCurseurPx;
 			} else if (nouvellePositionPx > this.droiteReglePx) {
 				nouvellePositionPx = this.droiteReglePx;
 			}
