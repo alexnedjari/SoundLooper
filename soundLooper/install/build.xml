@@ -48,16 +48,15 @@
 		<copy tofile="temp/common/soundLooper.jar" file="../target/soundLooper-${version}.jar"/>
 		<copy todir="temp/common" file="../LICENCE.txt" />
 		<copy todir="temp/common" file="../linkedlibrairies.txt" />
-		<copydir dest="temp/common/dependency-jars" src="../target/dependency-jars"/>
-		<copydir dest="temp/common/icons" src="../src/main/resources/icons"/>
 		<copydir dest="temp/common/db" src="../src/main/resources/db"/>
-		<copydir dest="temp/common/aide" src="../src/main/resources/aide"/>
+		<copydir dest="temp/common/dependency-jars" src="../target/dependency-jars"/>
 		<mkdir dir="temp/common/logs" />
 		
 		<propertyfile file="temp/common/SoundLooper.properties">
 		  <entry  key="application.name" value="Sound Looper"/>
 		  <entry  key="version" value="${version}"/>
 		  <entry  key="db.toUpdate" type="int" value="1"/>
+		  <entry  key="resources.path" value="."/>
 		</propertyfile>
 	</target>
 	

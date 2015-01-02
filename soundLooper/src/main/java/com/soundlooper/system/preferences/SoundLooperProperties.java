@@ -56,6 +56,11 @@ public class SoundLooperProperties {
 	 * The property file key for db update flag
 	 */
 	public static String KEY_DB_TO_UPDATE = "db.toUpdate";
+	
+	/**
+	 * The property file key for resources path
+	 */
+	public static String KEY_RESOURCES_PATH = "resources.path";
 
 	/**
 	 * The used properties
@@ -84,6 +89,7 @@ public class SoundLooperProperties {
 				this.properties.setProperty(SoundLooperProperties.KEY_VERSION, "0");
 				this.properties.setProperty(SoundLooperProperties.KEY_APPLICATION_NAME, "Sound Looper");
 				this.properties.setProperty(SoundLooperProperties.KEY_DB_TO_UPDATE, "1");
+				this.properties.setProperty(SoundLooperProperties.KEY_RESOURCES_PATH, ".");
 				this.properties.store(new FileOutputStream(this.propertyFile), "");
 			}
 			this.properties.load(new FileInputStream(this.propertyFile));
@@ -117,6 +123,14 @@ public class SoundLooperProperties {
 	 */
 	public String getVersion() {
 		return this.properties.getProperty(SoundLooperProperties.KEY_VERSION, "0");
+	}
+
+	/**
+	 * get the resources path
+	 * @return the resources path
+	 */
+	public String getResourcesPath() {
+		return this.properties.getProperty(SoundLooperProperties.KEY_RESOURCES_PATH, ".");
 	}
 
 	/**
