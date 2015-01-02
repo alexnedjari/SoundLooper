@@ -7,10 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
@@ -42,13 +40,18 @@ import javax.swing.ScrollPaneConstants;
  */
 public class FenetreAide extends JDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private JTextPane textPane;
 
-	private File file;
+	private InputStream inputStream;
 
-	public FenetreAide(Window window, File file, String title) {
+	public FenetreAide(Window window, InputStream inputStream, String title) {
 		super(window);
-		this.file = file;
+		this.inputStream = inputStream;
 		this.setModal(false);
 		this.setTitle(title);
 
@@ -81,25 +84,21 @@ public class FenetreAide extends JDialog {
 	 * @return file content
 	 */
 	private String getContent() {
-		BufferedReader reader =null;
 		try {
-			reader = new BufferedReader(new FileReader(this.file));
 			StringBuffer stringBuffer = new StringBuffer();
-			String line = reader.readLine();
-			while (line != null) {
-				stringBuffer.append(line + "\n");
-				line = reader.readLine();
+			byte[] buff = new byte[512];
+			while (inputStream.available() > 0) {
+				inputStream.read(buff);
+				stringBuffer.append(new String(buff));
 			}
 			return stringBuffer.toString();
 		} catch (IOException e) {
 			return "Fichier d'aide introuvable";
 		} finally {
-			if (reader != null) {
-				try {
-					reader.close();
-				} catch (IOException e) {
-					// buffer will not be closed
-				}
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				// buffer will not be closed
 			}
 		}
 	}

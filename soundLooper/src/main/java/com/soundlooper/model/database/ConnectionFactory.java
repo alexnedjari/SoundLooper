@@ -146,10 +146,11 @@ public final class ConnectionFactory {
 	 */
 	public static void updateDB() throws SQLException, IOException {
 		ConnectionFactory.logger.info("Mise à jour de la base de données");
+		String resourcesPath = SoundLooperProperties.getInstance().getResourcesPath();
 		if (!new File("data" + File.separator + "datas.h2.db").exists()) {
 			//La base n'existe pas encore
 			ConnectionFactory.logger.info("Création de la base de données");
-			ConnectionFactory.executeScript(new File("db/CREATE_TABLE_DB_UPDATE.sql"));
+			ConnectionFactory.executeScript(new File(resourcesPath + File.separator + "db" + File.separator + "CREATE_TABLE_DB_UPDATE.sql"));
 		}
 
 		if (!SoundLooperProperties.getInstance().isDbToUpdate()) {
@@ -161,18 +162,18 @@ public final class ConnectionFactory {
 		//Récupère la liste des scripts déjà exécutés
 		Statement statement = ConnectionFactory.getNewStatement();
 		ResultSet result = statement.executeQuery("SELECT filename FROM db_update");
-		final List<File> listeFichierExecute = new ArrayList<File>();
+		final List<String> listeFichierExecute = new ArrayList<String>();
 		while (result.next()) {
 			String nomFichier = result.getString("filename");
 			ConnectionFactory.logger.info("le fichier '" + nomFichier + "' a déjà été exécuté");
-			listeFichierExecute.add(new File("db" + File.separator + nomFichier));
+			listeFichierExecute.add(new File(nomFichier).getName());
 		}
 
 		//Récupère la liste des fichiers à exécuter
-		File[] sqlFiles = new File("db").listFiles(new FileFilter() {
+		File[] sqlFiles = new File(resourcesPath + File.separator + "db").listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
-				return pathname.getName().endsWith(".sql") && !listeFichierExecute.contains(pathname);
+				return pathname.getName().endsWith(".sql") && !listeFichierExecute.contains(pathname.getName());
 			}
 		});
 
