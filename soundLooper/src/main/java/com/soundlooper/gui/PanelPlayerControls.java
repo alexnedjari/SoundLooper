@@ -5,14 +5,11 @@ package com.soundlooper.gui;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.soundlooper.gui.action.player.PlayPauseAction;
-import com.soundlooper.model.SoundLooperPlayer;
 
 /**
  * Sound Looper is an audio player that allow user to loop between two points

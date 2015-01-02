@@ -35,12 +35,11 @@ public class InformationLogiciel {
 
 	//ImageIcon image;
 	//ImageIcon iconeFenetre;
-	public InformationLogiciel(String auteur, String nomApplication, String versionApplication, String iterationApplication) {
+	public InformationLogiciel(String auteur, String nomApplication, String versionApplication ) {
 		super();
 		this.auteur = auteur;
 		this.nomApplication = nomApplication;
 		this.versionApplication = versionApplication;
-		this.iterationApplication = iterationApplication;
 	}
 
 	public String getAuteur() {

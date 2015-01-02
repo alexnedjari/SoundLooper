@@ -129,28 +129,6 @@ public class SearchEngine {
 		}
 	}
 
-	//	/**
-	//	 * Affine the last search.
-	//	 * @param newStringToSearch New String to search. old string must be include in the new Search
-	//	 * @throws SearchException if the old string to search is not include in new string to search
-	//	 */
-	//	public void askToRefineSearch(String newStringToSearch) throws SearchException {
-	//		if (this.search != null) {
-	//			this.search.askToRefineSearch(newStringToSearch);
-	//		}
-	//	}
-
-	//	/**
-	//	 * Get the search result or empty result if the search is not initialized
-	//	 * @return the search result or empty result if the search is not initialized
-	//	 */
-	//	public ArrayList<Searchable> getResult() {
-	//		if (this.search == null) {
-	//			return new ArrayList<Searchable>();
-	//		}
-	//		return this.search.getResult();
-	//	}
-
 	/**
 	 * Get the search state
 	 * @return the search state
@@ -199,10 +177,6 @@ public class SearchEngine {
 		 */
 		protected String stringToSearch;
 
-		//		/**
-		//		 * The transformed tring to search
-		//		 */
-		//		protected String transformedStringToSearch;
 
 		/**
 		 * The searchables
@@ -214,28 +188,12 @@ public class SearchEngine {
 		 */
 		protected final ArrayList<Searchable> result = new ArrayList<Searchable>();
 
-		//		/**
-		//		 * The delta of searchable to add.
-		//		 */
-		//		protected final ArrayList<Searchable> addDelta = new ArrayList<Searchable>();
-		//
-		//		/**
-		//		 * The delta of searchable to remove.
-		//		 */
-		//private final ArrayList<Searchable> removeDelta = new ArrayList<Searchable>();
 
 		/**
 		 * Used to calculate search time
 		 */
 		long startTime;
 
-		/**
-		 * Used for deltas to know if the delta send to the listeners
-		 * is the first one
-		 */
-		//boolean firstResult;
-
-		//private ThreadRefine threadRefine = null;
 
 		/**
 		 * Constructor
@@ -278,7 +236,6 @@ public class SearchEngine {
 				String transformedStringToCheck = this.getTransformedString(searchableToCheck.getSearchableString());
 				boolean match = this.isMatch(transformedStringToSearch, transformedStringToCheck);
 				if (match) {
-					//this.addDelta.add(searchableToCheck);
 					this.result.add(searchableToCheck);
 				}
 			}
@@ -290,9 +247,7 @@ public class SearchEngine {
 			} else {
 				this.searchState = SearchEngine.STATE_CANCELED;
 			}
-			//			synchronized (this.addDelta) {
-			//				this.addToGeneralResult();
-			//			}
+
 			this.notifieSearchListenersOfFullResult();
 
 			synchronized (SearchEngine.this.waitingSearch) {
@@ -336,80 +291,6 @@ public class SearchEngine {
 			return transformedString;
 		}
 
-		//		/**
-		//		 * Add a delta to the general result list
-		//		 * @param deltaResult the delta result
-		//		 * @param notifieListeners if true, the listeners will be notified
-		//		 */
-		//		private void addToGeneralResult() {
-		//			synchronized (this.addDelta) {
-		//				synchronized (this.result) {
-		//					this.result.addAll(this.addDelta);
-		//					this.notifieSearchListenersOfAdd(new ArrayList<Searchable>(this.addDelta));
-		//					this.addDelta.clear();
-		//				}
-		//			}
-		//		}
-
-		//		/**
-		//		 * Remove a delta from the general result list
-		//		 * @param deltaResult the delta result
-		//		 * @param notifieListeners if true, the listeners will be notified
-		//		 */
-		//		protected void removeFromGeneralResult(ArrayList<Searchable> deltaResult) {
-		//			synchronized (this.result) {
-		//				this.result.removeAll(deltaResult);
-		//				this.notifieSearchListenersOfRemove(deltaResult);
-		//				deltaResult.clear();
-		//			}
-		//		}
-
-		//		/**
-		//		 * Affine the last search.
-		//		 * @param newStringToSearch New String to search. old string must be include in the new Search
-		//		 * @throws SearchException if the old string to search is not include in new string to search
-		//		 */
-		//		protected void askToRefineSearch(String newStringToSearch) throws SearchException {
-		//			synchronized (this.stringToSearch) {
-		//				synchronized (this.transformedStringToSearch) {
-		//					if (!newStringToSearch.contains(this.stringToSearch)) {
-		//						throw new SearchException("Unable to refine '" + this.stringToSearch + "' by '" + " '" + newStringToSearch + "'");
-		//					}
-		//					this.stringToSearch = newStringToSearch;
-		//					this.transformedStringToSearch = this.getTransformedString(this.stringToSearch);
-		//
-		//					this.threadRefine = new ThreadRefine();
-		//					this.threadRefine.start();
-		//				}
-		//			}
-		//		}
-
-		/**
-		//		 * Notifie the listeners that some results were added
-		//		 */
-		//		private void notifieSearchListenersOfAdd(ArrayList<Searchable> deltaResult) {
-		//			long endTime = new Date().getTime();
-		//			for (SearchListener listener : SearchEngine.this.listeners) {
-		//				listener.onSearchResultAdded(this.getSearchState(), deltaResult, endTime - this.startTime, this.firstResult);
-		//			}
-		//			if (this.firstResult) {
-		//				this.firstResult = false;
-		//			}
-		//		}
-		//
-		//		/**
-		//		 * Notifie the listeners that some results were added
-		//		 */
-		//		private void notifieSearchListenersOfRemove(ArrayList<Searchable> deltaResult) {
-		//			long endTime = new Date().getTime();
-		//			for (SearchListener listener : SearchEngine.this.listeners) {
-		//				listener.onSearchResultRemoved(this.getSearchState(), deltaResult, endTime - this.startTime);
-		//			}
-		//			if (this.firstResult) {
-		//				this.firstResult = false;
-		//			}
-		//		}
-
 		/**
 		 * Notifie the listener when the full result is enable
 		 */
@@ -427,38 +308,5 @@ public class SearchEngine {
 			this.canceled = true;
 
 		}
-
-		//		protected class ThreadRefine extends Thread {
-		//
-		//			@Override
-		//			public void run() {
-		//				//delete from results list the results that does not match anymore
-		//				ArrayList<Searchable> searchablesToRemove = new ArrayList<Searchable>();
-		//
-		//				//remove obsolete results from results
-		//				for (Searchable searchable : ThreadSearch.this.result) {
-		//					String transformedStringToCheck = ThreadSearch.this.getTransformedString(searchable.getSearchableString());
-		//					if (!ThreadSearch.this.isMatch(ThreadSearch.this.transformedStringToSearch, transformedStringToCheck)) {
-		//						searchablesToRemove.add(searchable);
-		//					}
-		//				}
-		//				System.out.println("Must be deleted by refine : " + searchablesToRemove.size()); // TODO delete this, only for debug
-		//				ThreadSearch.this.removeFromGeneralResult(searchablesToRemove);
-		//
-		//				//				searchablesToRemove = new ArrayList<Searchable>();
-		//				//				synchronized (ThreadSearch.this.addDelta) {
-		//				//					//remove obsolete result from add delta
-		//				//					for (Searchable searchable : ThreadSearch.this.addDelta) {
-		//				//						String transformedStringToCheck = getTransformedString(searchable.getSearchableString());
-		//				//						if (!isMatch(transformedStringToSearch, transformedStringToCheck)) {
-		//				//							searchablesToRemove.add(searchable);
-		//				//						}
-		//				//					}
-		//				//					ThreadSearch.this.addDelta.removeAll(searchablesToRemove);
-		//				//				}
-		//			}
-		//		}
-		//
-		//	}
 	}
 }

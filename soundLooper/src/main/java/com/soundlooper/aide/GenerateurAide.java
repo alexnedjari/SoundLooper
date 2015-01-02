@@ -39,7 +39,7 @@ public class GenerateurAide {
 	 */
 	public void lancerGeneration(Aide aide) throws IOException {
 
-		BufferedWriter output = new BufferedWriter(new FileWriter("aide/aide.html"));
+		BufferedWriter output = new BufferedWriter(new FileWriter("src/main/resources/aide/aide.html"));
 
 		output.write("<!DOCTYPE html><html><head><title>Aide</title></head><body>");
 		try {

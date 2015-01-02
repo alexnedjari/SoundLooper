@@ -3,7 +3,7 @@
   <groupId>soundLooper</groupId>
   <artifactId>soundLooper</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0</version>
   <name>Sound Looper</name>
   <properties>
 		<jdk.version>1.6</jdk.version>
@@ -12,7 +12,7 @@
       <dependency>
           <groupId>soundLooper</groupId>
           <artifactId>audio-engine</artifactId>
-          <version>1.0.0-SNAPSHOT</version>
+          <version>1.1.0</version>
       </dependency>
   	<dependency>
   		<groupId>log4j</groupId>
@@ -73,6 +73,29 @@
 					<target>${jdk.version}</target>
 				</configuration>
 	        </plugin>
+	        <plugin>
+	        	<groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-antrun-plugin</artifactId>
+		        <version>1.8</version>
+		        <executions>
+		          <execution>
+		            <phase>package</phase>
+		            <configuration>
+		              <tasks>
+		                <property name="version" value="${project.version}"/>
+                        <echo message="Version: ${project.version}"/>
+		                <ant antfile="build.xml" dir="install" target="prepareInstallation" inheritAll="true" inheritRefs="true"/>
+		                <ant antfile="build.xml" dir="install" target="createInstallationWindows" inheritAll="true" inheritRefs="true"/>
+		                <ant antfile="build.xml" dir="install" target="createInstallationLinux" inheritAll="true" inheritRefs="true"/>
+		                <ant antfile="build.xml" dir="install" target="copyReleases" inheritAll="true" inheritRefs="true"/>
+		              </tasks>
+		            </configuration>
+		            <goals>
+		              <goal>run</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+		      </plugin>
 		</plugins>
   </build>
   <profiles>

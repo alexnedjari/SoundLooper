@@ -185,7 +185,6 @@ public class PanelSliders extends JPanel {
 	 * @throws PlayerException If the player is not initialized
 	 */
 	public void initializedSlidersFromSong() throws PlayerException {
-		System.out.println("Song loaded");
 		long millisecondDuration = SoundLooperPlayer.getInstance().getCurrentSound().getDuration();
 		this.sliderInterval.setMaximumValue(millisecondDuration);
 		this.sliderInterval.setValeurSliderDroite(this.sliderInterval.getMaximumValue());

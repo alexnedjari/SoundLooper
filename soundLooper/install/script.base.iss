@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Sound Looper"
-#define MyAppVersion "${version.major}.${version.minor}.${version.iteration}"
+#define MyAppVersion "${version}"
 #define MyAppPublisher "Alexandre NEDJARI"
 #define MyAppExeName "SoundLooper.exe"
 
@@ -18,12 +18,12 @@ DefaultDirName={pf}\{#MyAppName}
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
-OutputDir=.
-OutputBaseFilename=Sound Looper setup ${version.major}.${version.minor}.${version.iteration}
+OutputDir=temp/windows
+OutputBaseFilename=Sound Looper setup ${version}
 Compression=lzma
 SolidCompression=yes
 WizardImageFile=imageInstaller.bmp
-SetupIconFile=..\icons\soundLooper.ico
+SetupIconFile=..\src\main\resources\icons\soundLooper.ico
 WizardSmallImageFile=imageInstaller2.bmp
 
 [Languages]
@@ -36,16 +36,17 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "{app}"; Permissions : users-modify
 
 [Files]
-Source: "build\jar\SoundLooper.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\jar\icons\*"; DestDir: "{app}\icons"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "build\jar\db\*"; DestDir: "{app}\db"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "build\jar\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "build\jar\aide\*"; DestDir: "{app}\aide"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "build\jar\SoundLooper.properties"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\jar\linkedlibrairies.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\jar\LICENCE.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\jar\news.html"; DestDir: "{app}"; Flags: ignoreversion
-Source: "SoundLooper.exe"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "..\target\SoundLooper.jar"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "build\jar\icons\*"; DestDir: "{app}\icons"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "build\jar\db\*"; DestDir: "{app}\db"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "build\jar\lib\*"; DestDir: "{app}\lib"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "build\jar\aide\*"; DestDir: "{app}\aide"; Flags: ignoreversion recursesubdirs createallsubdirs
+;Source: "build\jar\SoundLooper.properties"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "build\jar\linkedlibrairies.txt"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "build\jar\LICENCE.txt"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "build\jar\news.html"; DestDir: "{app}"; Flags: ignoreversion
+;Source: "SoundLooper.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "temp/windows/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -54,5 +55,5 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFil
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, "&", "&&")}}"; Flags: shellexec postinstall skipifsilent
-Filename: "{app}\news.html"; Description: "Voir la Release Note"; Flags: postinstall shellexec
+;Filename: "{app}\news.html"; Description: "Voir la Release Note"; Flags: postinstall shellexec
 

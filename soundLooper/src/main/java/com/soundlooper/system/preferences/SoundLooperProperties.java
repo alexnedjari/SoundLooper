@@ -50,17 +50,7 @@ public class SoundLooperProperties {
 	/**
 	 * The property file key for major version key
 	 */
-	public static String KEY_MAJOR_VERSION = "version.major";
-
-	/**
-	 * The property file key for minor version key
-	 */
-	public static String KEY_MINOR_VERSION = "version.minor";
-
-	/**
-	 * The property file key for iteration key
-	 */
-	public static String KEY_ITERATION = "version.iteration";
+	public static String KEY_VERSION = "version";
 
 	/**
 	 * The property file key for db update flag
@@ -91,9 +81,7 @@ public class SoundLooperProperties {
 			
 			if (!this.propertyFile.exists()) {
 				this.propertyFile.createNewFile();
-				this.properties.setProperty(SoundLooperProperties.KEY_MAJOR_VERSION, "0");
-				this.properties.setProperty(SoundLooperProperties.KEY_MINOR_VERSION, "0");
-				this.properties.setProperty(SoundLooperProperties.KEY_ITERATION, "0");
+				this.properties.setProperty(SoundLooperProperties.KEY_VERSION, "0");
 				this.properties.setProperty(SoundLooperProperties.KEY_APPLICATION_NAME, "Sound Looper");
 				this.properties.setProperty(SoundLooperProperties.KEY_DB_TO_UPDATE, "1");
 				this.properties.store(new FileOutputStream(this.propertyFile), "");
@@ -124,27 +112,11 @@ public class SoundLooperProperties {
 	}
 
 	/**
-	 * get the major version
+	 * get the version
 	 * @return the major version
 	 */
-	public String getMajorVersion() {
-		return this.properties.getProperty(SoundLooperProperties.KEY_MAJOR_VERSION, "0");
-	}
-
-	/**
-	 * get the minor version
-	 * @return the minor version
-	 */
-	public String getMinorVersion() {
-		return this.properties.getProperty(SoundLooperProperties.KEY_MINOR_VERSION, "0");
-	}
-
-	/**
-	 * get the iteration
-	 * @return the iteration
-	 */
-	public String getIteration() {
-		return this.properties.getProperty(SoundLooperProperties.KEY_ITERATION, "0");
+	public String getVersion() {
+		return this.properties.getProperty(SoundLooperProperties.KEY_VERSION, "0");
 	}
 
 	/**
@@ -176,18 +148,10 @@ public class SoundLooperProperties {
 	}
 
 	/**
-	 * get the complete version
-	 * @return the complete version
-	 */
-	public String getCompleteVersion() {
-		return this.getMajorVersion() + "." + this.getMinorVersion() + "." + this.getIteration();
-	}
-
-	/**
 	 * Get the application name and version
 	 * @return the application name and version
 	 */
 	public String getApplicationPresentation() {
-		return this.getApplicationName() + " " + this.getCompleteVersion();
+		return this.getApplicationName() + " " + this.getVersion();
 	}
 }

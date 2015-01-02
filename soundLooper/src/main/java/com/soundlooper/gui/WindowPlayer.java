@@ -77,19 +77,6 @@ import com.soundlooper.system.preferences.recentfile.RecentFile;
 import com.soundlooper.system.util.Lock;
 import com.soundlooper.system.util.TimeMeasurer;
 
-/*
-// TODO multilangagiser
- * //////////////////VERSION 3.0///////////////////////////////////////////
- * Pouvoir attacher une tablature
- * 		- PDF
- * 		- TXT
- * 		- DOC
- * Pouvoir placer des clés dans la chansons pour faire correspondre une partie de la tablature au bon moment de la chanson
- * 		- permettre d'activer/désactiver le défilement automatique, et enregistrer cette information en fonction de la chanson
-/////////////////////VERSION 1.0//////////////////////////////////////
- * // TODO Mettre en conf
-// TODO Creer DTD + validation des fichiers release note
- */
 
 /**
  * -------------------------------------------------------
@@ -436,8 +423,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				InformationLogiciel informationLogiciel = new InformationLogiciel("Alexandre NEDJARI", "Soundlooper", SoundLooperProperties.getInstance().getCompleteVersion(),
-						SoundLooperProperties.getInstance().getIteration());
+				InformationLogiciel informationLogiciel = new InformationLogiciel("Alexandre NEDJARI", "Soundlooper", SoundLooperProperties.getInstance().getVersion());
 				new FenAPropos(informationLogiciel, WindowPlayer.this, ImageGetter.getImage(ImageGetter.IMAGE_A_PROPOS_164_314)).setVisible(true);
 			}
 		});
@@ -551,7 +537,6 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		WindowPlayer.this.panelPlayerControl.setStateUninitialized();
 		WindowPlayer.this.panelSliders.setStateUninitialized();
 		WindowPlayer.this.panelToolbar.setStateUninitialized();
-		System.out.println("set complete title vide");
 		WindowPlayer.this.setCompleteTitle("");
 
 	}
@@ -676,7 +661,6 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 				try {
 					WindowPlayer.this.updateFavoriteGUI(song);
 					WindowPlayer.this.panelSliders.initializedSlidersFromSong();
-					System.out.println("set complete title loaded : " + song.getFile().getName());
 					WindowPlayer.this.setCompleteTitle(song.getFile().getName());
 					WindowPlayer.this.setStatePaused();
 					SoundLooperPlayer.getInstance().generateImage();

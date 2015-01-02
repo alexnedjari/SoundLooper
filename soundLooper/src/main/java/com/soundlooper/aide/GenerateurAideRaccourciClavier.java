@@ -38,7 +38,7 @@ public class GenerateurAideRaccourciClavier {
 	 * @throws IOException Si la génération échoue
 	 */
 	public void lancerGeneration(List<AideSectionRaccourciClavier> listeSectionRaccourciClavier) throws IOException {
-		BufferedWriter output = new BufferedWriter(new FileWriter("aide/listeRaccourciClavier.html"));
+		BufferedWriter output = new BufferedWriter(new FileWriter("src/main/resources/aide/listeRaccourciClavier.html"));
 		int largeurTable = 550;
 		int largeurColonneLibelle = 400;
 		try {

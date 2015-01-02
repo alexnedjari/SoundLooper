@@ -183,37 +183,18 @@ public class DialogSearch extends JDialog implements SearchListener {
 
 				@Override
 				public void removeUpdate(DocumentEvent documentevent) {
-					System.out.println("RemoveUpdate");
 					DialogSearch.this.performSearch();
-					//this.oldText = FrameSearch.this.jTextField.getText();
 				}
 
 				@Override
 				public void insertUpdate(DocumentEvent documentevent) {
 					//TODO essayer de faire un swing worker
-					System.out.println("InserUpdate");
-
-					//						if (newText.contains(this.oldText) && (this.oldText.length() > 0)) {
-					//							try {
-					//								System.out.println("REFINE");
-					//								//exécuter dans le thread (faire un needRefine)
-					//								FrameSearch.this.search.askToRefineSearch(newText);
-					//							} catch (SearchException e) {
-					//								e.printStackTrace();
-					//								FrameSearch.this.performSearch();
-					//							}
-					//						} else {
 					DialogSearch.this.performSearch();
-					//}
-					//	this.oldText = newText;
-					//}
 				}
 
 				@Override
 				public void changedUpdate(DocumentEvent documentevent) {
-					//System.out.println("ChangedUpdate");
 					DialogSearch.this.performSearch();
-					//this.oldText = FrameSearch.this.jTextField.getText();
 				}
 			});
 
@@ -262,7 +243,6 @@ public class DialogSearch extends JDialog implements SearchListener {
 
 	@Override
 	public void onFullResultAvailable(String searchState, ArrayList<Searchable> result, long millisecondTime) {
-		System.out.println("Full result available in " + millisecondTime + "ms (" + result.size() + ") results");
 		this.resultForList.clear();
 		this.resultForList.addAll(result);
 		SwingUtilities.invokeLater(new Runnable() {

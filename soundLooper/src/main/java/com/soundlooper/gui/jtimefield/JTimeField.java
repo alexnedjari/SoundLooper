@@ -11,6 +11,29 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
+/**
+ *-------------------------------------------------------
+ * JTimeField component used to display and manage time 
+ * 
+ * Copyright (C) 2015 Alexandre NEDJARI
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Alexandre NEDJARI
+ * @since  02 jan. 2015
+ *-------------------------------------------------------
+ */
 public class JTimeField extends JPanel {
 	
 	private List<JTimeFieldDigit> listDigit = new ArrayList<JTimeFieldDigit>();
@@ -101,10 +124,7 @@ public class JTimeField extends JPanel {
     }
 
     public void setTime(int millisecondTime) {
-    	System.out.println("JTimeField reçoit temps : " + millisecondTime);
     	millisecondTime = getCheckedTime(millisecondTime);
-    	
-    	System.out.println("Après correction : " + millisecondTime);
     	
         ArrayList<JTimeFieldDigit> listeInversee = new ArrayList<JTimeFieldDigit>(listDigit);
 		Collections.reverse(listeInversee);
@@ -122,7 +142,6 @@ public class JTimeField extends JPanel {
 	protected int getCheckedTime(int millisecondTime) {
 		if (millisecondTime > maxValue) {
     		millisecondTime = maxValue;
-    		System.out.println("Place la malue sur le max : " + maxValue);
     	}
 		return millisecondTime;
 	}
@@ -159,7 +178,6 @@ public class JTimeField extends JPanel {
 			//Replace value if needed
 			setTime(millisecondTimeCorrige);
 		}
-		System.out.println("JTimeField donne temps : " + millisecondTime + " corrigé : " + millisecondTimeCorrige);
 		JTimeFieldSupport.getInstance().fireValueChanged(millisecondTimeCorrige, this);
 		
 	}
