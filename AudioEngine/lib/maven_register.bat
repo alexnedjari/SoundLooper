@@ -1,0 +1,6 @@
+mvn deploy:deploy-file -Durl=file:C:/Users/Alex/.m2/repository -Dfile=lib/NativeFmodEx.jar -DgroupId=nativefmod -DartifactId=NativeFmodEx -Dpackaging=jar -Dversion=1.5.0
+mvn deploy:deploy-file -Durl=file:C:/Users/Alex/.m2/repository -Dfile=lib/NativeFmodEx-linux.jar -DgroupId=nativefmod -DartifactId=NativeFmodEx-linux -Dpackaging=jar -Dversion=1.5.0
+mvn deploy:deploy-file -Durl=file:C:/Users/Alex/.m2/repository -Dfile=lib/NativeFmodEx-win.jar -DgroupId=nativefmod -DartifactId=NativeFmodEx-win -Dpackaging=jar -Dversion=1.5.0
+mvn deploy:deploy-file -Durl=file:C:/Users/Alex/.m2/repository -Dfile=lib/NativeFmodEx-win64.jar -DgroupId=nativefmod -DartifactId=NativeFmodEx-win64 -Dpackaging=jar -Dversion=1.5.0
+mvn deploy:deploy-file -Durl=file:C:/Users/Alex/.m2/repository -Dfile=lib/NativeFmodEx-linux.jar -DgroupId=nativefmod -DartifactId=NativeFmodEx-linux -Dpackaging=jar -Dversion=1.5.0
+mvn deploy:deploy-file -Durl=file:C:/Users/Alex/.m2/repository -Dfile=lib/NativeFmodEx-linux64.jar -DgroupId=nativefmod -DartifactId=NativeFmodEx-linux64 -Dpackaging=jar -Dversion=1.5.0

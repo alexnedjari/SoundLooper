@@ -1,10 +1,4 @@
-<project default="build">
-
-
-	<path id="libraries.class.path">
-		<pathelement path="E:\programmation\java\eclipse logiciel\librairies\bin" />
-	</path>
-
+<project >
 	<!-- Import AntContrib -->
 	<taskdef resource="net/sf/antcontrib/antlib.xml" />
 	<taskdef resource="net/sf/antcontrib/antlib.xml"> 
@@ -12,28 +6,7 @@
 			<pathelement location="lib\ant-contrib\ant-contrib-1.0b3.jar" /> 
 		</classpath> 
 	</taskdef> 
-	<taskdef name="xmltask" classname="com.oopsconsultancy.xmltask.ant.XmlTask" classpath="lib/xmltask.jar"/>
-	<taskdef name="foreachfile" classname="ant.files.ForEachFile" classpathref="libraries.class.path"/>
 	
-
-	<target name="build" description="make the complete build">
-
-		<antcall target="incrementVersion" />
-
-		<property file="../SoundLooper.properties" />
-		<input message="Mettez la release note à jour (soundLooper_${version.major}.${version.minor}.xml) puis valider" />
-			
-		<antcall target="generateReleaseNote" />
-		<antcall target="compileAndPrepare" />
-		<antcall target="copyExtraFiles" />
-		<antcall target="makeJar" />
-		<antcall target="createInstallationWindows" />
-		<antcall target="createInstallationLinux" />
-		<antcall target="generateSite" />
-		
-		
-		
-	</target>
 	
 	<target name="generateSite" description="Generate site with last version">
 		<delete dir="../site/generated"/>
@@ -50,16 +23,48 @@
 	</target>
 	
 	<target name="createInstallationLinux" description="Create zip for linux">
-		<delete dir="build/zip"></delete>
-		<mkdir dir="build/zip/Sound Looper"/>
-		<copydir dest="build/zip/Sound Looper" src="build/jar"/>
-		<copy file="SoundLooper.sh" todir="build/zip/Sound Looper"/>
-		<zip destfile="Sound Looper setup ${version.major}.${version.minor}.${version.iteration}.zip" 
-		       basedir="build/zip"
-		  />
+		<copydir dest="temp/linux" src="temp/common" />
+		<copy todir="temp/linux" file="SoundLooper.sh"/>
+		<zip destfile="temp/linux/Sound Looper setup ${version}.zip" 
+		       basedir="temp/linux"
+		  />		
+	</target>
+	
+	<target name="copyReleases" description="Copy the new releases in the 'release' folder">
+		<delete dir="release"/>
+		<mkdir dir="release"/>
+		<copy todir="release" file="temp/linux/Sound Looper setup ${version}.zip"/>
+		<copy todir="release" file="temp/windows/Sound Looper setup ${version}.exe"/>
+	</target>
+	
+	<target name="prepareInstallation" description="Prepare files common to all the installations">
+		<delete dir="temp"></delete>
+		<mkdir dir="temp"></mkdir>
+		<mkdir dir="temp/common"></mkdir>
+		<mkdir dir="temp/linux"></mkdir>
+		<mkdir dir="temp/windows"></mkdir>
+		
+		<echo message="Copy SoundLooper-version.jar to SoundLooper.jar"/>
+		<copy tofile="temp/common/soundLooper.jar" file="../target/soundLooper-${version}.jar"/>
+		<copy todir="temp/common" file="../LICENCE.txt" />
+		<copy todir="temp/common" file="../linkedlibrairies.txt" />
+		<copydir dest="temp/common/dependency-jars" src="../target/dependency-jars"/>
+		<copydir dest="temp/common/icons" src="../src/main/resources/icons"/>
+		<copydir dest="temp/common/db" src="../src/main/resources/db"/>
+		<copydir dest="temp/common/aide" src="../src/main/resources/aide"/>
+		<mkdir dir="temp/common/logs" />
+		
+		<propertyfile file="temp/common/SoundLooper.properties">
+		  <entry  key="application.name" value="Sound Looper"/>
+		  <entry  key="version" value="${version}"/>
+		  <entry  key="db.toUpdate" type="int" value="1"/>
+		</propertyfile>
 	</target>
 	
 	<target name="createInstallationWindows" description="Create Windows installer : expand installation script and execute it">
+		<copydir dest="temp/windows" src="temp/common" />
+		<copy todir="temp/windows" file="SoundLooper.exe"/>
+		
 		<echo message="Expand script file" />
 		<delete file="script.expanded.iss" />
 		<copy file="script.base.iss" tofile="script.expanded.iss">
@@ -68,207 +73,8 @@
 			</filterchain>
 		</copy>
 		<echo message="Run script file" />
-		<exec dir="." executable="cmd" failonerror="true">
+		<exec dir="." executable="cmd" failonerror="true" >
 			<arg line="/c iscc script.expanded.iss" />
 		</exec>
 	</target>
-
-	<target name="copyExtraFiles" description="Copy the files that must not be in the jar">
-		<echo message="Copy extra files" />
-		<delete dir="build/jar/icons" />
-		<mkdir dir="build/jar/icons" />
-		<copy todir="build/jar/icons">
-			<fileset dir="../icons/">
-				<include name="*.*" />
-			</fileset>
-		</copy>
-
-		<mkdir dir="build/jar/db" />
-		<copy todir="build/jar/db">
-			<fileset dir="../db/">
-				<include name="*.*" />
-			</fileset>
-		</copy>
-		
-		<mkdir dir="build/jar/aide" />
-		<copy todir="build/jar/aide">
-			<fileset dir="../aide/">
-				<include name="*.*" />
-			</fileset>
-		</copy>
-		
-		
-		<mkdir dir="build/jar/logs" />
-
-		<mkdir  dir="build/jar/lib" />
-		<copy todir="build/jar/lib" file="../lib/h2-1.3.175.jar" />
-		<copy todir="build/jar/lib" file="../lib/log4j-1.2.16.jar" />
-		<copy todir="build/jar/lib" file="../lib/mail.jar" />
-		<copy todir="build/jar/lib" file="../../AudioEngine/lib/NativeFmodEx.jar" />
-		<copy todir="build/jar/lib" file="../nativeFMOD/NativeFmodEx JWS/lib/NativeFmodEx-linux.jar" />
-		<copy todir="build/jar/lib" file="../nativeFMOD/NativeFmodEx JWS/lib/NativeFmodEx-win.jar" />
-		
-		<copy todir="build/jar" file="../SoundLooper.properties" />
-		<copy todir="build/jar" file="../linkedlibrairies.txt" />
-		<copy todir="build/jar" file="../LICENCE.txt" />
-		<copy todir="build/jar" file="news/news.html" />
-	</target>
-
-	<target name="makeJar" description="Make the jar of the input directory">
-		<echo message="Make jar" />
-		<mkdir dir="build/jar" />
-		<path id="build-classpath">
-		    <fileset dir="build/jar/lib">
-		        <include name="*.jar"/>
-		    </fileset>
-		</path>
-		<manifestclasspath property="lib.list" jarfile="build/jar/myprog.jar">
-		    <classpath refid="build-classpath"/>
-		</manifestclasspath>
-		<jar destfile="build/jar/SoundLooper.jar">
-			<fileset dir="build/classes" />
-			<manifest>
-				<attribute name="Main-Class" value="com.soundlooper.system.SoundLooper" />
-				<attribute name="Class-Path" value="${lib.list}"/>
-			</manifest>
-		</jar>
-	</target>
-
-	<target name="compileAndPrepare" description="Compile the java and copy extra files that must be include in the jar">
-		<echo message="Delete directory 'build'" />
-		<delete dir="build" />
-
-		<echo message="Compile" />
-		<mkdir dir="build/classes" />
-		<path id="master-classpath">
-			<fileset dir="../lib/">
-				<include name="*.jar" />
-			</fileset>
-			<fileset dir="../../AudioEngine/lib">
-				<include name="NativeFmodEx.jar" />
-			</fileset>
-		</path>
-		<javac destdir="build/classes" includeantruntime="false" encoding="ISO-8859-1" source="1.6" target="1.6" verbose="true">
-			<src path="../src" />
-			<src path="../../AudioEngine/src" />
-			<classpath refid="master-classpath" />
-		</javac>
-
-		
-		
-		<!-- Recompile les fichiers d'aide -->
-		<!--echo>Génération des fichiers d'aide</echo>
-		<path id="classpath">
-			
-			<fileset dir="../bin/aide">
-				<include name="*.class" />
-			</fileset>
-		</path>
-		<java classname="aide.GenererAide" failonerror="true">
-			<classpath refid="classpath" />
-		</java-->
-		
-		<copy todir="build/classes" file="../src/log4j.properties" />
-	</target>
-
-	<target name="incrementVersion">
-		<echo message="Incrémenter :" />
-		<echo message="1 : Version majeure" />
-		<echo message="2 : Version mineure" />
-		<echo message="3 : Itération" />
-		<input message="Choisir : " addProperty="increment" defaultvalue="3" />
-
-		<if>
-			<equals arg1="1" arg2="${increment}" />
-			<then>
-				<propertyfile file="../SoundLooper.properties">
-					<entry key="version.major" type="int" operation="+" value="1" />
-					<entry key="version.minor" value="0" />
-					<entry key="version.iteration" value="1" />
-				</propertyfile>
-			</then>
-			<else>
-				<if>
-					<equals arg1="2" arg2="${increment}" />
-					<then>
-						<propertyfile file="../SoundLooper.properties">
-							<entry key="version.minor" type="int" operation="+" value="1" />
-							<entry key="version.iteration" value="1" />
-						</propertyfile>
-					</then>
-					<else>
-						<if>
-							<equals arg1="3" arg2="${increment}" />
-							<then>
-								<propertyfile file="../SoundLooper.properties">
-									<entry key="version.iteration" type="int" operation="+" value="1" />
-								</propertyfile>
-							</then>
-							<else>
-								<fail message="mauvaise valeur entrée : ${increment}" />
-							</else>
-						</if>
-					</else>
-				</if>
-			</else>
-		</if>
-		<propertyfile file="../SoundLooper.properties">
-			<entry key="db.toUpdate" type="int" value="1" />
-		</propertyfile>
-	</target>
-
-	<target name="validateNewsXml">
-		<!-- TODO DTD-->
-		<!-- validate the dtd document-->
-		<!--xmlvalidate failonerror="yes" lenient="yes" warn="yes"	classname="org.apache.xerces.parsers.SAXParser"	classpath="lib/xercesImpl.jar">
-			<dtd publicId="http://www.w3.org/2001/XMLSchema" location="test.dtd"/>
-		  	<fileset dir="news" includes="*.xsd"/>
-		</xmlvalidate-->
-		<!--validate the xml news document-->
-		<!--xmlvalidate failonerror="yes" lenient="yes" warn="yes" classname="org.apache.xerces.parsers.SAXParser" classpath="lib/xercesImpl.jar">
-			<dtd publicId="test" location="news/news.xsd"/-->
-		<!--fileset dir="news/versions" includes="*.xml" />
-			<attribute name="http://xml.org/sax/features/validation" value="true" />
-			<attribute name="http://apache.org/xml/features/validation/schema" value="true" />
-			<attribute name="http://xml.org/sax/features/namespaces" value="true" />
-		</xmlvalidate-->
-		<pathconvert dirsep="/" property="xsd.file">
-			<path>
-				<pathelement location="news/news.xsd" />
-			</path>
-		</pathconvert>
-
-		<xmlvalidate file="news/versions/soundLooper_1.0.0.xml" lenient="false" failonerror="true" warn="true">
-			<attribute name="http://apache.org/xml/features/validation/schema" value="true" />
-			<!--attribute name="http://xml.org/sax/features/namespaces" value="true"/>
-		  <property name="http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation" value="${xsd.file}"/-->
-		</xmlvalidate>
-	</target>
-	
-	<target name="generateReleaseNote">
-		<!--vide le fichier-->
-		<xmltask preservetype="true" encoding="utf-8" source="news/versions/versionsList.empty.xml" dest="news/versions/versionsList.xml" />
-
-		<!--remplit le fichier dynamiquement-->
-		<foreachfile dir="news/versions/">
-			<!-- select all custom rbInfo files -->
-			<fileset dir="news/versions/">
-				<include name="soundLooper_*.xml" />
-			</fileset>
-			<sequential>
-				<echo message="Insert in file entry : @{name}" />
-				<xmltask outputter="simple:4" preservetype="true" encoding="utf-8" source="news/versions/versionsList.xml" dest="news/versions/versionsList.xml">
-					<insert path="/ph:index/ph:title" position="after">
-						<![CDATA[
-							<entry>@{name}</entry>
-						]]>
-					</insert>
-			</xmltask>
-		</sequential>
-
-	</foreachfile>
-
-	<!--generate release note-->
-	<xslt in="news/versions/versionsList.xml" style="news/versions/news.xsl" out="news/news.html" />
-</target>
 </project>
