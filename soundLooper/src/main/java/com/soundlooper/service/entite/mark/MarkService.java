@@ -97,7 +97,9 @@ public class MarkService {
 	 * @throws SoundLooperException if an error occured
 	 */
 	public Mark validateMark(Mark mark) throws SoundLooperException {
-        mark = MarkDAO.getInstance().persist(mark);
+		if (mark.isEditable()) {
+			mark = MarkDAO.getInstance().persist(mark);
+		}
         mark.setDirty(false);
         return mark;
 	}
