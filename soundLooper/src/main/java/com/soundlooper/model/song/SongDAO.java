@@ -130,12 +130,12 @@ public class SongDAO extends SoundLooperDAO<Song> {
 						SoundLooperDatabaseException.ERROR_CODE_NO_ID_GENERATED_FOR_NEW_SONG);
 			}
 
-			// sauvegarder dans la foulée les marqueurs de la chanson
-			HashMap<String, Mark> marks = song.getMarks();
-			for (String markName : marks.keySet()) {
-				Mark mark = marks.get(markName);
-				MarkDAO.getInstance().persist(mark);
-			}
+//			// sauvegarder dans la foulée les marqueurs de la chanson
+//			HashMap<String, Mark> marks = song.getMarks();
+//			for (String markName : marks.keySet()) {
+//				Mark mark = marks.get(markName);
+//				MarkDAO.getInstance().persist(mark);
+//			}
 			ConnectionFactory.commit();
 		} catch (SQLException e) {
 			this.rollbackCurrentTransaction();

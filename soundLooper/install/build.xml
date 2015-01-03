@@ -23,8 +23,8 @@
 	</target>
 	
 	<target name="createInstallationLinux" description="Create zip for linux">
-		<copydir dest="temp/linux" src="temp/common" />
-		<copy todir="temp/linux" file="SoundLooper.sh"/>
+		<copydir dest="temp/linux/SoundLooper" src="temp/common" />
+		<copy todir="temp/linux/SoundLooper" file="SoundLooper.sh"/>
 		<zip destfile="temp/linux/Sound Looper setup ${version}.zip" 
 		       basedir="temp/linux"
 		  />		
@@ -45,7 +45,7 @@
 		<mkdir dir="temp/windows"></mkdir>
 		
 		<echo message="Copy SoundLooper-version.jar to SoundLooper.jar"/>
-		<copy tofile="temp/common/soundLooper.jar" file="../target/soundLooper-${version}.jar"/>
+		<copy tofile="temp/common/SoundLooper.jar" file="../target/soundLooper-${version}.jar"/>
 		<copy todir="temp/common" file="../LICENCE.txt" />
 		<copy todir="temp/common" file="../linkedlibrairies.txt" />
 		<copydir dest="temp/common/db" src="../src/main/resources/db"/>
