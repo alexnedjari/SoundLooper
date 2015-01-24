@@ -5,6 +5,7 @@ package com.soundlooper.model;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -175,6 +176,21 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
     }
     
     /**
+     * Get the default mark for this song
+     * @param song the default mark for this song
+     * @return
+     */
+    public Mark getDefaultMark(Song song) {
+		Collection<Mark> marks = song.getMarks().values();
+		for (Mark mark : marks) {
+			if (!mark.isEditable()) {
+				return mark;
+			}
+		}
+		return null;
+	}
+    
+    /**
      * Set the loop points of the song
      * @param beginTime the begin time in milliseconds
      * @param endTime the end time in milliseconds
@@ -210,7 +226,8 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	 * @return a valid unique name
 	 */
 	public String getNomValideForMark(Song song, String name) {
-		return MarkService.getInstance().getNomValide(song, name);
+		String nomValide = MarkService.getInstance().getNomValide(song, name);
+		return nomValide;
 	}
 
 	@Override
@@ -282,5 +299,12 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 	@Override
 	public void onEndGenerateImage(BufferedImage image) {
 		SoundLooperPlayerSupport.getInstance().fireEndGenerateImage(image);
+	}
+
+	public void selectDefaultMark() {
+		if (this.song != null) {
+			selectMark(getDefaultMark(this.song));
+		}
+		
 	}
 }

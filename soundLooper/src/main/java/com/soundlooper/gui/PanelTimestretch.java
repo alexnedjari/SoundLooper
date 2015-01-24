@@ -85,7 +85,7 @@ public class PanelTimestretch extends JPanel {
 	/**
 	 * Speed combo box
 	 */
-	protected JComboBox<Integer> comboBoxVitesse;
+	protected JComboBox comboBoxVitesse;
 
 	/**
 	 * The panel that contain the buttons to change timestretch
@@ -161,9 +161,9 @@ public class PanelTimestretch extends JPanel {
 	 * Get the speed combo box
 	 * @return the combo box
 	 */
-	protected JComboBox<Integer> getComboBoxVitesse() {
+	protected JComboBox getComboBoxVitesse() {
 		if (this.comboBoxVitesse == null) {
-			this.comboBoxVitesse = new JComboBox<Integer>(new Integer[] { Integer.valueOf(50), Integer.valueOf(75), Integer.valueOf(100), Integer.valueOf(150),
+			this.comboBoxVitesse = new JComboBox(new Integer[] { Integer.valueOf(50), Integer.valueOf(75), Integer.valueOf(100), Integer.valueOf(150),
 					Integer.valueOf(200) });
 			SoundLooperComboBoxEditor anEditor = new SoundLooperComboBoxEditor();
 			anEditor.setMaxLength(3);

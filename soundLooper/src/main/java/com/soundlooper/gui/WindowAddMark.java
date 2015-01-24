@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import com.soundlooper.model.SoundLooperPlayer;
@@ -63,7 +64,7 @@ public class WindowAddMark extends JDialog {
 	/**
 	 * Labels combo box
 	 */
-	protected JComboBox<String> comboBoxLabel;
+	protected JComboBox comboBoxLabel;
 
 	protected JButton boutonValider;
 
@@ -111,14 +112,14 @@ public class WindowAddMark extends JDialog {
 	}
 
 	private void updateLabelNouveauNom() {
-		this.labelNouveauNom.setText("Nom final : " + SoundLooperPlayer.getInstance().getNomValideForMark(song, this.comboBoxLabel.getSelectedItem().toString()));
+		this.labelNouveauNom.setText("Nom final : " + SoundLooperPlayer.getInstance().getNomValideForMark(song,comboBoxLabel.getSelectedItem().toString()));
 	}
 
 	/**
 	 * Get the labels combo box
 	 * @return the combo box
 	 */
-	protected JComboBox<String> getComboBoxLabel() {
+	protected JComboBox getComboBoxLabel() {
 		if (this.comboBoxLabel == null) {
 			List<String> listeLabel = new ArrayList<String>(Arrays.asList(new String[] { "Intro", "Couplet", "Refrain", "Solo", "Pont", "Break", "Outtro" }));
 			for (String markName : this.song.getMarks().keySet()) {
@@ -128,7 +129,7 @@ public class WindowAddMark extends JDialog {
 			}
 
 			//listeLabel.addAll(this.song.getMarks().keySet());
-			this.comboBoxLabel = new JComboBox<String>(listeLabel.toArray(new String[listeLabel.size()]));
+			this.comboBoxLabel = new JComboBox(listeLabel.toArray(new String[listeLabel.size()]));
 			SoundLooperComboBoxEditor anEditor = new SoundLooperComboBoxEditor();
 			anEditor.setMaxLength(50);
 			this.comboBoxLabel.setEditor(anEditor);
@@ -137,7 +138,9 @@ public class WindowAddMark extends JDialog {
 
 				@Override
 				public void itemStateChanged(ItemEvent e) {
-					WindowAddMark.this.updateLabelNouveauNom();
+					if (e.getStateChange() == ItemEvent.SELECTED) {
+						WindowAddMark.this.updateLabelNouveauNom();
+					}
 
 				}
 			});
@@ -148,12 +151,15 @@ public class WindowAddMark extends JDialog {
 					if (e.getKeyCode() != KeyEvent.VK_DOWN && e.getKeyCode() != KeyEvent.VK_UP && e.getKeyCode() != KeyEvent.VK_LEFT && e.getKeyCode() != KeyEvent.VK_RIGHT
 							&& e.getKeyCode() != KeyEvent.VK_ESCAPE && e.getKeyCode() != KeyEvent.VK_ENTER && e.getKeyCode() != KeyEvent.VK_CONTROL
 							&& e.getKeyCode() != KeyEvent.VK_CAPS_LOCK) {
-						WindowAddMark.this.comboBoxLabel.actionPerformed(null);
+						//WindowAddMark.this.comboBoxLabel.actionPerformed(null);
+						System.out.println(WindowAddMark.this.comboBoxLabel.getEditor().getItem());
+						WindowAddMark.this.comboBoxLabel.setSelectedItem(WindowAddMark.this.comboBoxLabel.getEditor().getItem());
 						WindowAddMark.this.updateLabelNouveauNom();
 					}
 				}
 			});
 
+			
 			this.comboBoxLabel.setPreferredSize(new Dimension(200, 20));
 			this.comboBoxLabel.setEditable(true);
 		}
