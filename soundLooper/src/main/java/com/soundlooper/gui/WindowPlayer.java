@@ -707,7 +707,10 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				//WindowPlayer.this.panelToolbar.getMarkMenu().setVisible(false);
+				if (idMarkSupprime == SoundLooperPlayer.getInstance().getCurrentMark().getId()) {
+					//Si le marqueur supprimé est le marqueur courant, on recharge le chargeur par défaut
+					SoundLooperPlayer.getInstance().selectDefaultMark();
+				}
 				WindowPlayer.this.panelToolbar.updateMarkListAfterDelete(idMarkSupprime);
 			}
 		});
