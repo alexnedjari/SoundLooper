@@ -3,8 +3,6 @@
  */
 package com.soundlooper.gui.jplayer;
 
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
 
 /**
  *-------------------------------------------------------
@@ -29,17 +27,12 @@ import java.text.FieldPosition;
  * @since  22 août 2014
  *-------------------------------------------------------
  */
-public class TimeDecimalFormat extends DecimalFormat {
+public class TimeDecimalFormat {
 
-	/**
-	 * Serial version for the class
-	 */
-	private static final long serialVersionUID = 1L;
-
-	@Override
-	public StringBuffer format(double number, StringBuffer result, FieldPosition fieldPosition) {
+	public String format(double number) {
+		StringBuffer result = new StringBuffer();
 		int milliSeconds = new Double(number).intValue();
-		return this.formatFromInt(result, milliSeconds);
+		return this.formatFromInt(result, milliSeconds).toString();
 	}
 
 	/**
@@ -61,11 +54,4 @@ public class TimeDecimalFormat extends DecimalFormat {
 
 		return result;
 	}
-
-	@Override
-	public StringBuffer format(long number, StringBuffer result, FieldPosition fieldPosition) {
-		int seconds = new Long(number).intValue();
-		return this.formatFromInt(result, seconds);
-	}
-
 }
