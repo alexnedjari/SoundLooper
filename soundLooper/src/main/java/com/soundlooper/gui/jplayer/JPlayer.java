@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.text.DecimalFormat;
 
 import javax.swing.JComponent;
 
@@ -61,7 +60,7 @@ public class JPlayer extends JComponent {
 	private Color color = Color.WHITE;
 
 	/** Formatteur */
-	private DecimalFormat decimalFormater = new TimeDecimalFormat();
+	private TimeDecimalFormat decimalFormater = new TimeDecimalFormat();
 	
 	/** Valeur maxi*/
 	private double minimumBetweenCursors = 0;
@@ -97,7 +96,7 @@ public class JPlayer extends JComponent {
 	/**
 	 * @return the DecimalFormat used to display numbers on the player
 	 **/
-	public DecimalFormat getDecimalFormater() {
+	public TimeDecimalFormat getDecimalFormater() {
 		return this.decimalFormater;
 	}
 
