@@ -4,8 +4,9 @@
 package com.soundlooper.aide;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 
 /**
  *-------------------------------------------------------
@@ -39,9 +40,12 @@ public class GenerateurAide {
 	 */
 	public void lancerGeneration(Aide aide) throws IOException {
 
-		BufferedWriter output = new BufferedWriter(new FileWriter("src/main/resources/aide/aide.html"));
+		BufferedWriter output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("src/main/resources/aide/aide.html"), "UTF-8"));
+		
+		
+		
 
-		output.write("<!DOCTYPE html><html><head><title>Aide</title></head><body>");
+		output.write("<!DOCTYPE html><html><head><title>Aide</title><meta charset=\"UTF-8\"></head><body>");
 		try {
 			//TODO restaurer quand jtext pane pourra comprendre le css
 			//			output.write("<div style='position:fixed;left:10px;right:200px;top:50px'>");
