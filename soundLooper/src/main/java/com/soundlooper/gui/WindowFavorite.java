@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -15,11 +16,15 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import com.soundlooper.gui.action.favorite.DeleteFavoriteAction;
+import com.soundlooper.gui.action.tag.AddTagAction;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.service.entite.song.SongListener;
@@ -86,9 +91,23 @@ public class WindowFavorite extends JDialog implements SongListener {
 			actionPanel = new JPanel();
 			actionPanel.setLayout(new FlowLayout());
 			
+			JLabel labelFavoris = new JLabel("Favoris");
+			actionPanel.add(labelFavoris);
 			JButton deleteFavoriteButton = new JButton("Supprimer");
 			deleteFavoriteButton.addActionListener(new DeleteFavoriteAction(this.getFavoriteTree()));
+			deleteFavoriteButton.setPreferredSize(new Dimension(95,30));
 			actionPanel.add(deleteFavoriteButton);
+			
+			
+			JLabel labelTag = new JLabel("Tags");
+			actionPanel.add(labelTag);
+			JTextField textFieldTagName = new JTextField();
+			textFieldTagName.setPreferredSize(new Dimension(95,20));
+			actionPanel.add(textFieldTagName);
+			JButton addTagButton = new JButton("Créer tag");
+			addTagButton.setPreferredSize(new Dimension(95,30));
+			addTagButton.addActionListener(new AddTagAction());
+			actionPanel.add(addTagButton);
 			
 			actionPanel.setPreferredSize(new Dimension(100,0));
 		}
@@ -98,6 +117,88 @@ public class WindowFavorite extends JDialog implements SongListener {
 	private JTree getFavoriteTree() {
 		if (this.favoriteTree == null) {
 			List<Song> songList = SoundLooperPlayer.getInstance().getFavoriteSongList();
+			
+			MutableTreeNode rootNode = new MutableTreeNode() {
+				
+				@Override
+				public boolean isLeaf() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+				
+				@Override
+				public TreeNode getParent() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				@Override
+				public int getIndex(TreeNode arg0) {
+					// TODO Auto-generated method stub
+					return 0;
+				}
+				
+				@Override
+				public int getChildCount() {
+					// TODO Auto-generated method stub
+					return 0;
+				}
+				
+				@Override
+				public TreeNode getChildAt(int arg0) {
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				@Override
+				public boolean getAllowsChildren() {
+					// TODO Auto-generated method stub
+					return false;
+				}
+				
+				@Override
+				public Enumeration children() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+				
+				@Override
+				public void setUserObject(Object object) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void setParent(MutableTreeNode newParent) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void removeFromParent() {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void remove(MutableTreeNode node) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void remove(int index) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void insert(MutableTreeNode child, int index) {
+					// TODO Auto-generated method stub
+					
+				}
+			};
+			
 			this.favoriteTree = new JTree(songList.toArray());
 		}
 		return this.favoriteTree;
