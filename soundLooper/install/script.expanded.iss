@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Sound Looper"
-#define MyAppVersion "1.1.4"
+#define MyAppVersion "1.1.6"
 #define MyAppPublisher "Alexandre NEDJARI"
 #define MyAppExeName "SoundLooper.exe"
 
@@ -19,7 +19,7 @@ DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=temp/windows
-OutputBaseFilename=Sound Looper setup 1.1.4
+OutputBaseFilename=Sound Looper setup 1.1.6
 Compression=lzma
 SolidCompression=yes
 WizardImageFile=imageInstaller.bmp
