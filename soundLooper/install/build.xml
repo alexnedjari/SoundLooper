@@ -48,6 +48,8 @@
 		<copy tofile="temp/common/SoundLooper.jar" file="../target/soundLooper-${version}.jar"/>
 		<copy todir="temp/common" file="../LICENCE.txt" />
 		<copy todir="temp/common" file="../linkedlibrairies.txt" />
+		<mkdir dir="temp/common/icons"></mkdir>
+		<copy todir="temp/common/icons" file="../src/main/resources/icons/soundLooper.ico" />
 		<copydir dest="temp/common/db" src="../src/main/resources/db"/>
 		<copydir dest="temp/common/dependency-jars" src="../target/dependency-jars"/>
 		<mkdir dir="temp/common/logs" />
