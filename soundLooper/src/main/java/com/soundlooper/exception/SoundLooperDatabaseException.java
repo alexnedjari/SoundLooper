@@ -60,6 +60,21 @@ public class SoundLooperDatabaseException extends SoundLooperRuntimeException {
 	 * Code for database exception : No id is generated for this mark
 	 */
 	public static final int ERROR_CODE_NO_ID_GENERATED_FOR_NEW_MARK = 2002;
+	
+	/**
+	 * Code for database exception : tag name already exists in database
+	 */
+	public static final int ERROR_CODE_TAG_NAME_ALREADY_EXISTS_IN_DATABASE = 3000;
+	
+	/**
+	 * Code for database exception : tag ID does not exists in database
+	 */
+	public static final int ERROR_CODE_TAG_ID_DOES_NOT_EXISTS_IN_DATABASE = 3001;
+	
+	/**
+	 * Code for database exception : No ID is generated for this tag
+	 */
+	public static final int ERROR_CODE_NO_ID_GENERATED_FOR_NEW_TAG = 3002;
 
 	/**
 	 * Constructor

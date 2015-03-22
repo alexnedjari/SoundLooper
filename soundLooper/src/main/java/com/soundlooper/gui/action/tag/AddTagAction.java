@@ -6,11 +6,16 @@ package com.soundlooper.gui.action.tag;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.gui.WindowAddMark;
+import com.soundlooper.gui.WindowFavorite;
 import com.soundlooper.gui.WindowPlayer;
 import com.soundlooper.model.SoundLooperPlayer;
+import com.soundlooper.model.tag.Tag;
 
 /**
  *-------------------------------------------------------
@@ -45,27 +50,32 @@ public class AddTagAction extends AbstractAction {
 	/**
 	 * La fenêtre parente à la popup à ouvrir
 	 */
-	private WindowPlayer windowPlayer;
+	private JTextField textFieldTagName;
+	
+	private JTree tree;
 
 	/**
 	 * Constructeur
 	 * @param windowPlayer la fenêtre parente de la popup à ouvrir
 	 */
-	public AddTagAction() {
-		this.windowPlayer = windowPlayer;
+	public AddTagAction(JTextField textFieldTagName, JTree tree) {
+		this.textFieldTagName = textFieldTagName;
+		this.tree = tree;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		WindowAddMark windowAddMark = new WindowAddMark(this.windowPlayer, SoundLooperPlayer.getInstance().getSong());
-		windowAddMark.setVisible(true);
-		String nom = windowAddMark.getNomSaisi();
+		String nom = textFieldTagName.getText();
+		Object object = ((DefaultMutableTreeNode)tree.getLastSelectedPathComponent()).getUserObject();
+		if (!(object instanceof Tag)) {
+			return;
+		}
 		if (nom == null) {
 			return;
 		}
 
 		try {
-			SoundLooperPlayer.getInstance().createNewMarkAtCurrentPosition(nom);
+			SoundLooperPlayer.getInstance().createNewTag(nom, (Tag)object);
 		} catch (SoundLooperException e1) {
 			//TODO gérer l'erreur
 		}

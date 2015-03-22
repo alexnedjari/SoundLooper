@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Set;
 
 import com.soundlooper.exception.SoundLooperDatabaseException;
@@ -21,6 +20,7 @@ import com.soundlooper.model.database.ConnectionFactory;
 import com.soundlooper.model.database.SoundLooperDAO;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.mark.MarkDAO;
+import com.soundlooper.model.tag.Tag;
 
 /**
  * -------------------------------------------------------
@@ -307,6 +307,35 @@ public class SongDAO extends SoundLooperDAO<Song> {
 		try {
 			// récupère la liste des chansons créées
 			ResultSet songsQuery = ConnectionFactory.getNewStatement().executeQuery("SELECT id, file, lastuse, isfavorite FROM song WHERE isFavorite=1");
+			while (songsQuery.next()) {
+				long id = songsQuery.getLong("id");
+				Timestamp lastUseDate = songsQuery.getTimestamp("lastuse");
+				boolean isFavorite = this.getBoolean(songsQuery.getLong("isfavorite"));
+				File file = new File(songsQuery.getString("file"));
+				Song song = new Song();
+
+				song.setId(id);
+				song.setLastUseDate(lastUseDate);
+				song.setFile(file);
+				song.setFavorite(isFavorite);
+				songList.add(song);
+			}
+		} catch (SQLException e) {
+			throw new SoundLooperDatabaseException("Error when get the songs list", e);
+		}
+		return songList;
+	}
+	
+	/**
+	 * @return the list of files that are in favorite
+	 */
+	public ArrayList<Song> getFavoriteSongListForTag(Tag tag) {
+		ArrayList<Song> songList = new ArrayList<Song>();
+		try {
+			// récupère la liste des chansons créées
+			PreparedStatement statement = ConnectionFactory.getNewPreparedStatement("SELECT id, file, lastuse, isfavorite FROM song WHERE EXISTS (SELECT id_song FROM tag_song WHERE id_tag=?)");
+			statement.setLong(1, tag.getId());
+			ResultSet songsQuery = statement.executeQuery();
 			while (songsQuery.next()) {
 				long id = songsQuery.getLong("id");
 				Timestamp lastUseDate = songsQuery.getTimestamp("lastuse");

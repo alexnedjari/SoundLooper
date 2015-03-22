@@ -42,6 +42,7 @@ public abstract class SoundLooperDAO<T extends SoundLooperObject> {
 	 * Logger for this class
 	 */
 	protected static Logger logger = Logger.getLogger(SoundLooperDAO.class);
+	
 
 	/**
 	 * persist an object

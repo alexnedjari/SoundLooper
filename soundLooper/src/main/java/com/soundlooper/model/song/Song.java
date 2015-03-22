@@ -4,12 +4,15 @@
 package com.soundlooper.model.song;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
 import com.soundlooper.model.SoundLooperObject;
 import com.soundlooper.model.mark.Mark;
+import com.soundlooper.model.tag.Tag;
 import com.soundlooper.system.search.Searchable;
 
 /**
@@ -43,6 +46,11 @@ public class Song extends SoundLooperObject implements Searchable {
 	 * List of marks for this song
 	 */
 	private HashMap<String, Mark> marks = new HashMap<String, Mark>();
+	
+	/**
+	 * List of this song's tags
+	 */
+	private List<Tag> listTag = new ArrayList<Tag>();
 
 	/**
 	 * Favorite state of a song
@@ -151,5 +159,13 @@ public class Song extends SoundLooperObject implements Searchable {
 	@Override
 	public String toString() {
 		return this.getFile().getAbsolutePath();
+	}
+
+	public List<Tag> getListTag() {
+		return listTag;
+	}
+
+	public void setListTag(List<Tag> listTag) {
+		this.listTag = listTag;
 	}
 }

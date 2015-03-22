@@ -18,10 +18,12 @@ import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
+import com.soundlooper.model.tag.Tag;
 import com.soundlooper.service.entite.mark.MarkService;
 import com.soundlooper.service.entite.mark.MarkSupport;
 import com.soundlooper.service.entite.song.SongService;
 import com.soundlooper.service.entite.song.SongSupport;
+import com.soundlooper.service.entite.tag.TagService;
 import com.soundlooper.system.preferences.Preferences;
 
 /**
@@ -306,5 +308,14 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 			selectMark(getDefaultMark(this.song));
 		}
 		
+	}
+
+	public void createNewTag(String name, Tag parent) throws SoundLooperException {
+		TagService.getInstance().createTag(name, parent);
+		
+	}
+	
+	public List<Tag> getTagList() {
+		return TagService.getInstance().getTagList();
 	}
 }

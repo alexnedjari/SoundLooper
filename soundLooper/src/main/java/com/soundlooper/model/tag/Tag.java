@@ -4,8 +4,11 @@
 package com.soundlooper.model.tag;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
 import com.soundlooper.model.SoundLooperObject;
@@ -37,119 +40,81 @@ import com.soundlooper.system.search.Searchable;
  *
  *====================================================================
  */
-public class Tag extends SoundLooperObject implements Searchable {
+public class Tag extends SoundLooperObject {
+	
+	
 
 	/**
-	 * List of marks for this song
+	 * Name of the tag
 	 */
-	private HashMap<String, Mark> marks = new HashMap<String, Mark>();
-
+	private String name;
+	
 	/**
-	 * Favorite state of a song
+	 * Parent tag
 	 */
-	private boolean isFavorite;
-
+	private Tag parent;
+	
 	/**
-	 * File for this song
+	 * Is this tag is the root tag?
 	 */
-	private File file;
-
+	private boolean isRoot = false;
+	
 	/**
-	 * last use of this song
+	 * List of the child tags
 	 */
-	private Date lastUseDate;
-
-	/**
-	 * get the last use date of this song
-	 *
-	 * @return the last use date of this song
-	 */
-	public Date getLastUseDate() {
-		return this.lastUseDate;
+	private List<Tag> listChildren = new ArrayList<Tag>();
+	
+	public Tag() {
+		super();
 	}
-
-	/**
-	 * Is the song favorite?
-	 * @return true is the song is favorite
-	 */
-	public boolean isFavorite() {
-		return this.isFavorite;
-	}
-
-	/**
-	 * Change the favorite song flag
-	 * @param isFavorite the favorite value
-	 */
-	public void setFavorite(boolean isFavorite) {
-		this.isFavorite = isFavorite;
-	}
-
-	/**
-	 * Set the last use date of this song
-	 *
-	 * @param newLastUseDate
-	 *            the last use date of this song
-	 */
-	public void setLastUseDate(Date newLastUseDate) {
-		this.lastUseDate = newLastUseDate;
-	}
-
-	/**
-	 * Set the song file
-	 *
-	 * @param newFile the song file
-	 */
-	public void setFile(File newFile) {
-		this.file = newFile;
-	}
-
-	/**
-	 * Get the marks of the song
-	 *
-	 * @return the marks list of the song
-	 */
-	public HashMap<String, Mark> getMarks() {
-		return this.marks;
-	}
-
-	/**
-	 * Get the file of the song
-	 *
-	 * @return the file of the song
-	 */
-	public File getFile() {
-		return this.file;
-	}
-
-	/**
-	 * Add a mark to the sound
-	 *
-	 * @param markToAdd the mark to add
-	 * @throws SoundLooperObjectAlreadyExistsException if a mark with this name already exists
-	 */
-	public void addMark(Mark markToAdd) throws SoundLooperObjectAlreadyExistsException {
-		if (this.marks.containsKey(markToAdd.getName())) {
-			throw new SoundLooperObjectAlreadyExistsException(this, markToAdd);
-		}
-		this.marks.put(markToAdd.getName(), markToAdd);
+	
+	public Tag(String name) {
+		super();
+		this.name = name;
 	}
 
 	@Override
 	public String getDescription() {
-		String description = this.file + " (" + this.id + ") with Marks : \n";
-		for (String markName : this.marks.keySet()) {
-			description += this.marks.get(markName).getDescription();
-		}
-		return description;
+		return "Tag '" + name + "'";
 	}
 
-	@Override
-	public String getSearchableString() {
-		return this.getFile().getAbsolutePath();
+	public String getName() {
+		return name;
 	}
 
-	@Override
-	public String toString() {
-		return this.getFile().getAbsolutePath();
+	public void setName(String name) {
+		this.name = name;
 	}
+
+	public void addChildren(Tag child) {
+		this.listChildren.add(child);
+		child.setParent(this);
+	}
+	
+	public void removeChildren(Tag child) {
+		this.listChildren.remove(child);
+		child.setParent(null);
+	}
+
+	public Tag getParent() {
+		return parent;
+	}
+
+	public void setParent(Tag parent) {
+		this.parent = parent;
+	}
+
+	public boolean isRoot() {
+		return isRoot;
+	}
+
+	public void setRoot(boolean isRoot) {
+		this.isRoot = isRoot;
+	}
+	
+	public List<Tag> getListChildrenCopy() {
+		return new ArrayList<Tag>(this.listChildren);
+	}
+
+	
 }
