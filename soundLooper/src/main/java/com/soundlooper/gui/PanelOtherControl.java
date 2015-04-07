@@ -89,7 +89,7 @@ public class PanelOtherControl extends JPanel {
 		this.add(panelVolume);
 		this.add(this.getPanelTimestretch());
 
-		this.setPreferredSize(new Dimension(300, 32));
+		this.setPreferredSize(new Dimension(300, 40));
 	}
 
 	/**

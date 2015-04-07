@@ -63,7 +63,7 @@ public class WindowAddMark extends JDialog {
 	/**
 	 * Labels combo box
 	 */
-	protected JComboBox<String> comboBoxLabel;
+	protected JComboBox comboBoxLabel;
 
 	protected JButton boutonValider;
 
@@ -118,7 +118,7 @@ public class WindowAddMark extends JDialog {
 	 * Get the labels combo box
 	 * @return the combo box
 	 */
-	protected JComboBox<String> getComboBoxLabel() {
+	protected JComboBox getComboBoxLabel() {
 		if (this.comboBoxLabel == null) {
 			List<String> listeLabel = new ArrayList<String>(Arrays.asList(new String[] { "Intro", "Couplet", "Refrain", "Solo", "Pont", "Break", "Outtro" }));
 			for (String markName : this.song.getMarks().keySet()) {
@@ -128,7 +128,7 @@ public class WindowAddMark extends JDialog {
 			}
 
 			//listeLabel.addAll(this.song.getMarks().keySet());
-			this.comboBoxLabel = new JComboBox<String>(listeLabel.toArray(new String[listeLabel.size()]));
+			this.comboBoxLabel = new JComboBox(listeLabel.toArray(new String[listeLabel.size()]));
 			SoundLooperComboBoxEditor anEditor = new SoundLooperComboBoxEditor();
 			anEditor.setMaxLength(50);
 			this.comboBoxLabel.setEditor(anEditor);

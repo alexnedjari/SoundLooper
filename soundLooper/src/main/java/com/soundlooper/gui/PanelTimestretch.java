@@ -23,6 +23,8 @@ import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSlider;
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSliderListener;
 import com.soundlooper.model.SoundLooperPlayer;
 
 /**
@@ -85,7 +87,7 @@ public class PanelTimestretch extends JPanel {
 	/**
 	 * Speed combo box
 	 */
-	protected JComboBox<Integer> comboBoxVitesse;
+	protected JComboBox comboBoxVitesse;
 
 	/**
 	 * The panel that contain the buttons to change timestretch
@@ -96,6 +98,8 @@ public class PanelTimestretch extends JPanel {
 	 * The panel that contain the slider
 	 */
 	protected JPanel panelSilderTimestretch;
+	
+	protected JSoundLooperSlider soundLooperSlider;
 
 	/**
 	 * Logger for this class
@@ -108,12 +112,33 @@ public class PanelTimestretch extends JPanel {
 	public PanelTimestretch() {
 		this.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
 		this.add(new JLabel("%"));
-		this.add(this.getSliderTimestretch());
+		//this.add(this.getSliderTimestretch());
+		this.add(this.getSoundLooperSlider());
 		this.add(this.getComboBoxVitesse());
-		this.setPreferredSize(new Dimension(175, 30));
+		this.setPreferredSize(new Dimension(175, 40));
 		this.setBorder(new LineBorder(Color.BLACK, 1, true));
 		this.setBackground(new Color(253, 253, 234));
 		this.setOpaque(true);
+	}
+	
+	public JSoundLooperSlider getSoundLooperSlider() {
+		if (soundLooperSlider == null) {
+			soundLooperSlider = new JSoundLooperSlider();
+			this.soundLooperSlider.setPreferredSize(new Dimension(100, 40));
+			soundLooperSlider.setMinValue(50);
+			soundLooperSlider.setMaxValue(200);
+			soundLooperSlider.addDisplayedValue(50);
+			soundLooperSlider.addDisplayedValue(100);
+			soundLooperSlider.addDisplayedValue(200);
+			soundLooperSlider.addJSoundLooperSliderListener(new JSoundLooperSliderListener() {
+				
+				@Override
+				public void onValueChange(int newValue) {
+					SoundLooperPlayer.getInstance().setTimestretch(newValue);
+				}
+			});
+		}
+		return soundLooperSlider;
 	}
 
 	/**
@@ -161,9 +186,9 @@ public class PanelTimestretch extends JPanel {
 	 * Get the speed combo box
 	 * @return the combo box
 	 */
-	protected JComboBox<Integer> getComboBoxVitesse() {
+	protected JComboBox getComboBoxVitesse() {
 		if (this.comboBoxVitesse == null) {
-			this.comboBoxVitesse = new JComboBox<Integer>(new Integer[] { Integer.valueOf(50), Integer.valueOf(75), Integer.valueOf(100), Integer.valueOf(150),
+			this.comboBoxVitesse = new JComboBox(new Integer[] { Integer.valueOf(50), Integer.valueOf(75), Integer.valueOf(100), Integer.valueOf(150),
 					Integer.valueOf(200) });
 			SoundLooperComboBoxEditor anEditor = new SoundLooperComboBoxEditor();
 			anEditor.setMaxLength(3);
