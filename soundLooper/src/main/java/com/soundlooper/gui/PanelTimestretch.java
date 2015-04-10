@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSlider;
 import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSliderListener;
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperTextSlider;
 import com.soundlooper.model.SoundLooperPlayer;
 
 /**
@@ -99,7 +100,7 @@ public class PanelTimestretch extends JPanel {
 	 */
 	protected JPanel panelSilderTimestretch;
 	
-	protected JSoundLooperSlider soundLooperSlider;
+	protected JSoundLooperTextSlider soundLooperSlider;
 
 	/**
 	 * Logger for this class
@@ -121,9 +122,9 @@ public class PanelTimestretch extends JPanel {
 		this.setOpaque(true);
 	}
 	
-	public JSoundLooperSlider getSoundLooperSlider() {
+	public JSoundLooperTextSlider getSoundLooperSlider() {
 		if (soundLooperSlider == null) {
-			soundLooperSlider = new JSoundLooperSlider();
+			soundLooperSlider = new JSoundLooperTextSlider();
 			this.soundLooperSlider.setPreferredSize(new Dimension(100, 40));
 			soundLooperSlider.setMinValue(50);
 			soundLooperSlider.setMaxValue(200);
@@ -180,6 +181,7 @@ public class PanelTimestretch extends JPanel {
 	public void setTimestrechValue(int percent) {
 		PanelTimestretch.this.getSliderTimestretch().setValue(percent);
 		this.comboBoxVitesse.getEditor().setItem(new Integer(percent));
+		getSoundLooperSlider().setValue(percent);
 	}
 
 	/**
