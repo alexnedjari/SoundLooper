@@ -3,12 +3,13 @@ package com.soundlooper.gui.jsoundlooperslider;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.SystemColor;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
@@ -19,33 +20,17 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.metal.MetalLookAndFeel;
-import javax.swing.text.html.MinimalHTMLWriter;
 
 public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionListener, MouseListener {
 
 	private final int SLIDER_HEIGHT = 4;
-	private final int LEFT_MARGIN = 5;
-	private final int RIGHT_MARGIN = 5;
+	private final int LEFT_MARGIN = 7;
+	private final int RIGHT_MARGIN = 7;
 	
-	/**
-	 * Classic edition mode
-	 */
-	private static final int EDITION_MODE_NORMAL = 0;
-	
-	/**
-	 * text edition mode. Text field must be displayed
-	 */
-	private static final int EDITION_MODE_TEXT = 1; 
-	
-	/**
-	 * Edition mode
-	 */
-	private int editionMode = EDITION_MODE_NORMAL;
 	
 	private JSoundLooperSlider soundLooperSlider;
 	
 	private Map<Integer, Rectangle> valuesRectangleMap =  new HashMap<Integer, Rectangle>();
-	private Rectangle valueRectangle = new Rectangle();
 	private Polygon cursor = new Polygon();
 	
 	// The object that is currently under the mouse
@@ -66,7 +51,7 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 	}
 	
 	private int getBottomDisplayedValue() {
-		return soundLooperSlider.getHeight() - 3;
+		return soundLooperSlider.getHeight() - 2;
 	}
 
 	@Override
@@ -79,9 +64,16 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 		Font fontGras = new Font(font.getName(), Font.BOLD, font.getSize());
 		g.setFont(font);
 		
+		Graphics2D graphics2d = (Graphics2D) g;
+		RenderingHints renderingHints = new RenderingHints(null);
+		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		renderingHints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+		graphics2d.setRenderingHints(renderingHints);
+		
 		//Background display
-		g.setColor(soundLooperSlider.getBackground());
-		g.fillRect(0, 0, soundLooperSlider.getWidth(), soundLooperSlider.getHeight());
+//		g.setColor(soundLooperSlider.getBackground());
+//		g.fillRect(0, 0, soundLooperSlider.getWidth(), soundLooperSlider.getHeight());
 		
 		//Slider display
 		g.setColor(Color.GRAY);
@@ -122,29 +114,15 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 			
 		}
 		
-		//value display
-		
-		if (editionMode == EDITION_MODE_TEXT) {
-			g.drawRect(0, 0, 30, 12);
-		} else {
-			if (valueRectangle == underMouseElement) {
-				g.setFont(fontGras);
-			}
-		}
-		g.drawString(String.valueOf(soundLooperSlider.getValue()), 3, 11);
-		g.setFont(font);
-		
-		
-		Rectangle2D bound =  g.getFontMetrics().getStringBounds(String.valueOf(soundLooperSlider.getValue()), g);
-		
-		valueRectangle.setBounds(new Rectangle(0, 10- new Double(bound.getHeight()).intValue(), new Double(bound.getWidth()).intValue(), new Double(bound.getHeight()).intValue()));
-		
 		//Cursor display
 		int currentValuePx = getPixelFromValue(this.soundLooperSlider.getValue());
 		cursor.reset();
-		cursor.addPoint(currentValuePx - LEFT_MARGIN, getSliderY() - 2);
-		cursor.addPoint(currentValuePx + RIGHT_MARGIN,getSliderY() - 2);
-		cursor.addPoint(currentValuePx, getSliderY() + SLIDER_HEIGHT + 2);
+		cursor.addPoint(currentValuePx - LEFT_MARGIN + 1, getSliderY() + 2);
+		cursor.addPoint(currentValuePx, getSliderY() + SLIDER_HEIGHT + 5);
+		cursor.addPoint(currentValuePx + RIGHT_MARGIN - 1,getSliderY() + 2);
+		cursor.addPoint(currentValuePx + RIGHT_MARGIN - 1,getSliderY() - 5);
+		cursor.addPoint(currentValuePx - LEFT_MARGIN + 1, getSliderY() - 5);
+		
 		
 		g.setColor(SystemColor.control);
 		if (this.dragElement == cursor) {
@@ -161,7 +139,7 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 	}
 
 	private int getSliderY() {
-		return soundLooperSlider.getHeight()/2 - SLIDER_HEIGHT/2;
+		return soundLooperSlider.getHeight()/2 - SLIDER_HEIGHT/2 - 5;
 	}
 	
 	@Override
@@ -175,9 +153,7 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 			}
 		}
 		
-		if (underMouseElementTemp==null && this.valueRectangle.contains(event.getX(), event.getY())) {
-			underMouseElementTemp = valueRectangle;
-		} 
+
 		if (underMouseElementTemp == null && cursor.contains(event.getX(), event.getY())) {
 			underMouseElementTemp = cursor;
 		}
@@ -217,7 +193,6 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		editionMode = EDITION_MODE_NORMAL;
 		if (valuesRectangleMap.containsValue(underMouseElement)) {
 			Set<Integer> keySet = valuesRectangleMap.keySet();
 			for (Integer integer : keySet) {
@@ -229,9 +204,7 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 		} else if (underMouseElement == cursor) {
 			dragElement = cursor;
 			this.mouseGapValueDragPx = e.getX() - getPixelFromValue(this.soundLooperSlider.getValue());
-		} else if (underMouseElement == valueRectangle) {
-			editionMode = EDITION_MODE_TEXT;
-		}
+		} 
 		this.soundLooperSlider.repaint();
 		e.consume();
 		

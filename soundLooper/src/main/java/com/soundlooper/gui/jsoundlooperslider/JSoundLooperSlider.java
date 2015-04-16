@@ -1,5 +1,6 @@
 package com.soundlooper.gui.jsoundlooperslider;
 
+import java.awt.Color;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -17,6 +18,8 @@ public class JSoundLooperSlider extends JComponent {
 	
 	public JSoundLooperSlider() {
 		super();
+		setOpaque(false);
+		setBackground(new Color(249, 248, 208));
 		this.setUI(new JSoundLooperSliderUI(this));
 	}
 
