@@ -1,6 +1,7 @@
 package com.soundlooper.gui.jsoundlooperslider;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -15,6 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+
+import com.soundlooper.gui.UpperCaseDocument;
 
 public class JSoundLooperTextSlider extends JPanel implements JSoundLooperSliderListener{
 
@@ -87,26 +90,48 @@ private void setConsultationMode() {
 			}
 		});
 	}
+
+protected Integer getValueBetweenMinAndMax() {
+	String newTextFieldValue = getTextFieldValue().getText();
+	if (newTextFieldValue.equals("")) {
+		newTextFieldValue = getLabelValue().getText();
+	}
+	Integer newValue = Integer.valueOf(newTextFieldValue);
+	if (newValue < model.getMinValue()) {
+		newValue = model.getMinValue();
+	}
+	if (newValue > model.getMaxValue()) {
+		newValue = model.getMaxValue();
+	}
+	return newValue;
+}
 	
 	private JTextField getTextFieldValue() {
 		if (textFieldValue == null) {
 			textFieldValue = new JTextField(String.valueOf(model.getValue()));
 			textFieldValue.setPreferredSize(new Dimension(25,0));
 			textFieldValue.setHorizontalAlignment(SwingConstants.RIGHT);
+			UpperCaseDocument doc = new UpperCaseDocument();
+			doc.setNumericOnly(true);
+			doc.setMaxLength(3);
+			textFieldValue.setDocument(doc);
 			textFieldValue.addFocusListener(new FocusAdapter() {
 				
 				@Override
 				public void focusLost(FocusEvent e) {
-					model.changeValue(Integer.valueOf(getTextFieldValue().getText()));
+					Integer newValue = getValueBetweenMinAndMax();
+					model.changeValue(newValue);
 					setConsultationMode();
 					
 				}
+
+				
 			});
 			textFieldValue.addKeyListener(new KeyAdapter() {
 				@Override
 				public void keyPressed(KeyEvent e) {
 					if(e.getKeyCode() == KeyEvent.VK_ENTER) {
-						model.changeValue(Integer.valueOf(getTextFieldValue().getText()));
+						model.changeValue(getValueBetweenMinAndMax());
 						setConsultationMode();
 					}
 					
@@ -173,7 +198,6 @@ private void setConsultationMode() {
 
 	@Override
 	public void onValueChange(int newValue) {
-		System.out.println("changement");
 		this.getLabelValue().setText(String.valueOf(newValue));
 		this.getTextFieldValue().setText(String.valueOf(newValue));
 		

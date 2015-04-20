@@ -6,11 +6,13 @@ package com.soundlooper.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
@@ -61,7 +63,10 @@ public class PanelTimestretch extends JPanel {
 	 * Get the control panel
 	 */
 	public PanelTimestretch() {
-		this.setLayout(new BorderLayout());
+		BorderLayout mgr = new BorderLayout();
+		mgr.setHgap(5);
+		this.setLayout(mgr);
+		this.setBorder(new EmptyBorder(0, 5, 0, 5));
 		this.add(new JLabel("%"), BorderLayout.WEST);
 		this.add(this.getSoundLooperSlider(), BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(175, 30));
@@ -69,7 +74,20 @@ public class PanelTimestretch extends JPanel {
 		//this.setBackground(new Color(253, 253, 234));
 		this.setBackground(new Color(220, 220, 220));
 		
-		this.setOpaque(true);
+		this.setOpaque(false);
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		Graphics2D graphics2d = (Graphics2D) g;
+		RenderingHints renderingHints = new RenderingHints(null);
+		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		renderingHints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+		graphics2d.setRenderingHints(renderingHints);
+		g.setColor(new Color(220, 220, 220));
+		g.fillRoundRect(0, 0, this.getWidth(), this.getHeight(), 30, 30);
+		super.paint(g);
 	}
 	
 	public JSoundLooperTextSlider getSoundLooperSlider() {

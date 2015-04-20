@@ -3,7 +3,7 @@
   <groupId>soundLooper</groupId>
   <artifactId>soundLooper</artifactId>
   <packaging>jar</packaging>
-  <version>1.1.2</version>
+  <version>1.1.5</version>
   <name>Sound Looper</name>
   <properties>
 		<jdk.version>1.6</jdk.version>

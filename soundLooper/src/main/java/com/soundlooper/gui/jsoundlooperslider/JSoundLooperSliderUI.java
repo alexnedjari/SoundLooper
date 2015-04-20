@@ -77,7 +77,7 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 		
 		//Slider display
 		g.setColor(Color.GRAY);
-		g.fillRect(LEFT_MARGIN, getSliderY(), getWidhtSlider(), SLIDER_HEIGHT);
+		g.fillRoundRect(LEFT_MARGIN, getSliderY(), getWidhtSlider(), SLIDER_HEIGHT,5,5);
 		
 		//Values displayedMap display
 		g.setColor(Color.BLACK);
