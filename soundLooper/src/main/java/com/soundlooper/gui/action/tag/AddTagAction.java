@@ -51,7 +51,7 @@ public class AddTagAction extends AbstractAction {
 	 * La fenêtre parente à la popup à ouvrir
 	 */
 	private JTextField textFieldTagName;
-	
+
 	private JTree tree;
 
 	/**
@@ -66,14 +66,22 @@ public class AddTagAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String nom = textFieldTagName.getText();
-		Object object = ((DefaultMutableTreeNode)tree.getLastSelectedPathComponent()).getUserObject();
-		if (!(object instanceof Tag)) {
-			return;
-		}
 		if (nom == null) {
 			return;
 		}
 
+		Object object = null;
+		if (tree.getLastSelectedPathComponent() != null) { 
+
+			object = ((DefaultMutableTreeNode)tree.getLastSelectedPathComponent()).getUserObject();
+
+
+			if (!(object instanceof Tag)) {
+				object = null;
+			}
+
+
+		}
 		try {
 			SoundLooperPlayer.getInstance().createNewTag(nom, (Tag)object);
 		} catch (SoundLooperException e1) {

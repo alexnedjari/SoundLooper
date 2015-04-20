@@ -41,33 +41,33 @@ import com.soundlooper.system.search.Searchable;
  *====================================================================
  */
 public class Tag extends SoundLooperObject {
-	
-	
+
+
 
 	/**
 	 * Name of the tag
 	 */
 	private String name;
-	
+
 	/**
 	 * Parent tag
 	 */
 	private Tag parent;
-	
+
 	/**
 	 * Is this tag is the root tag?
 	 */
 	private boolean isRoot = false;
-	
+
 	/**
 	 * List of the child tags
 	 */
 	private List<Tag> listChildren = new ArrayList<Tag>();
-	
+
 	public Tag() {
 		super();
 	}
-	
+
 	public Tag(String name) {
 		super();
 		this.name = name;
@@ -90,7 +90,7 @@ public class Tag extends SoundLooperObject {
 		this.listChildren.add(child);
 		child.setParent(this);
 	}
-	
+
 	public void removeChildren(Tag child) {
 		this.listChildren.remove(child);
 		child.setParent(null);
@@ -101,7 +101,14 @@ public class Tag extends SoundLooperObject {
 	}
 
 	public void setParent(Tag parent) {
+//		if (this.parent != null) {
+//			this.parent.removeChildren(this);
+//
+//		}
 		this.parent = parent;
+//		if (this.parent != null) {
+//			this.parent.addChildren(this);
+//		}
 	}
 
 	public boolean isRoot() {
@@ -111,10 +118,10 @@ public class Tag extends SoundLooperObject {
 	public void setRoot(boolean isRoot) {
 		this.isRoot = isRoot;
 	}
-	
+
 	public List<Tag> getListChildrenCopy() {
 		return new ArrayList<Tag>(this.listChildren);
 	}
 
-	
+
 }

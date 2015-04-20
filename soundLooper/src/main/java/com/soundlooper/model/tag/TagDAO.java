@@ -145,6 +145,7 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 			} else {
 				updateStatement.setLong(2, SoundLooperObject.ID_NOT_INITIALIZED);	
 			}
+			updateStatement.setLong(3, tag.getId());
 			updateStatement.executeUpdate();
 
 			if (updateStatement.getUpdateCount() != 1) {
@@ -292,8 +293,9 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 				} else {
 					//search the parent in the list
 					for (Tag tagParent : setTag) {
-						if (tag.getId() == tagParent.getId()) {
-							tag.setParent(tagParent);
+						if (idParent == tagParent.getId()) {
+							//tag.setParent(tagParent);
+							tagParent.addChildren(tag);
 							break;
 						}
 					}
@@ -304,5 +306,10 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 			throw new SoundLooperDatabaseException("Error when get the tags list", e);
 		}
 		return tagList;
+	}
+
+	public void renameTag(String newName, int id) {
+		// TODO Auto-generated method stub
+		
 	}
 }

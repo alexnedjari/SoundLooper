@@ -315,7 +315,17 @@ public class SoundLooperPlayer extends Player implements PlayerActionListener {
 		
 	}
 	
+	public void renameTag(Tag tag, String newName) throws SoundLooperException {
+		tag.setName(newName);
+		TagService.getInstance().validateTag(tag);
+		
+	}
+	
 	public List<Tag> getTagList() {
 		return TagService.getInstance().getTagList();
+	}
+
+	public void validateTag(Tag tag) throws SoundLooperException {
+		TagService.getInstance().validateTag(tag);
 	}
 }

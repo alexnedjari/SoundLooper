@@ -102,5 +102,5 @@ public class TagService {
 	public List<Tag> getTagList() {
 		return TagDAO.getInstance().getList();
 	}
-	
+
 }

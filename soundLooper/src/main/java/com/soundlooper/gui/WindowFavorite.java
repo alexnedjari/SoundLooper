@@ -6,18 +6,27 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.EventObject;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -25,10 +34,14 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
+import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.gui.action.favorite.DeleteFavoriteAction;
 import com.soundlooper.gui.action.tag.AddTagAction;
 import com.soundlooper.model.SoundLooperObject;
@@ -64,6 +77,15 @@ import com.soundlooper.service.entite.tag.TagSupport;
  */
 public class WindowFavorite extends JDialog implements SongListener, TagListener {
 	protected static final Color BLUE_COLOR = new Color(36, 168, 206);
+
+	//TODO dans la fenêtre de changement de nom, empêcher la validation si nom vide
+	//TODO faire en sorte qu'il puisse y avoir plusieurs tags avec le même nom, modifier l'affichage du nom pour afficher toute l'arborescence
+	//TODO faire un tri sur les tags, et un sur les favoris
+	//TODO Faire la suppression (+ suppression de la sous arborescence + détachement de tous les favoris) 
+	//TODO Pouvoir modifier l'arborescence des tags en faisant du glisser déposer
+	//TODO Pouvoir ajouter des tags à un favori en cliquant sur le panneau de droite
+	//TODO Pouvoir déplacer un favoris d'un tag à l'autre en faisant glisser une chanson dans l'arborescence
+	//TODO Raffraichir la liste des tags dans le panneau de droite dès qu'on en ajoute un
 	private final class FavoriteTreeNode extends DefaultMutableTreeNode {
 		/**
 		 * 
@@ -168,7 +190,9 @@ public class WindowFavorite extends JDialog implements SongListener, TagListener
 	}
 
 	private void onElementSelect(final Object object) {
-		final List<Tag> listeTag = SoundLooperPlayer.getInstance().getTagList();
+		final Set<Tag> setTag = getListeTagAsSet();
+
+
 		SwingUtilities.invokeLater(new Runnable() {
 
 			@Override
@@ -177,7 +201,7 @@ public class WindowFavorite extends JDialog implements SongListener, TagListener
 
 				if (object instanceof Song) {
 					Song song = (Song) object;
-					for (Tag tag : listeTag) {
+					for (Tag tag : setTag) {
 						JLabel label = new JLabel(" "+tag.getName()+" ");
 						if (isTagForSong(tag, song)) {
 							label.setBackground(BLUE_COLOR);
@@ -192,6 +216,25 @@ public class WindowFavorite extends JDialog implements SongListener, TagListener
 
 			}
 		});
+
+	}
+
+	private Set<Tag> getListeTagAsSet() {
+		final List<Tag> listeTag = SoundLooperPlayer.getInstance().getTagList();
+		Set<Tag > setTag = new HashSet<Tag>();
+		for (Tag tag : listeTag) {
+			setTag.add(tag);
+			addChildren(setTag, tag);
+		}
+		return setTag;
+	}
+
+	private void addChildren(Set<Tag> setTag, Tag tag) {
+		List<Tag> listChildrenCopy = tag.getListChildrenCopy();
+		for (Tag tagChild : listChildrenCopy) {
+			setTag.add(tagChild);
+			addChildren(setTag, tagChild);
+		}
 
 	}
 
@@ -222,31 +265,185 @@ public class WindowFavorite extends JDialog implements SongListener, TagListener
 		}
 		return actionPanel;
 	}
+	
+	protected void updateTagNameInDialog(final Tag tag) {
+		String initialName = tag.getName();
+		DialogNameTag dialogNameTag = new DialogNameTag(WindowFavorite.this, tag);
+		dialogNameTag.setVisible(true);
+		boolean validatedWindow = dialogNameTag.isValidatedWindow();
+		if (validatedWindow) {
+			if (!tag.getName().equals(initialName))  {
+				try {
+					SoundLooperPlayer.getInstance().validateTag(tag);
+					SwingUtilities.invokeLater(new Runnable() {	
+						@Override
+						public void run() {
+							favoriteTree.updateUI();
+						}
+					});
+					
+				} catch (SoundLooperException e1) {
+					e1.printStackTrace();
+				}
+			}
+		} 
+	}
+	
+	protected void createTagInDialog(final Tag parent, final DefaultMutableTreeNode node) {
+		final Tag tagTemp = new Tag(); 
+		tagTemp.setName("Nouveau tag");
+		DialogNameTag dialogNameTag = new DialogNameTag(WindowFavorite.this, tagTemp);
+		dialogNameTag.setVisible(true);
+		boolean validatedWindow = dialogNameTag.isValidatedWindow();
+		if (validatedWindow) {
+			parent.addChildren(tagTemp);
+			try {
+				SoundLooperPlayer.getInstance().validateTag(tagTemp);
+				SwingUtilities.invokeLater(new Runnable() {	
+					@Override
+					public void run() {
+						DefaultMutableTreeNode newChild = new DefaultMutableTreeNode(tagTemp);
+						node.add(newChild);
+						favoriteTree.updateUI();
+						favoriteTree.scrollPathToVisible(new TreePath(newChild.getPath()));
+					}
+				});
+
+			} catch (SoundLooperException e1) {
+				e1.printStackTrace();
+			}
+		}
+	}
 
 	private JTree getFavoriteTree() {
 		if (this.favoriteTree == null) {
 			List<Song> songList = SoundLooperPlayer.getInstance().getFavoriteSongList();
 			List<Tag> tagList = SoundLooperPlayer.getInstance().getTagList();
-			
+
 			Tag rootTag = new Tag("Liste des favoris");
 			for (Tag tag : tagList) {
 				rootTag.addChildren(tag);
 			}
-			
+
 
 
 			DefaultMutableTreeNode rootNode = new FavoriteTreeNode(rootTag, true);
 			DefaultTreeModel model = new DefaultTreeModel(rootNode);
+			//			model.addTreeModelListener(new TreeModelListener() {
+			//				
+			//				@Override
+			//				public void treeStructureChanged(TreeModelEvent e) {
+			//					// TODO Auto-generated method stub
+			//					
+			//				}
+			//				
+			//				@Override
+			//				public void treeNodesRemoved(TreeModelEvent e) {
+			//					// TODO Auto-generated method stub
+			//					
+			//				}
+			//				
+			//				@Override
+			//				public void treeNodesInserted(TreeModelEvent e) {
+			//					// TODO Auto-generated method stub
+			//					
+			//				}
+			//				
+			//				@Override
+			//				public void treeNodesChanged(TreeModelEvent e) {
+			//					DefaultMutableTreeNode node;
+			//					node = (DefaultMutableTreeNode)
+			//							(e.getTreePath().getLastPathComponent());
+			//
+			//					/*
+			//					 * If the event lists children, then the changed
+			//					 * node is the child of the node we have already
+			//					 * gotten.  Otherwise, the changed node and the
+			//					 * specified node are the same.
+			//					 */
+			//					try {
+			//						int index = e.getChildIndices()[0];
+			//						node = (DefaultMutableTreeNode)
+			//								(node.getChildAt(index));
+			//					} catch (NullPointerException exc) {}
+			//					
+			//				//	SoundLooperPlayer.getInstance().renameTag(e.getSource()(String)node.getUserObject());
+			//
+			//					System.out.println("The user has finished editing the node.");
+			//					System.out.println("New value: " + node.getUserObject());
+			//					
+			//				}
+			//			});
+
 			this.favoriteTree = new JTree(model);
-			this.favoriteTree.setEditable(true);
+			//this.favoriteTree.setEditable(true);
+			this.favoriteTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+			this.favoriteTree.setShowsRootHandles(false);
+			this.favoriteTree.setCellEditor(new FavoriteTreeCellEditor(favoriteTree, (DefaultTreeCellRenderer) favoriteTree.getCellRenderer()));
+
+
 			
-			//TODO, ne faire l'action que sur le lcic droit
+			favoriteTree.addKeyListener(new KeyAdapter() {
+				@Override
+				public void keyPressed(KeyEvent e) {
+					super.keyPressed(e);
+					if (e.getKeyCode() == KeyEvent.VK_F2) {
+						DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+								favoriteTree.getLastSelectedPathComponent();
+						if (node == null) {
+							//since Nothing is selected.     
+							return;
+						}
+						final Object nodeObject = node.getUserObject();
+						if (nodeObject instanceof Tag) {
+							updateTagNameInDialog((Tag)nodeObject);
+						}
+					}
+				}
+			});
 			favoriteTree.addMouseListener(new MouseAdapter() {
-				  @Override
-				  public void mousePressed(MouseEvent me) {
-					  favoriteTree.setSelectionPath(favoriteTree.getClosestPathForLocation(me.getX(), me.getY()));
-				  }
-				});
+
+				@Override
+				public void mousePressed(MouseEvent me) {
+					if (me.getButton() == MouseEvent.BUTTON3) {
+						//select under mouse element
+						int row = favoriteTree.getClosestRowForLocation(me.getX(), me.getY());
+						favoriteTree.setSelectionRow(row);
+						
+						final DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+								favoriteTree.getLastSelectedPathComponent();
+						if (node == null) {
+							//since Nothing is selected.     
+							return;
+						}
+						final Object nodeObject = node.getUserObject();
+						if (nodeObject instanceof Tag) {
+							JPopupMenu menu = new JPopupMenu();
+							
+							JMenuItem menuItemAddTag = new JMenuItem("Ajouter un tag");
+							menuItemAddTag.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									Tag parent = (Tag) nodeObject;
+									createTagInDialog(parent, node);
+								}
+							});
+							menu.add(menuItemAddTag);
+							
+							JMenuItem menuItemRenameTag = new JMenuItem("Renommer");
+							menuItemRenameTag.addActionListener(new ActionListener() {
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									updateTagNameInDialog((Tag)nodeObject);
+								}
+							});
+							menu.add(menuItemRenameTag);
+							
+							menu.show(favoriteTree, me.getX(), me.getY());
+						}
+					}
+				}
+			});
 
 			this.favoriteTree.setCellRenderer(new FavoriteTreeCellRenderer());
 
@@ -400,26 +597,54 @@ public class WindowFavorite extends JDialog implements SongListener, TagListener
 	@Override
 	public void onTagDeleted(Tag tag) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTagAdded(Tag addedTag, Tag parent) {
-		DefaultMutableTreeNode parentTreeNode = searchNode(parent);
-		parentTreeNode.insert(new DefaultMutableTreeNode(), parentTreeNode.getChildCount());
-		
+		if (parent != null) {
+			DefaultMutableTreeNode parentTreeNode = searchNode(parent);
+			parentTreeNode.insert(new DefaultMutableTreeNode(), parentTreeNode.getChildCount());
+		} else {
+			DefaultMutableTreeNode parentTreeNode = (DefaultMutableTreeNode) this.getFavoriteTree().getModel().getRoot();
+			parentTreeNode.insert(new DefaultMutableTreeNode(), parentTreeNode.getChildCount());
+		}
+		getFavoriteTree().updateUI();
+
 	}	
-	
-	 public DefaultMutableTreeNode searchNode(SoundLooperObject userObject) {
-		 DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) getFavoriteTree().getModel().getRoot();
-		    DefaultMutableTreeNode node = null;
-		    Enumeration<?> e = rootNode.breadthFirstEnumeration();
-		    while (e.hasMoreElements()) {
-		      node = (DefaultMutableTreeNode) e.nextElement();
-		      if (userObject.getId() == ((SoundLooperObject)node.getUserObject()).getId()) {
-		        return node;
-		      }
-		    }
-		    return null;
-		  }
+
+	public DefaultMutableTreeNode searchNode(SoundLooperObject userObject) {
+
+		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) getFavoriteTree().getModel().getRoot();
+		DefaultMutableTreeNode node = null;
+		Enumeration<?> e = rootNode.breadthFirstEnumeration();
+		while (e.hasMoreElements()) {
+			node = (DefaultMutableTreeNode) e.nextElement();
+			if (userObject.getId() == ((SoundLooperObject)node.getUserObject()).getId()) {
+				return node;
+			}
+		}
+		return null;
+	}
+
+	private class FavoriteTreeCellEditor extends DefaultTreeCellEditor {
+
+		public FavoriteTreeCellEditor(JTree tree, DefaultTreeCellRenderer renderer) {
+			super(tree, renderer);
+		}
+
+		@Override
+		public boolean isCellEditable(EventObject anEvent) {
+			if (lastPath != null && lastPath.getPathCount()==2){
+				System.out.println("lastpath : " + lastPath);
+				JTree jTree = (JTree) anEvent.getSource();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode)jTree.getLastSelectedPathComponent();
+				if (node == null) {
+					return true;
+				}
+				return node.getUserObject() instanceof Tag;
+			} 
+			return false;
+		}
+	}
 }
