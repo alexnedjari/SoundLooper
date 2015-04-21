@@ -5,16 +5,11 @@ import java.util.List;
 
 public class JSoundLooperSliderSupport {
 	
-	public static JSoundLooperSliderSupport instance;
+	
 	
 	private List<JSoundLooperSliderListener> soundLooperListenerList = new ArrayList<JSoundLooperSliderListener>(); 
 	
-	public synchronized static JSoundLooperSliderSupport getInstance() {
-		if (instance == null) {
-			instance = new JSoundLooperSliderSupport();
-		}
-		return instance;
-	}
+	
 	
 	public void addJSoundLooperSliderListener(JSoundLooperSliderListener listener) {
 		this.soundLooperListenerList.add(listener);

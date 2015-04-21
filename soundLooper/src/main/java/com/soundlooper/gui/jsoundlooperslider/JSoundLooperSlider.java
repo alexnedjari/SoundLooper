@@ -22,6 +22,10 @@ public class JSoundLooperSlider extends JComponent {
 		setBackground(new Color(249, 248, 208));
 		this.setUI(new JSoundLooperSliderUI(this));
 	}
+	
+	public void addDisplayedValue(int newValue) {
+		model.addDisplayedValue(newValue);
+	}
 
 	public JSoundLooperSliderModel getModel() {
 		return model;

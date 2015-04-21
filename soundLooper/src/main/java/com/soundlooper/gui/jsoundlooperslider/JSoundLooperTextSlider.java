@@ -1,7 +1,6 @@
 package com.soundlooper.gui.jsoundlooperslider;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -36,9 +35,9 @@ public class JSoundLooperTextSlider extends JPanel implements JSoundLooperSlider
 	
 		
 	public JSoundLooperTextSlider() {
-		JSoundLooperSliderSupport.getInstance().addJSoundLooperSliderListener(this);
 		this.setOpaque(false);
 		model = new JSoundLooperSliderModel(this);
+		model.addJSoundLooperSliderListener(this);
 		
 		this.setLayout(new BorderLayout());
 		this.add(getJSoundLooperSlider(), BorderLayout.CENTER);
@@ -195,11 +194,31 @@ protected Integer getValueBetweenMinAndMax() {
 		this.getLabelValue().setText(String.valueOf(value));
 		this.getTextFieldValue().setText(String.valueOf(value));
 	}
+	
+	public boolean isDisplayEditableValue() {
+		return model.isDisplayEditableValue();
+	}
+
+	public void setDisplayEditableValue(final boolean displayEditableValue) {
+		model.setDisplayEditableValue(displayEditableValue);
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				if (displayEditableValue) {
+					JSoundLooperTextSlider.this.add(getLabelValue(), BorderLayout.EAST);
+				} else {
+					JSoundLooperTextSlider.this.remove(getLabelValue());
+					JSoundLooperTextSlider.this.remove(getTextFieldValue());
+				}
+				updateUI();
+			}
+		});
+	}
 
 	@Override
 	public void onValueChange(int newValue) {
 		this.getLabelValue().setText(String.valueOf(newValue));
 		this.getTextFieldValue().setText(String.valueOf(newValue));
-		
 	}
 }

@@ -6,19 +6,16 @@ package com.soundlooper.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.KeyStroke;
-import javax.swing.border.LineBorder;
 
 import org.apache.log4j.Logger;
 
 import com.aned.exception.PlayerException;
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSlider;
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSliderListener;
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSliderModel;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.system.util.StackTracer;
 
@@ -52,7 +49,8 @@ public class PanelOtherControl extends JPanel {
 	/**
 	 * the volume slider
 	 */
-	protected JSlider sliderVolume;
+	//protected JSlider sliderVolume;
+	protected JSoundLooperSlider sliderVolume;
 
 	/**
 	 * the rate slider
@@ -78,13 +76,12 @@ public class PanelOtherControl extends JPanel {
 		this.setOpaque(false);
 		this.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
 
-		JPanel panelVolume = new JPanel();
+		JRoundedPanel panelVolume = new JRoundedPanel();
 		panelVolume.add(new JLabel(ImageGetter.getImageIcon(ImageGetter.ICONE_VOLUME_16)));
 		panelVolume.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
 		panelVolume.add(this.getSliderVolume());
-		panelVolume.setBorder(new LineBorder(Color.BLACK, 1, true));
-		panelVolume.setBackground(new Color(253, 253, 234));
-		panelVolume.setOpaque(true);
+		panelVolume.setBackground(new Color(220, 220, 220));
+		//panelVolume.setOpaque(true);
 
 		this.add(panelVolume);
 		this.add(this.getPanelTimestretch());
@@ -96,23 +93,48 @@ public class PanelOtherControl extends JPanel {
 	 * Get the volume slider
 	 * @return the volume slider
 	 */
-	private JSlider getSliderVolume() {
+//	private JSlider getSliderVolume() {
+//		if (this.sliderVolume == null) {
+//			this.sliderVolume = new JSlider();
+//			this.sliderVolume.setOpaque(false);
+//			this.sliderVolume.setValue(100);
+//			this.sliderVolume.setMaximum(100);
+//			this.sliderVolume.setValueIsAdjusting(false);
+//			this.sliderVolume.setPreferredSize(new Dimension(50, 28));
+//			this.sliderVolume.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "none");
+//			this.sliderVolume.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "none");
+//
+//			this.sliderVolume.addMouseMotionListener(new MouseMotionAdapter() {
+//
+//				@Override
+//				public void mouseDragged(MouseEvent e) {
+//					try {
+//						SoundLooperPlayer.getInstance().setVolume(PanelOtherControl.this.sliderVolume.getValue());
+//					} catch (PlayerException e1) {
+//						PanelOtherControl.this.logger.error(StackTracer.getStackTrace(e1));
+//						PanelOtherControl.this.windowPlayer.onError(e1.getMessage());
+//					}
+//				}
+//			});
+//		}
+//		return this.sliderVolume;
+//	}
+	
+	private JSoundLooperSlider getSliderVolume() {
 		if (this.sliderVolume == null) {
-			this.sliderVolume = new JSlider();
-			this.sliderVolume.setOpaque(false);
-			this.sliderVolume.setValue(100);
-			this.sliderVolume.setMaximum(100);
-			this.sliderVolume.setValueIsAdjusting(false);
+			this.sliderVolume = new JSoundLooperSlider();
+			this.sliderVolume.setModel(new JSoundLooperSliderModel(this));
+			this.sliderVolume.setMaxValue(100);
+			this.sliderVolume.setMinValue(0);
+			this.sliderVolume.addDisplayedValue(0);
+			this.sliderVolume.addDisplayedValue(100);
 			this.sliderVolume.setPreferredSize(new Dimension(50, 28));
-			this.sliderVolume.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "none");
-			this.sliderVolume.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "none");
-
-			this.sliderVolume.addMouseMotionListener(new MouseMotionAdapter() {
-
+			sliderVolume.addJSoundLooperSliderListener(new JSoundLooperSliderListener() {
+				
 				@Override
-				public void mouseDragged(MouseEvent e) {
+				public void onValueChange(int newValue) {
 					try {
-						SoundLooperPlayer.getInstance().setVolume(PanelOtherControl.this.sliderVolume.getValue());
+						SoundLooperPlayer.getInstance().setVolume(newValue);
 					} catch (PlayerException e1) {
 						PanelOtherControl.this.logger.error(StackTracer.getStackTrace(e1));
 						PanelOtherControl.this.windowPlayer.onError(e1.getMessage());
@@ -140,7 +162,7 @@ public class PanelOtherControl extends JPanel {
 	 */
 	public void setVolumePosition(int percent) {
 		this.sliderVolume.setValue(percent);
-
+		
 	}
 
 	/**

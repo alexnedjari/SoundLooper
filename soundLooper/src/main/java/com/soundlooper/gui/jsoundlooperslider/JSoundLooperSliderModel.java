@@ -26,7 +26,9 @@ public class JSoundLooperSliderModel {
 	 */
 	private int value = 0;
 	
-	private JSoundLooperSliderSupport jSoundLooperSliderSupport = JSoundLooperSliderSupport.getInstance();
+	private boolean displayEditableValue = true;
+	
+	private JSoundLooperSliderSupport jSoundLooperSliderSupport = new JSoundLooperSliderSupport();
 	
 	private JComponent component;
 	
@@ -106,6 +108,18 @@ public class JSoundLooperSliderModel {
 	public void changeValue(int value) {
 		this.value = value;
 		jSoundLooperSliderSupport.fireValueChanged(value);
+	}
+
+
+
+	public boolean isDisplayEditableValue() {
+		return displayEditableValue;
+	}
+
+
+
+	public void setDisplayEditableValue(boolean displayEditableValue) {
+		this.displayEditableValue = displayEditableValue;
 	}
 
 }
