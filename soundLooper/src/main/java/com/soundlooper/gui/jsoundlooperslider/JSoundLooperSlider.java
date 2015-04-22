@@ -75,7 +75,15 @@ public class JSoundLooperSlider extends JComponent {
 		model.changeValue(value);
 	}
 	
+	public int getClickGap() {
+		return model.getClickGap();
+	}
 
+
+
+	public void setClickGap(int clickGap) {
+		model.setClickGap(clickGap);
+	}
 	
 	
 	

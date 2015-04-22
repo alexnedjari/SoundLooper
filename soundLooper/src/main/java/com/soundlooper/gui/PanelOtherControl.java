@@ -80,13 +80,13 @@ public class PanelOtherControl extends JPanel {
 		panelVolume.add(new JLabel(ImageGetter.getImageIcon(ImageGetter.ICONE_VOLUME_16)));
 		panelVolume.setLayout(new FlowLayout(FlowLayout.RIGHT, 3, 0));
 		panelVolume.add(this.getSliderVolume());
-		panelVolume.setBackground(new Color(220, 220, 220));
+		panelVolume.setBackground(new Color(220, 225, 230));
 		//panelVolume.setOpaque(true);
 
 		this.add(panelVolume);
 		this.add(this.getPanelTimestretch());
 
-		this.setPreferredSize(new Dimension(300, 28));
+		this.setPreferredSize(new Dimension(325, 28));
 	}
 
 	/**
@@ -128,7 +128,8 @@ public class PanelOtherControl extends JPanel {
 			this.sliderVolume.setMinValue(0);
 			this.sliderVolume.addDisplayedValue(0);
 			this.sliderVolume.addDisplayedValue(100);
-			this.sliderVolume.setPreferredSize(new Dimension(50, 28));
+			this.sliderVolume.setClickGap(10);
+			this.sliderVolume.setPreferredSize(new Dimension(75, 28));
 			sliderVolume.addJSoundLooperSliderListener(new JSoundLooperSliderListener() {
 				
 				@Override

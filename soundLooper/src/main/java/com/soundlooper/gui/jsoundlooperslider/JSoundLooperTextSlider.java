@@ -194,27 +194,6 @@ protected Integer getValueBetweenMinAndMax() {
 		this.getLabelValue().setText(String.valueOf(value));
 		this.getTextFieldValue().setText(String.valueOf(value));
 	}
-	
-	public boolean isDisplayEditableValue() {
-		return model.isDisplayEditableValue();
-	}
-
-	public void setDisplayEditableValue(final boolean displayEditableValue) {
-		model.setDisplayEditableValue(displayEditableValue);
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				if (displayEditableValue) {
-					JSoundLooperTextSlider.this.add(getLabelValue(), BorderLayout.EAST);
-				} else {
-					JSoundLooperTextSlider.this.remove(getLabelValue());
-					JSoundLooperTextSlider.this.remove(getTextFieldValue());
-				}
-				updateUI();
-			}
-		});
-	}
 
 	@Override
 	public void onValueChange(int newValue) {

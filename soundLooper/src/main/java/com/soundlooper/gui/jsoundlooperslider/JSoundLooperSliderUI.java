@@ -8,6 +8,7 @@ import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.SystemColor;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -18,14 +19,16 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionListener, MouseListener {
 
 	private final int SLIDER_HEIGHT = 4;
-	private final int LEFT_MARGIN = 7;
-	private final int RIGHT_MARGIN = 7;
+	private final int LEFT_MARGIN = 15;
+	private final int RIGHT_MARGIN = 15;
+	private final int CURSOR_WIDTH = 14;
 	
 	
 	private JSoundLooperSlider soundLooperSlider;
@@ -41,6 +44,9 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 	
 	//The object that is currently dragged
 	private Object dragElement = null;
+	
+	//slider bound rectangle
+	private Rectangle sliderRectangle = new Rectangle();
 
 	
 	public JSoundLooperSliderUI(JSoundLooperSlider soundLooperSlider) {
@@ -77,7 +83,8 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 		
 		//Slider display
 		g.setColor(Color.GRAY);
-		g.fillRoundRect(LEFT_MARGIN, getSliderY(), getWidhtSlider(), SLIDER_HEIGHT,5,5);
+		sliderRectangle.setBounds(LEFT_MARGIN, getSliderY(), getWidhtSlider(), SLIDER_HEIGHT);
+		g.fillRoundRect(sliderRectangle.x, sliderRectangle.y, sliderRectangle.width, sliderRectangle.height,5,5);
 		
 		//Values displayedMap display
 		g.setColor(Color.BLACK);
@@ -116,12 +123,13 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 		
 		//Cursor display
 		int currentValuePx = getPixelFromValue(this.soundLooperSlider.getValue());
+		int delta = CURSOR_WIDTH / 2;
 		cursor.reset();
-		cursor.addPoint(currentValuePx - LEFT_MARGIN + 1, getSliderY() + 2);
+		cursor.addPoint(currentValuePx - delta + 1, getSliderY() + 2);
 		cursor.addPoint(currentValuePx, getSliderY() + SLIDER_HEIGHT + 5);
-		cursor.addPoint(currentValuePx + RIGHT_MARGIN - 1,getSliderY() + 2);
-		cursor.addPoint(currentValuePx + RIGHT_MARGIN - 1,getSliderY() - 5);
-		cursor.addPoint(currentValuePx - LEFT_MARGIN + 1, getSliderY() - 5);
+		cursor.addPoint(currentValuePx + delta - 1,getSliderY() + 2);
+		cursor.addPoint(currentValuePx + delta - 1,getSliderY() - 5);
+		cursor.addPoint(currentValuePx - delta + 1, getSliderY() - 5);
 		
 		
 		g.setColor(SystemColor.control);
@@ -152,10 +160,13 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 				break;
 			}
 		}
-		
 
 		if (underMouseElementTemp == null && cursor.contains(event.getX(), event.getY())) {
 			underMouseElementTemp = cursor;
+		}
+		
+		if (underMouseElementTemp == null && sliderRectangle.contains(event.getX(), event.getY())) {
+			underMouseElementTemp = sliderRectangle;
 		}
 			
 		this.underMouseElement = underMouseElementTemp;
@@ -188,11 +199,22 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		
+		if (underMouseElement == sliderRectangle) {
+			int clickGap = soundLooperSlider.getModel().getClickGap();
+			if (e.isShiftDown()) {
+				clickGap = clickGap * 3;
+			}
+			if (getValueFromPixel(e.getX()) > soundLooperSlider.getValue()) {
+				soundLooperSlider.changeValue(soundLooperSlider.getValue() + clickGap);
+			} else if (getValueFromPixel(e.getX()) < soundLooperSlider.getValue()) {
+				soundLooperSlider.changeValue(soundLooperSlider.getValue() - clickGap);
+			}
+		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		this.soundLooperSlider.requestFocus();
 		if (valuesRectangleMap.containsValue(underMouseElement)) {
 			Set<Integer> keySet = valuesRectangleMap.keySet();
 			for (Integer integer : keySet) {
@@ -217,7 +239,7 @@ public class JSoundLooperSliderUI extends ComponentUI implements MouseMotionList
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Nothing to do
 		
 	}
 

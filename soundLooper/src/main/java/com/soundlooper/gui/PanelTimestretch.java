@@ -6,9 +6,6 @@ package com.soundlooper.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,7 +37,7 @@ import com.soundlooper.model.SoundLooperPlayer;
  * @author ANEDJARI
  *
  */
-public class PanelTimestretch extends JPanel {
+public class PanelTimestretch extends JRoundedPanel {
 
 	/**
 	 * Default serial for this class
@@ -70,30 +67,15 @@ public class PanelTimestretch extends JPanel {
 		this.add(new JLabel("%"), BorderLayout.WEST);
 		this.add(this.getSoundLooperSlider(), BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(175, 30));
-		//this.setBorder(new LineBorder(Color.BLACK, 1, true));
-		//this.setBackground(new Color(253, 253, 234));
-		this.setBackground(new Color(220, 220, 220));
+		this.setBackground(new Color(220, 225, 230));
 		
 		this.setOpaque(false);
 	}
 	
-	@Override
-	public void paint(Graphics g) {
-		Graphics2D graphics2d = (Graphics2D) g;
-		RenderingHints renderingHints = new RenderingHints(null);
-		renderingHints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		renderingHints.put(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		renderingHints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-		graphics2d.setRenderingHints(renderingHints);
-		g.setColor(new Color(220, 220, 220));
-		g.fillRoundRect(0, 0, this.getWidth(), this.getHeight(), 30, 30);
-		super.paint(g);
-	}
 	
 	public JSoundLooperTextSlider getSoundLooperSlider() {
 		if (soundLooperSlider == null) {
 			soundLooperSlider = new JSoundLooperTextSlider();
-			//this.soundLooperSlider.setPreferredSize(new Dimension(175, 28));
 			soundLooperSlider.setMinValue(50);
 			soundLooperSlider.setMaxValue(200);
 			soundLooperSlider.addDisplayedValue(50);
@@ -110,8 +92,6 @@ public class PanelTimestretch extends JPanel {
 		return soundLooperSlider;
 	}
 
-	
-
 	/**
 	 * set the time stretch slider value (does not apply real timestretch
 	 * @param percent the percent to apply to the slider
@@ -119,6 +99,4 @@ public class PanelTimestretch extends JPanel {
 	public void setTimestrechValue(int percent) {
 		getSoundLooperSlider().setValue(percent);
 	}
-
-	
 }

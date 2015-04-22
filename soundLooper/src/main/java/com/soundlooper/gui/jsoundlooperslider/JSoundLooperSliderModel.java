@@ -26,7 +26,11 @@ public class JSoundLooperSliderModel {
 	 */
 	private int value = 0;
 	
-	private boolean displayEditableValue = true;
+	/**
+	 * The difference of value when user do a click on the slider
+	 */
+	private int clickGap = 1;
+	
 	
 	private JSoundLooperSliderSupport jSoundLooperSliderSupport = new JSoundLooperSliderSupport();
 	
@@ -112,14 +116,15 @@ public class JSoundLooperSliderModel {
 
 
 
-	public boolean isDisplayEditableValue() {
-		return displayEditableValue;
+	public int getClickGap() {
+		return clickGap;
 	}
 
 
 
-	public void setDisplayEditableValue(boolean displayEditableValue) {
-		this.displayEditableValue = displayEditableValue;
+	public void setClickGap(int clickGap) {
+		this.clickGap = clickGap;
 	}
+
 
 }
