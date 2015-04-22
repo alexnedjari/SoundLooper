@@ -3,26 +3,18 @@
  */
 package com.soundlooper.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.KeyStroke;
-import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 
 import org.apache.log4j.Logger;
 
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperSliderListener;
+import com.soundlooper.gui.jsoundlooperslider.JSoundLooperTextSlider;
 import com.soundlooper.model.SoundLooperPlayer;
 
 /**
@@ -45,7 +37,7 @@ import com.soundlooper.model.SoundLooperPlayer;
  * @author ANEDJARI
  *
  */
-public class PanelTimestretch extends JPanel {
+public class PanelTimestretch extends JRoundedPanel {
 
 	/**
 	 * Default serial for this class
@@ -53,49 +45,11 @@ public class PanelTimestretch extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * the rate slider
-	 */
-	protected JSlider sliderTimestretch;
-
-	/**
-	 * the button to apply a 50% timeStretch
-	 */
-	protected JButton buttonTimestretch50;
-
-	/**
-	 * the button to apply a 75% timeStretch
-	 */
-	protected JButton buttonTimestretch75;
-
-	/**
-	 * the button to apply a 100% timeStretch
-	 */
-	protected JButton buttonTimestretch100;
-
-	/**
-	 * the button to apply a 150% timeStretch
-	 */
-	protected JButton buttonTimestretch150;
-
-	/**
-	 * the button to apply a 200% timeStretch
-	 */
-	protected JButton buttonTimestretch200;
-
-	/**
-	 * Speed combo box
-	 */
-	protected JComboBox comboBoxVitesse;
-
-	/**
-	 * The panel that contain the buttons to change timestretch
-	 */
-	protected JPanel panelButtonTimestretch;
-
-	/**
 	 * The panel that contain the slider
 	 */
 	protected JPanel panelSilderTimestretch;
+	
+	protected JSoundLooperTextSlider soundLooperSlider;
 
 	/**
 	 * Logger for this class
@@ -106,46 +60,36 @@ public class PanelTimestretch extends JPanel {
 	 * Get the control panel
 	 */
 	public PanelTimestretch() {
-		this.setLayout(new FlowLayout(FlowLayout.LEFT, 3, 0));
-		this.add(new JLabel("%"));
-		this.add(this.getSliderTimestretch());
-		this.add(this.getComboBoxVitesse());
+		BorderLayout mgr = new BorderLayout();
+		mgr.setHgap(5);
+		this.setLayout(mgr);
+		this.setBorder(new EmptyBorder(0, 5, 0, 5));
+		this.add(new JLabel("%"), BorderLayout.WEST);
+		this.add(this.getSoundLooperSlider(), BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(175, 30));
-		this.setBorder(new LineBorder(Color.BLACK, 1, true));
-		this.setBackground(new Color(253, 253, 234));
-		this.setOpaque(true);
+		this.setBackground(new Color(220, 225, 230));
+		
+		this.setOpaque(false);
 	}
-
-	/**
-	 * Get the volume slider
-	 * @return the volume slider
-	 */
-	private JSlider getSliderTimestretch() {
-		if (this.sliderTimestretch == null) {
-			this.sliderTimestretch = new JSlider();
-			this.sliderTimestretch.setOpaque(false);
-			this.sliderTimestretch.setValue(100);
-			this.sliderTimestretch.setMaximum(200);
-			this.sliderTimestretch.setMinimum(50);
-			this.sliderTimestretch.setValueIsAdjusting(false);
-			this.sliderTimestretch.setPreferredSize(new Dimension(100, 30));
-			this.sliderTimestretch.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "none");
-			this.sliderTimestretch.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "none");
-			this.sliderTimestretch.addMouseMotionListener(new MouseMotionAdapter() {
+	
+	
+	public JSoundLooperTextSlider getSoundLooperSlider() {
+		if (soundLooperSlider == null) {
+			soundLooperSlider = new JSoundLooperTextSlider();
+			soundLooperSlider.setMinValue(50);
+			soundLooperSlider.setMaxValue(200);
+			soundLooperSlider.addDisplayedValue(50);
+			soundLooperSlider.addDisplayedValue(100);
+			soundLooperSlider.addDisplayedValue(200);
+			soundLooperSlider.addJSoundLooperSliderListener(new JSoundLooperSliderListener() {
+				
 				@Override
-				public void mouseDragged(MouseEvent e) {
-					SoundLooperPlayer.getInstance().setTimestretch(PanelTimestretch.this.sliderTimestretch.getValue());
-				}
-			});
-
-			this.sliderTimestretch.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mouseClicked(MouseEvent e) {
-					SoundLooperPlayer.getInstance().setTimestretch(PanelTimestretch.this.sliderTimestretch.getValue());
+				public void onValueChange(int newValue) {
+					SoundLooperPlayer.getInstance().setTimestretch(newValue);
 				}
 			});
 		}
-		return this.sliderTimestretch;
+		return soundLooperSlider;
 	}
 
 	/**
@@ -153,40 +97,6 @@ public class PanelTimestretch extends JPanel {
 	 * @param percent the percent to apply to the slider
 	 */
 	public void setTimestrechValue(int percent) {
-		PanelTimestretch.this.getSliderTimestretch().setValue(percent);
-		this.comboBoxVitesse.getEditor().setItem(new Integer(percent));
-	}
-
-	/**
-	 * Get the speed combo box
-	 * @return the combo box
-	 */
-	protected JComboBox getComboBoxVitesse() {
-		if (this.comboBoxVitesse == null) {
-			this.comboBoxVitesse = new JComboBox(new Integer[] { Integer.valueOf(50), Integer.valueOf(75), Integer.valueOf(100), Integer.valueOf(150),
-					Integer.valueOf(200) });
-			SoundLooperComboBoxEditor anEditor = new SoundLooperComboBoxEditor();
-			anEditor.setMaxLength(3);
-			anEditor.setNumericOnly(true);
-			this.comboBoxVitesse.setEditor(anEditor);
-			this.comboBoxVitesse.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent e) {
-					if (e.getStateChange() == ItemEvent.SELECTED) {
-						try {
-							SoundLooperPlayer.getInstance().setTimestretch((new Integer(e.getItem().toString())).intValue());
-						} catch (NumberFormatException e2) {
-							//La valeur saisie n'est pas un nombre, on ignore
-						}
-					}
-				}
-			});
-
-			this.comboBoxVitesse.setPreferredSize(new Dimension(50, 20));
-			this.comboBoxVitesse.setEditable(true);
-			this.comboBoxVitesse.setSelectedItem(new Integer(100));
-		}
-		return this.comboBoxVitesse;
+		getSoundLooperSlider().setValue(percent);
 	}
 }
