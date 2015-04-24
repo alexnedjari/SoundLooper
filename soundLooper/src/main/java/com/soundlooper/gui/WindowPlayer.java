@@ -227,10 +227,10 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 		((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_M, 0), AddMarkAction.class.getName());
 		((JComponent) this.getContentPane()).getActionMap().put(AddMarkAction.class.getName(), new AddMarkAction(this));
 		
-		((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), MoveInSongAction.class.getName()+"L");
+		((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, true), MoveInSongAction.class.getName()+"L");
 		((JComponent) this.getContentPane()).getActionMap().put(MoveInSongAction.class.getName()+"L", new MoveInSongAction(-3000));
 		
-		((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), MoveInSongAction.class.getName()+"R");
+		((JComponent) this.getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, true), MoveInSongAction.class.getName()+"R");
 		((JComponent) this.getContentPane()).getActionMap().put(MoveInSongAction.class.getName()+"R", new MoveInSongAction(3000));
 
 		WindowPlayer.logger.info("Launching " + SoundLooperProperties.getInstance().getApplicationPresentation());
@@ -508,6 +508,7 @@ public class WindowPlayer extends JFrame implements SongListener,MarkListener, P
 						break;
 					case PlayerState.STATE_PREPARING_PAUSE:
 					case PlayerState.STATE_PAUSED:
+					case PlayerState.STATE_SONG_LOADED:
 						WindowPlayer.this.setStatePaused();
 						break;
 					case PlayerState.STATE_PREPARING_PLAY:
