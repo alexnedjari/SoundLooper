@@ -1,0 +1,53 @@
+<project xmlns:fx="javafx:com.sun.javafx.tools.ant">
+	
+	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+						     uri="javafx:com.sun.javafx.tools.ant"
+						     classpath=".:C:\Program Files (x86)\Java\jdk1.8.0_60\lib\ant-javafx.jar"/>  	
+	
+	<target name="deploy" description="Package the application">
+		<echo>DEPLOY ${version}</echo> 
+		<echo>BASE DIR : ${basedir}</echo>
+
+		<echo message="Expand script file" />
+		<delete file="package/windows/SoundLooper.iss" failonerror="false"/>
+		<copy file="package/windows/SoundLooper.base.iss" tofile="package/windows/SoundLooper.iss">
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+		
+		<echo message="Expand properties file" />
+		<delete file="package/common/SoundLooper.properties" failonerror="false"/>
+		<copy file="package/common/SoundLooper.base.properties" tofile="package/common/SoundLooper.properties">
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+		
+		
+		<fx:deploy width="800" height="600" outdir="dist"  
+		        outfile="SoundLooper" nativeBundles="installer" verbose="true" >
+		    <fx:application name="SoundLooper"
+		            mainClass="com.soundlooper.system.SoundLooper"/>
+		    <fx:resources>
+		        <fx:fileset dir="${basedir}/../target/" includes="SoundLooper-${version}.jar"/>
+		    	<fx:fileset dir="${basedir}/../target/" includes="dependency-jars/*.*"/>
+		    	<fx:fileset dir="${basedir}/package/common/" includes="LICENCE.txt"/>
+		    	<fx:fileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
+		    	<fx:fileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
+		    	<fx:fileset dir="${basedir}/../target/classes" includes="log4j2.xml"/>
+		    </fx:resources>
+			<fx:platform basedir="${basedir}/jdk1.8.0_77-32"/>
+			<fx:info title="SoundLooper" vendor="Alexandre NEDJARI" />
+			<fx:preferences menu="true" shortcut="true"/>
+		</fx:deploy> 
+	</target>
+	
+	<target name="install-maven" description="Launch install target on soundLooper project">
+		<exec dir=".." executable="cmd">
+		        <arg value="/C"/>
+		        <arg value="mvn"/>
+		        <arg line="clean install" />
+		</exec>
+	</target>
+</project>

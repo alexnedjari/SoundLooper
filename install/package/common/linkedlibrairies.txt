@@ -1,0 +1,6 @@
+Ce logiciel utilise les librairies suivantes :
+ - h2 1.3.175
+ - nativeFmodEx 1.5.0
+ - log4j 2.4.1
+ - common-io 2.5
+ - common-lang3 3.4

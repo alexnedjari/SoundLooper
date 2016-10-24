@@ -1,0 +1,3 @@
+.valuedslider {
+   -fx-skin: "com.guigarage.valuedslider.ValuedSliderControlSkin";
+}

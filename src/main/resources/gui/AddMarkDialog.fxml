@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.collections.FXCollections ?>
+
+<BorderPane onKeyReleased="#onKeyReleased" prefHeight="91.0" prefWidth="327.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.AddMarkController">
+   <center>
+      <ComboBox fx:id="comboBoxName" editable="true" prefWidth="300.0" BorderPane.alignment="CENTER">
+      	  
+      </ComboBox>
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="34.0" prefWidth="327.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="labelResultat" layoutX="7.0" layoutY="3.0" prefHeight="21.0" prefWidth="228.0" text="Label" />
+            <Button layoutX="259.0" layoutY="-2.0" mnemonicParsing="false" onAction="#validate" prefHeight="31.0" prefWidth="55.0" AnchorPane.rightAnchor="13.0">
+               <styleClass>
+                  <String fx:value="toolbar-button" />
+                  <String fx:value="validateButton" />
+               </styleClass></Button>
+         </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>
