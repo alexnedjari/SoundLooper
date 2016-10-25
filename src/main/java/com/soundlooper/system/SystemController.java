@@ -42,6 +42,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.soundlooper.audio.player.Player.PlayerState;
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.exception.SoundLooperException;
@@ -61,6 +64,8 @@ import com.soundlooper.system.search.Searchable;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class SystemController {
+
+	private Logger logger = LogManager.getLogger(this.getClass());
 
 	@FXML
 	private Button setBeginAlignmentButton;
@@ -742,5 +747,33 @@ public class SystemController {
 
 	public Label getLabelState() {
 		return labelState;
+	}
+
+	@FXML
+	public void openAboutDialog() {
+		logger.info("Open the about dialog");
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/gui/aboutFrame.fxml"));
+		loader.setResources(MessageReader.getInstance().getBundle());
+
+		try {
+			loader.load();
+
+			Parent root = loader.getRoot();
+
+			Stage modalDialog = new Stage(StageStyle.UTILITY);
+			modalDialog.initOwner(SoundLooper.getInstance().getPrimaryStage());
+			modalDialog.setTitle(MessageReader.getInstance().getMessage("menu.about"));
+			modalDialog.setResizable(false);
+
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add("/style/application.css");
+
+			modalDialog.setScene(scene);
+
+			modalDialog.showAndWait();
+		} catch (IOException e) {
+			throw new SoundLooperRuntimeException("Unable to open about dialog", e);
+		}
 	}
 }

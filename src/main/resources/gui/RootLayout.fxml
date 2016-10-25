@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 <?import com.soundlooper.gui.customComponent.playerView.*?>
+<?import com.soundlooper.gui.customComponent.timeselection.*?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.control.Button?>
 
@@ -46,7 +47,7 @@
                     <items>
                       <MenuItem mnemonicParsing="false" text="%menu.help" />
                         <MenuItem mnemonicParsing="false" text="%menu.help.shortcut" />
-                        <MenuItem mnemonicParsing="false" text="%menu.about" />
+                        <MenuItem mnemonicParsing="false" text="%menu.about" onAction="#openAboutDialog"/>
                     </items>
                   </Menu>
               </menus>
@@ -153,10 +154,13 @@
       </AnchorPane>
    </bottom>
    <center>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <BorderPane BorderPane.alignment="CENTER">
          <center>
             <PlayerView fx:id="playerView" />
          </center>
+         <bottom>
+         	<TimeSelectionView fx:id="timeSelectionView" />
+         </bottom>
       </BorderPane>
    </center>
 </BorderPane>
