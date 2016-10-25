@@ -7,7 +7,7 @@ import com.soundlooper.model.SoundLooperPlayer;
 
 public class TimeSelectionView extends Control {
 
-	private SoundLooperPlayer soundLooperPlayer;
+	private SoundLooperPlayer soundLooperPlayer = SoundLooperPlayer.getInstance();
 
 	@Override
 	protected Skin<?> createDefaultSkin() {
@@ -21,10 +21,6 @@ public class TimeSelectionView extends Control {
 
 	public SoundLooperPlayer getSoundLooperPlayer() {
 		return soundLooperPlayer;
-	}
-
-	public void setSoundLooperPlayer(SoundLooperPlayer soundLooperPlayer) {
-		this.soundLooperPlayer = soundLooperPlayer;
 	}
 
 }

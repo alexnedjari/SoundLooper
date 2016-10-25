@@ -51,6 +51,7 @@ import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.exception.SoundLooperRuntimeException;
 import com.soundlooper.gui.customComponent.playerView.PlayerView;
 import com.soundlooper.gui.customComponent.potentiometer.Potentiometer;
+import com.soundlooper.gui.customComponent.timeselection.TimeSelectionView;
 import com.soundlooper.model.SoundLooperObject;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
@@ -118,8 +119,13 @@ public class SystemController {
 	@FXML
 	private PlayerView playerView;
 
+	@FXML
+	private TimeSelectionView timeSelectionView;
+
 	public void init() {
 		initInterfaceState();
+
+		// --------------------------------------------------
 
 		timestretchPotentiometer.setMin(50);
 		timestretchPotentiometer.setMax(200);
@@ -740,6 +746,11 @@ public class SystemController {
 		try {
 			System.out.println("SAVE");
 			SoundLooperPlayer.getInstance().saveCurrentMark();
+
+			// The begin or end of a mark was changed, we need to refresh list
+			// to update
+			// list entries time
+			updateMarkList();
 		} catch (SoundLooperException e) {
 			MessagingUtil.displayError("Impossible de sauvegarder le marqueur", e);
 		}
