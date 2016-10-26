@@ -8,6 +8,10 @@ public class TimeDigitView extends Control {
 
 	private SimpleIntegerProperty digit = new SimpleIntegerProperty();
 
+	private boolean selected;
+
+	private TimeTextFieldView parentControl;
+
 	@Override
 	protected Skin<?> createDefaultSkin() {
 		return new TimeDigitViewSkin(this);
@@ -28,6 +32,27 @@ public class TimeDigitView extends Control {
 
 	public SimpleIntegerProperty digitProperty() {
 		return digit;
+	}
+
+	public TimeDigitView(TimeTextFieldView parentControl) {
+		super();
+		this.parentControl = parentControl;
+	}
+
+	public boolean isSelected() {
+		return selected;
+	}
+
+	public void setSelected(boolean selected) {
+		this.selected = selected;
+	}
+
+	public TimeTextFieldView getParentControl() {
+		return parentControl;
+	}
+
+	public void setParentControl(TimeTextFieldView parentControl) {
+		this.parentControl = parentControl;
 	}
 
 }

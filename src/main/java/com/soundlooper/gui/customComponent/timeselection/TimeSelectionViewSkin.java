@@ -40,6 +40,9 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 	protected TimeSelectionViewSkin(TimeSelectionView control) {
 		super(control);
 
+		// borderPane.setBackground(new Background(new BackgroundFill(Color.RED,
+		// CornerRadii.EMPTY, Insets.EMPTY)));
+
 		borderPane.setLeft(timeTextFieldBegin);
 		borderPane.setRight(timeTextFieldEnd);
 

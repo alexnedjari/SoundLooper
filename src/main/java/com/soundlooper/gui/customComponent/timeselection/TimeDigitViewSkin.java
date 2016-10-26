@@ -1,7 +1,14 @@
 package com.soundlooper.gui.customComponent.timeselection;
 
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 
 public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
@@ -16,10 +23,24 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 		label.resize(10, 20);
 		getChildren().add(label);
 		label.textProperty().bind(control.digitProperty().asString());
+
+		control.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				control.getParentControl().requestFocus();
+				control.getParentControl().select(control);
+			};
+		});
 	}
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+		System.out.println("LAYOUT DIGIT");
+		if (getSkinnable().isSelected()) {
+			label.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+		} else {
+			label.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+		}
 	}
 
 }

@@ -1,5 +1,8 @@
 package com.soundlooper.gui.customComponent.timeselection;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -10,7 +13,7 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
@@ -19,20 +22,40 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 	private static final int MILLISECOND_SECOND = 1000;
 	private static final int MILLISECOND_MINUT = 60000;
 
-	FlowPane flowPane = new FlowPane();
+	GridPane flowPane = new GridPane();
 
-	TimeDigitView digitMinutDecade = new TimeDigitView();
-	TimeDigitView digitMinutUnit = new TimeDigitView();
+	List<TimeDigitView> listDigit = new ArrayList<>();
 
-	TimeDigitView digitSecondDecade = new TimeDigitView();
-	TimeDigitView digitSecondUnit = new TimeDigitView();
+	TimeDigitView digitMinutDecade;
+	TimeDigitView digitMinutUnit;
 
-	TimeDigitView digitMillisecondHundred = new TimeDigitView();
-	TimeDigitView digitMillisecondDecade = new TimeDigitView();
-	TimeDigitView digitMillisecondUnit = new TimeDigitView();
+	TimeDigitView digitSecondDecade;
+	TimeDigitView digitSecondUnit;
+
+	TimeDigitView digitMillisecondHundred;
+	TimeDigitView digitMillisecondDecade;
+	TimeDigitView digitMillisecondUnit;
 
 	protected TimeTextFieldViewSkin(TimeTextFieldView control) {
 		super(control);
+
+		digitMinutDecade = new TimeDigitView(control);
+		digitMinutUnit = new TimeDigitView(control);
+
+		digitSecondDecade = new TimeDigitView(control);
+		digitSecondUnit = new TimeDigitView(control);
+
+		digitMillisecondHundred = new TimeDigitView(control);
+		digitMillisecondDecade = new TimeDigitView(control);
+		digitMillisecondUnit = new TimeDigitView(control);
+
+		listDigit.add(digitMinutDecade);
+		listDigit.add(digitMinutUnit);
+		listDigit.add(digitSecondDecade);
+		listDigit.add(digitSecondUnit);
+		listDigit.add(digitMillisecondHundred);
+		listDigit.add(digitMillisecondDecade);
+		listDigit.add(digitMillisecondUnit);
 
 		Label labelSeparator1 = new Label(" :");
 		// labelSeparator1.setBackground(new Background(new
@@ -43,7 +66,9 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		Label labelSeparator2 = new Label(" :");
 		labelSeparator2.resize(10, 20);
 
-		flowPane.resize(73, 23);
+		// flowPane.setBackground(new Background(new BackgroundFill(Color.BLUE,
+		// CornerRadii.EMPTY, Insets.EMPTY)));
+		flowPane.resize(76, 23);
 		flowPane.setPadding(new Insets(0, 5, 0, 5));
 		flowPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5),
 				new BorderWidths(1), new Insets(0))));
@@ -59,6 +84,18 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		flowPane.getChildren().add(digitMillisecondHundred);
 		flowPane.getChildren().add(digitMillisecondDecade);
 		flowPane.getChildren().add(digitMillisecondUnit);
+
+		GridPane.setConstraints(digitMinutDecade, 0, 0);
+		GridPane.setConstraints(digitMinutUnit, 1, 0);
+		GridPane.setConstraints(labelSeparator1, 2, 0);
+
+		GridPane.setConstraints(digitSecondDecade, 3, 0);
+		GridPane.setConstraints(digitSecondUnit, 4, 0);
+		GridPane.setConstraints(labelSeparator2, 5, 0);
+
+		GridPane.setConstraints(digitMillisecondHundred, 6, 0);
+		GridPane.setConstraints(digitMillisecondDecade, 7, 0);
+		GridPane.setConstraints(digitMillisecondUnit, 8, 0);
 		getChildren().add(flowPane);
 
 		getSkinnable().timeProperty().addListener(new ChangeListener<Number>() {
@@ -66,6 +103,15 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 			public void changed(ObservableValue<? extends Number> obs, Number oldValue, Number newValue) {
 				if (newValue != oldValue) {
 					applyTime();
+				}
+			}
+		});
+
+		getSkinnable().focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (!newValue) {
+					select(null);
 				}
 			}
 		});
@@ -107,6 +153,20 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+	}
+
+	public void select(TimeDigitView control) {
+		for (TimeDigitView timeDigitView : listDigit) {
+			if (timeDigitView.isSelected()) {
+				timeDigitView.setSelected(false);
+				timeDigitView.forceLayout();
+			}
+		}
+		if (control != null) {
+			control.setSelected(true);
+			control.forceLayout();
+		}
+
 	}
 
 }
