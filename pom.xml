@@ -57,6 +57,11 @@
 	    <artifactId>resteasy-client</artifactId>
 	    <version>3.0.18.Final</version>
 	</dependency>
+	<dependency>
+	    <groupId>org.pegdown</groupId>
+	    <artifactId>pegdown</artifactId>
+	    <version>1.6.0</version>
+	</dependency>
   </dependencies>
 
   <build>
@@ -109,7 +114,7 @@
 						<goal>copy-dependencies</goal>
 					</goals>
 					<configuration>
-						<includeGroupIds>javax.ws.rs,org.apache.logging.log4j,soundLooper,com.h2database,nativefmod,commons-io,org.apache.commons</includeGroupIds>
+						<includeGroupIds>javax.ws.rs,org.apache.logging.log4j,soundLooper,com.h2database,nativefmod,commons-io,org.apache.commons,org.pegdown</includeGroupIds>
 						<outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
 					</configuration>
 				  </execution>

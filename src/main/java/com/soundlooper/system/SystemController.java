@@ -787,4 +787,44 @@ public class SystemController {
 			throw new SoundLooperRuntimeException("Unable to open about dialog", e);
 		}
 	}
+
+	@FXML
+	public void openHelpDialog() {
+		openHelpDialog("help/help.md");
+	}
+
+	@FXML
+	public void openShortcutDialog() {
+		openHelpDialog("help/shortcut.md");
+	}
+
+	private void openHelpDialog(String fileName) {
+		logger.info("Open the help dialog");
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/gui/helpFrame.fxml"));
+		loader.setResources(MessageReader.getInstance().getBundle());
+
+		try {
+			loader.load();
+			HelpController controller = loader.<HelpController> getController();
+			controller.loadContent(fileName);
+
+			Parent root = loader.getRoot();
+
+			Stage modalDialog = new Stage(StageStyle.UTILITY);
+			modalDialog.initOwner(SoundLooper.getInstance().getPrimaryStage());
+			modalDialog.setTitle(MessageReader.getInstance().getMessage("menu.help"));
+			modalDialog.setResizable(false);
+
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add("/style/application.css");
+
+			modalDialog.setScene(scene);
+
+			modalDialog.showAndWait();
+		} catch (IOException e) {
+			throw new SoundLooperRuntimeException("Unable to open help dialog", e);
+		}
+	}
+
 }
