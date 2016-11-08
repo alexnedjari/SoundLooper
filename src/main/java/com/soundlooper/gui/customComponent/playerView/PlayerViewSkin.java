@@ -44,6 +44,13 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 	private Logger logger = LogManager.getLogger(this.getClass());
 
+	ChangeListener<Number> markTimeListener = new ChangeListener<Number>() {
+		@Override
+		public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+			getSkinnable().forceLayout();
+		}
+	};
+
 	private Rectangle loopBarBackground;
 	private Rectangle loopBarForeground;
 
@@ -99,22 +106,14 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		SoundLooperPlayer soundLooperPlayer = this.getSkinnable().getSoundLooperPlayer();
 
-		soundLooperPlayer.stateProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if (newValue.intValue() == PlayerState.STATE_PLAYING) {
-					// When play is lanch, focus on player to activate shortcuts
-					control.requestFocus();
-				}
-			};
-		});
-
 		soundLooperPlayer.markProperty().addListener(new ChangeListener<Mark>() {
 			@Override
 			public void changed(ObservableValue<? extends Mark> observable, Mark oldValue, Mark newValue) {
 				PlayerViewSkin.this.getSkinnable().forceLayout();
+				updateMarkTimeListener(oldValue, newValue);
 			};
 		});
+		updateMarkTimeListener(null, soundLooperPlayer.getCurrentMark());
 
 		soundLooperPlayer.currentSongImageProperty().addListener(new InvalidationListener() {
 			@Override
@@ -188,6 +187,19 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			invalidHeight = true;
 		});
 		startTimer();
+	}
+
+	protected void updateMarkTimeListener(Mark oldValue, Mark newValue) {
+
+		if (oldValue != null) {
+			oldValue.beginMillisecondProperty().removeListener(markTimeListener);
+			oldValue.endMillisecondProperty().removeListener(markTimeListener);
+		}
+		if (newValue != null) {
+			newValue.beginMillisecondProperty().addListener(markTimeListener);
+			newValue.endMillisecondProperty().addListener(markTimeListener);
+		}
+
 	}
 
 	private double getScreenRight(double contentWidth) {

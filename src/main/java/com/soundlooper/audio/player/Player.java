@@ -90,6 +90,8 @@ public class Player {
 	 */
 	private ThreadImageGenerator threadGenerationImage;
 
+	protected static final int MINIMAL_MS_LOOP = 100;
+
 	/**
 	 * Private constructor
 	 */

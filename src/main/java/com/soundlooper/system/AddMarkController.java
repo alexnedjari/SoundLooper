@@ -33,24 +33,16 @@ public class AddMarkController {
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.break"));
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.outro"));
 
-		stage.getScene().setOnKeyReleased(new EventHandler<KeyEvent>() {
+		stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
 				if (e.getCode() == KeyCode.ENTER) {
 					validate();
-				} else if (e.getCode() == KeyCode.ESCAPE || e.getCode() == KeyCode.RIGHT) {
+				} else if (e.getCode() == KeyCode.ESCAPE) {
 					cancel();
 				}
 			}
 		});
-
-		// comboBoxName.getEditor().addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-		// if (e.getCode() == KeyCode.ENTER) {
-		// validate();
-		// } else if (e.getCode() == KeyCode.ESCAPE) {
-		// cancel();
-		// }
-		// });
 
 		labelResultat.textProperty().bindBidirectional(comboBoxName.getEditor().textProperty(),
 				new StringConverter<String>() {
@@ -74,22 +66,10 @@ public class AddMarkController {
 		return result;
 	}
 
-	@FXML
-	public void validate() {
+	private void validate() {
 		if (!"".equals(labelResultat.getText())) {
 			result = labelResultat.getText();
 			cancel();
-		}
-	}
-
-	@FXML
-	public void onKeyReleased(KeyEvent event) {
-		if (event.getCode() == KeyCode.ESCAPE) {
-			cancel();
-		} else if (event.getCode() == KeyCode.ENTER) {
-			if (!labelResultat.getText().equals("")) {
-				validate();
-			}
 		}
 	}
 

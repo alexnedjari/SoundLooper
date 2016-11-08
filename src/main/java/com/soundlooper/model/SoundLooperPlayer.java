@@ -243,13 +243,16 @@ public class SoundLooperPlayer extends Player {
 
 		if (mark != null) {
 			logger.info("Set current mark : " + mark.getName());
-			// PB actuel. Le raffraichissement se fait sur le mark.set
-			// alors que les loop points sont affectés après
 
 			Mark clone = mark.clone();
-			// setLoopPointBegin(clone.getBeginMillisecond());
-			// setLoopPointEnd(clone.getEndMillisecond());
 			applyLoopPoints(clone.getBeginMillisecond(), clone.getEndMillisecond());
+
+			// the mark is first set to null, so, if the mark was the same than
+			// the old one, the binded properties will be notified.
+			// Usefull if a mark is modified but not saved. If the user select
+			// the same mark, the binded properties will get back the persisted
+			// state of the mark
+			SoundLooperPlayer.this.mark.set(null);
 			SoundLooperPlayer.this.mark.set(clone);
 			isCurrentMarkDirty.bind(getCurrentMark().dirtyProperty());
 			isCurrentMarkEditable.bind(getCurrentMark().editableProperty());
@@ -358,15 +361,21 @@ public class SoundLooperPlayer extends Player {
 
 		// création du marqueur par défaut
 		try {
-			Mark mark = new Mark(getValidNameForMark(getSong(), "Piste complète"), 0, getCurrentSound().getDuration(),
-					getSong(), false);
-			mark.setDirty(false);
-			this.selectMark(mark);
+			String defaultMarkName = "Piste complète";
+			if (getSong().getMarks().get(defaultMarkName) == null) {
+				// If the user load a favorite song 1, default mark will be
+				// created on it. The user then get on a song2, and load again
+				// Song 1. The song 1 it getted from favorite list, where it
+				// already has the default mark
+				Mark mark = new Mark(getValidNameForMark(getSong(), defaultMarkName), 0, getCurrentSound()
+						.getDuration(), getSong(), false);
+				mark.setDirty(false);
+				this.selectMark(mark);
+			}
 		} catch (SoundLooperObjectAlreadyExistsException e) {
 			// Impossible case
 			throw new SoundLooperRuntimeException("Unable to create default mark", e);
 		}
-
 	}
 
 	public void selectDefaultMark() throws PlayerException {
@@ -422,21 +431,53 @@ public class SoundLooperPlayer extends Player {
 
 	public void setLoopPointEnd(int position) throws PlayerException {
 		Mark currentMark = this.getCurrentMark();
-		if (currentMark != null) {
+		if (isSoundInitialized() && currentMark != null) {
+			if (position > getCurrentSound().getDuration()) {
+				position = getCurrentSound().getDuration();
+			}
+
+			if (position < getLoopPointBeginMillisecond() + MINIMAL_MS_LOOP) {
+				position = getLoopPointBeginMillisecond() + MINIMAL_MS_LOOP;
+			}
 			setLoopPoints(this.getCurrentMark().getBeginMillisecond(), position);
 		}
 	}
 
 	public void setLoopPointBegin(int position) throws PlayerException {
 		Mark currentMark = this.getCurrentMark();
-		if (currentMark != null) {
+		if (isSoundInitialized() && currentMark != null) {
+			if (position < 0) {
+				position = 0;
+			}
+
+			if (position > getLoopPointEndMillisecond() - MINIMAL_MS_LOOP) {
+				position = getLoopPointEndMillisecond() - MINIMAL_MS_LOOP;
+			}
 			setLoopPoints(position, this.getCurrentMark().getEndMillisecond());
 		}
 	}
 
 	public void setLoopPoints(int beginPosition, int endPosition) throws PlayerException {
 		Mark currentMark = this.getCurrentMark();
-		if (currentMark != null) {
+		if (isSoundInitialized() && currentMark != null) {
+			if (beginPosition < 0) {
+				beginPosition = 0;
+			}
+
+			if (endPosition > getCurrentSound().getDuration()) {
+				beginPosition = getCurrentSound().getDuration();
+			}
+
+			// Unable to know if the begin or the end was moved, arbitrary try
+			// first to move the begin one
+			if (beginPosition > endPosition) {
+				if (endPosition > MINIMAL_MS_LOOP) {
+					beginPosition = endPosition - MINIMAL_MS_LOOP;
+				} else {
+					endPosition = beginPosition + MINIMAL_MS_LOOP;
+				}
+			}
+
 			applyLoopPoints(beginPosition, endPosition);
 			currentMark.setLoopPoints(beginPosition, endPosition);
 		}
@@ -449,7 +490,7 @@ public class SoundLooperPlayer extends Player {
 		new ThreadImageGenerator(SoundLooperPlayer.getInstance().getCurrentSound(), new Consumer<File>() {
 			@Override
 			public void accept(File file) {
-				System.out.println("Image " + file.getAbsolutePath() + " générée");
+				logger.info("Image " + file.getAbsolutePath() + " generated");
 				currentSongImage.set(file);
 			}
 		}).start();

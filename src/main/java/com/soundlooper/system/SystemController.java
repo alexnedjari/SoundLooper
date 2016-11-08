@@ -42,18 +42,24 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.soundlooper.audio.player.Player.PlayerState;
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.exception.SoundLooperException;
 import com.soundlooper.exception.SoundLooperRuntimeException;
 import com.soundlooper.gui.customComponent.playerView.PlayerView;
 import com.soundlooper.gui.customComponent.potentiometer.Potentiometer;
+import com.soundlooper.gui.customComponent.timeselection.TimeSelectionView;
 import com.soundlooper.model.SoundLooperObject;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.model.tag.Tag;
 import com.soundlooper.service.entite.song.SongService;
+import com.soundlooper.system.handler.NumericFieldEventFilter;
+import com.soundlooper.system.handler.NumericFieldEventHandler;
 import com.soundlooper.system.preferences.Preferences;
 import com.soundlooper.system.preferences.SoundLooperProperties;
 import com.soundlooper.system.preferences.recentfile.RecentFile;
@@ -61,6 +67,8 @@ import com.soundlooper.system.search.Searchable;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class SystemController {
+
+	private Logger logger = LogManager.getLogger(this.getClass());
 
 	@FXML
 	private Button setBeginAlignmentButton;
@@ -113,8 +121,13 @@ public class SystemController {
 	@FXML
 	private PlayerView playerView;
 
+	@FXML
+	private TimeSelectionView timeSelectionView;
+
 	public void init() {
 		initInterfaceState();
+
+		// --------------------------------------------------
 
 		timestretchPotentiometer.setMin(50);
 		timestretchPotentiometer.setMax(200);
@@ -125,6 +138,8 @@ public class SystemController {
 		spinnerTimestretch.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 200, 100, 5));
 		spinnerTimestretch.getValueFactory().valueProperty()
 				.bindBidirectional((Property) SoundLooperPlayer.getInstance().timeStretchProperty());
+		spinnerTimestretch.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
+		spinnerTimestretch.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
 
 		// -----------------------------------------------------
 		volumePotentiometer.setMin(0);
@@ -135,15 +150,8 @@ public class SystemController {
 		spinnerVolume.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100, 5));
 		spinnerVolume.getValueFactory().valueProperty()
 				.bindBidirectional((Property) SoundLooperPlayer.getInstance().volumeProperty());
-		spinnerVolume.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (!event.getCharacter().matches("[1-9]")) {
-					event.consume();
-				}
-			}
-		});
+		spinnerVolume.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
+		spinnerVolume.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
 
 		// --------------------------------------------
 		favoriteMenuButton.showingProperty().addListener(new ChangeListener<Boolean>() {
@@ -167,15 +175,12 @@ public class SystemController {
 		SoundLooperPlayer.getInstance().songProperty().addListener(new ChangeListener<Song>() {
 			@Override
 			public void changed(ObservableValue<? extends Song> observable, Song oldSong, Song newSong) {
-				System.out.println("changement chanson");
 
 				if (oldSong != null) {
 					// oldSong.isFavoriteProperty().unbindBidirectional(
 					// favoriteButton.selectedProperty());
 					favoriteButton.selectedProperty().unbindBidirectional(oldSong.isFavoriteProperty());
 				}
-				System.out.println("Favoris de la chanson " + newSong.getFile().getName() + " : "
-						+ newSong.isFavorite());
 				favoriteButton.selectedProperty().bindBidirectional(newSong.isFavoriteProperty());
 			};
 		});
@@ -364,7 +369,6 @@ public class SystemController {
 
 	@FXML
 	public void close() {
-		System.out.println("Fermeture par menu");
 		SoundLooper.getInstance().getPrimaryStage().getOnCloseRequest()
 				.handle(new WindowEvent(SoundLooper.getInstance().getPrimaryStage(), WindowEvent.WINDOW_CLOSE_REQUEST));
 		SoundLooper.getInstance().getPrimaryStage().close();
@@ -402,7 +406,6 @@ public class SystemController {
 		List<Song> favoriteSongList = SoundLooperPlayer.getInstance().getFavoriteSongList();
 		openSearchDialog(favoriteSongList, MessageReader.getInstance().getMessage("search.favorites"),
 				(controller) -> {
-					System.out.println("Callback !");
 					Song song = (Song) controller.getResult();
 					if (song != null) {
 						openFile(song.getFile());
@@ -460,7 +463,6 @@ public class SystemController {
 	}
 
 	private void openFile(File file) {
-		System.out.println("Ouverture fichier : " + file.getAbsolutePath());
 
 		try {
 			SoundLooperPlayer.getInstance().loadSong(file);
@@ -539,7 +541,6 @@ public class SystemController {
 	}
 
 	public void populateRecentFileMenu() {
-		System.out.println("Chargement fichiers récents !");
 
 		recentFileMenu.getItems().clear();
 		List<RecentFile> recentFileList = Preferences.getInstance().getRecentFileList();
@@ -579,8 +580,7 @@ public class SystemController {
 
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println("Sélect mark : " + mark.getName() + " - " + mark.getBeginMillisecond() + " - "
-							+ mark.getEndMillisecond());
+
 					selectMark(mark);
 				}
 			});
@@ -610,7 +610,6 @@ public class SystemController {
 			menuItem.setContent(borderPane);
 			markMenuButton.getItems().add(menuItem);
 		}
-		System.out.println("Mark list updated");
 	}
 
 	private void updateFavoriteList() {
@@ -733,8 +732,12 @@ public class SystemController {
 	@FXML
 	public void saveCurrentMark() {
 		try {
-			System.out.println("SAVE");
 			SoundLooperPlayer.getInstance().saveCurrentMark();
+
+			// The begin or end of a mark was changed, we need to refresh list
+			// to update
+			// list entries time
+			updateMarkList();
 		} catch (SoundLooperException e) {
 			MessagingUtil.displayError("Impossible de sauvegarder le marqueur", e);
 		}
@@ -743,4 +746,76 @@ public class SystemController {
 	public Label getLabelState() {
 		return labelState;
 	}
+
+	@FXML
+	public void openAboutDialog() {
+		logger.info("Open the about dialog");
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/gui/aboutFrame.fxml"));
+		loader.setResources(MessageReader.getInstance().getBundle());
+
+		try {
+			loader.load();
+			AboutController controller = loader.<AboutController> getController();
+
+			Parent root = loader.getRoot();
+
+			Stage modalDialog = new Stage(StageStyle.UTILITY);
+			modalDialog.initOwner(SoundLooper.getInstance().getPrimaryStage());
+			modalDialog.setTitle(MessageReader.getInstance().getMessage("menu.about"));
+			modalDialog.setResizable(false);
+
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add("/style/application.css");
+
+			modalDialog.setScene(scene);
+
+			controller.init(modalDialog);
+
+			modalDialog.showAndWait();
+		} catch (IOException e) {
+			throw new SoundLooperRuntimeException("Unable to open about dialog", e);
+		}
+	}
+
+	@FXML
+	public void openHelpDialog() {
+		openHelpDialog("help/help.md");
+	}
+
+	@FXML
+	public void openShortcutDialog() {
+		openHelpDialog("help/shortcut.md");
+	}
+
+	private void openHelpDialog(String fileName) {
+		logger.info("Open the help dialog");
+		FXMLLoader loader = new FXMLLoader();
+		loader.setLocation(getClass().getResource("/gui/helpFrame.fxml"));
+		loader.setResources(MessageReader.getInstance().getBundle());
+
+		try {
+			loader.load();
+			HelpController controller = loader.<HelpController> getController();
+			controller.loadContent(fileName);
+
+			Parent root = loader.getRoot();
+
+			Stage modalDialog = new Stage(StageStyle.UTILITY);
+			modalDialog.initOwner(SoundLooper.getInstance().getPrimaryStage());
+			modalDialog.setTitle(MessageReader.getInstance().getMessage("menu.help"));
+			modalDialog.setResizable(false);
+
+			Scene scene = new Scene(root);
+			scene.getStylesheets().add("/style/application.css");
+
+			modalDialog.setScene(scene);
+
+			controller.init(modalDialog);
+			modalDialog.showAndWait();
+		} catch (IOException e) {
+			throw new SoundLooperRuntimeException("Unable to open help dialog", e);
+		}
+	}
+
 }

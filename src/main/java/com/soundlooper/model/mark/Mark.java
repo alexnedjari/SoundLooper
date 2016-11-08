@@ -5,6 +5,7 @@ package com.soundlooper.model.mark;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
 import com.soundlooper.model.SoundLooperObject;
@@ -46,12 +47,12 @@ public class Mark extends SoundLooperObject implements Searchable {
 	/**
 	 * The mark begin in the song
 	 */
-	private int beginMillisecond;
+	private SimpleIntegerProperty beginMillisecond = new SimpleIntegerProperty();
 
 	/**
 	 * The mark end in the song
 	 */
-	private int endMillisecond;
+	private SimpleIntegerProperty endMillisecond = new SimpleIntegerProperty();
 
 	/**
 	 * The containing song
@@ -78,8 +79,8 @@ public class Mark extends SoundLooperObject implements Searchable {
 	}
 
 	private void init(int beginMillisecond, int endMillisecond, Song song, boolean editable) {
-		this.beginMillisecond = beginMillisecond;
-		this.endMillisecond = endMillisecond;
+		this.beginMillisecond.set(beginMillisecond);
+		this.endMillisecond.set(endMillisecond);
 		this.song = song;
 		this.editable.set(editable);
 	}
@@ -111,7 +112,7 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 * @return the begin time of the mark
 	 */
 	public int getBeginMillisecond() {
-		return this.beginMillisecond;
+		return this.beginMillisecond.get();
 	}
 
 	/**
@@ -121,10 +122,18 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 *            the begin time of the mark
 	 */
 	public void setBeginMillisecond(int newBeginMillisecond) {
-		if (newBeginMillisecond != this.beginMillisecond) {
-			this.beginMillisecond = newBeginMillisecond;
+		if (newBeginMillisecond != this.beginMillisecond.get()) {
+			this.beginMillisecond.set(newBeginMillisecond);
 			setDirty(true);
 		}
+	}
+
+	public SimpleIntegerProperty beginMillisecondProperty() {
+		return beginMillisecond;
+	}
+
+	public SimpleIntegerProperty endMillisecondProperty() {
+		return endMillisecond;
 	}
 
 	/**
@@ -133,7 +142,7 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 * @return the end time of the mark
 	 */
 	public int getEndMillisecond() {
-		return this.endMillisecond;
+		return this.endMillisecond.get();
 	}
 
 	/**
@@ -143,20 +152,20 @@ public class Mark extends SoundLooperObject implements Searchable {
 	 *            the end time of the mark
 	 */
 	public void setEndMillisecond(int newEndMillisecond) {
-		if (newEndMillisecond != this.endMillisecond) {
-			this.endMillisecond = newEndMillisecond;
+		if (newEndMillisecond != this.endMillisecond.get()) {
+			this.endMillisecond.set(newEndMillisecond);
 			setDirty(true);
 		}
 	}
 
 	public void setLoopPoints(int newBeginMillisecond, int newEndMillisecond) {
 		boolean isModified = false;
-		if (newBeginMillisecond != this.beginMillisecond) {
-			this.beginMillisecond = newBeginMillisecond;
+		if (newBeginMillisecond != this.beginMillisecond.get()) {
+			this.beginMillisecond.set(newBeginMillisecond);
 			isModified = true;
 		}
-		if (newEndMillisecond != this.endMillisecond) {
-			this.endMillisecond = newEndMillisecond;
+		if (newEndMillisecond != this.endMillisecond.get()) {
+			this.endMillisecond.set(newEndMillisecond);
 			isModified = true;
 		}
 		if (isModified) {
@@ -217,7 +226,7 @@ public class Mark extends SoundLooperObject implements Searchable {
 
 	@Override
 	public Mark clone() {
-		Mark clone = new Mark(beginMillisecond, endMillisecond, song, isEditable());
+		Mark clone = new Mark(beginMillisecond.get(), endMillisecond.get(), song, isEditable());
 		// We have here to not check name unicity, so we don't use the setter
 		clone.name = name;
 		clone.setId(id);
