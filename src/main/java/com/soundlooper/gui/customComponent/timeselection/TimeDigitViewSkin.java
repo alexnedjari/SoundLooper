@@ -39,7 +39,6 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		System.out.println("LAYOUT DIGIT");
 		if (getSkinnable().isSelected()) {
 			label.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
 		} else {

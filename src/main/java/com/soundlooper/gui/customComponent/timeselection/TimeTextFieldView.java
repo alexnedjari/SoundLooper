@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 
-public class TimeTextFieldView extends Control {
+public abstract class TimeTextFieldView extends Control {
 
 	private SimpleIntegerProperty time = new SimpleIntegerProperty();
 
@@ -33,4 +33,6 @@ public class TimeTextFieldView extends Control {
 	public void select(TimeDigitView control) {
 		((TimeTextFieldViewSkin) getSkin()).select(control);
 	}
+
+	public abstract void setNewTime(int newTime);
 }

@@ -431,21 +431,53 @@ public class SoundLooperPlayer extends Player {
 
 	public void setLoopPointEnd(int position) throws PlayerException {
 		Mark currentMark = this.getCurrentMark();
-		if (currentMark != null) {
+		if (isSoundInitialized() && currentMark != null) {
+			if (position > getCurrentSound().getDuration()) {
+				position = getCurrentSound().getDuration();
+			}
+
+			if (position < getLoopPointBeginMillisecond() + MINIMAL_MS_LOOP) {
+				position = getLoopPointBeginMillisecond() + MINIMAL_MS_LOOP;
+			}
 			setLoopPoints(this.getCurrentMark().getBeginMillisecond(), position);
 		}
 	}
 
 	public void setLoopPointBegin(int position) throws PlayerException {
 		Mark currentMark = this.getCurrentMark();
-		if (currentMark != null) {
+		if (isSoundInitialized() && currentMark != null) {
+			if (position < 0) {
+				position = 0;
+			}
+
+			if (position > getLoopPointEndMillisecond() - MINIMAL_MS_LOOP) {
+				position = getLoopPointEndMillisecond() - MINIMAL_MS_LOOP;
+			}
 			setLoopPoints(position, this.getCurrentMark().getEndMillisecond());
 		}
 	}
 
 	public void setLoopPoints(int beginPosition, int endPosition) throws PlayerException {
 		Mark currentMark = this.getCurrentMark();
-		if (currentMark != null) {
+		if (isSoundInitialized() && currentMark != null) {
+			if (beginPosition < 0) {
+				beginPosition = 0;
+			}
+
+			if (endPosition > getCurrentSound().getDuration()) {
+				beginPosition = getCurrentSound().getDuration();
+			}
+
+			// Unable to know if the begin or the end was moved, arbitrary try
+			// first to move the begin one
+			if (beginPosition > endPosition) {
+				if (endPosition > MINIMAL_MS_LOOP) {
+					beginPosition = endPosition - MINIMAL_MS_LOOP;
+				} else {
+					endPosition = beginPosition + MINIMAL_MS_LOOP;
+				}
+			}
+
 			applyLoopPoints(beginPosition, endPosition);
 			currentMark.setLoopPoints(beginPosition, endPosition);
 		}
@@ -458,7 +490,7 @@ public class SoundLooperPlayer extends Player {
 		new ThreadImageGenerator(SoundLooperPlayer.getInstance().getCurrentSound(), new Consumer<File>() {
 			@Override
 			public void accept(File file) {
-				System.out.println("Image " + file.getAbsolutePath() + " générée");
+				logger.info("Image " + file.getAbsolutePath() + " generated");
 				currentSongImage.set(file);
 			}
 		}).start();

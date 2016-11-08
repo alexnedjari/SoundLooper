@@ -175,15 +175,12 @@ public class SystemController {
 		SoundLooperPlayer.getInstance().songProperty().addListener(new ChangeListener<Song>() {
 			@Override
 			public void changed(ObservableValue<? extends Song> observable, Song oldSong, Song newSong) {
-				System.out.println("changement chanson");
 
 				if (oldSong != null) {
 					// oldSong.isFavoriteProperty().unbindBidirectional(
 					// favoriteButton.selectedProperty());
 					favoriteButton.selectedProperty().unbindBidirectional(oldSong.isFavoriteProperty());
 				}
-				System.out.println("Favoris de la chanson " + newSong.getFile().getName() + " : "
-						+ newSong.isFavorite());
 				favoriteButton.selectedProperty().bindBidirectional(newSong.isFavoriteProperty());
 			};
 		});
@@ -372,7 +369,6 @@ public class SystemController {
 
 	@FXML
 	public void close() {
-		System.out.println("Fermeture par menu");
 		SoundLooper.getInstance().getPrimaryStage().getOnCloseRequest()
 				.handle(new WindowEvent(SoundLooper.getInstance().getPrimaryStage(), WindowEvent.WINDOW_CLOSE_REQUEST));
 		SoundLooper.getInstance().getPrimaryStage().close();
@@ -410,7 +406,6 @@ public class SystemController {
 		List<Song> favoriteSongList = SoundLooperPlayer.getInstance().getFavoriteSongList();
 		openSearchDialog(favoriteSongList, MessageReader.getInstance().getMessage("search.favorites"),
 				(controller) -> {
-					System.out.println("Callback !");
 					Song song = (Song) controller.getResult();
 					if (song != null) {
 						openFile(song.getFile());
@@ -468,7 +463,6 @@ public class SystemController {
 	}
 
 	private void openFile(File file) {
-		System.out.println("Ouverture fichier : " + file.getAbsolutePath());
 
 		try {
 			SoundLooperPlayer.getInstance().loadSong(file);
@@ -547,7 +541,6 @@ public class SystemController {
 	}
 
 	public void populateRecentFileMenu() {
-		System.out.println("Chargement fichiers récents !");
 
 		recentFileMenu.getItems().clear();
 		List<RecentFile> recentFileList = Preferences.getInstance().getRecentFileList();
@@ -587,8 +580,7 @@ public class SystemController {
 
 				@Override
 				public void handle(ActionEvent event) {
-					System.out.println("Sélect mark : " + mark.getName() + " - " + mark.getBeginMillisecond() + " - "
-							+ mark.getEndMillisecond());
+
 					selectMark(mark);
 				}
 			});
@@ -618,7 +610,6 @@ public class SystemController {
 			menuItem.setContent(borderPane);
 			markMenuButton.getItems().add(menuItem);
 		}
-		System.out.println("Mark list updated");
 	}
 
 	private void updateFavoriteList() {
@@ -741,7 +732,6 @@ public class SystemController {
 	@FXML
 	public void saveCurrentMark() {
 		try {
-			System.out.println("SAVE");
 			SoundLooperPlayer.getInstance().saveCurrentMark();
 
 			// The begin or end of a mark was changed, we need to refresh list

@@ -106,7 +106,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 			@Override
 			public void changed(ObservableValue<? extends Number> obs, Number oldValue, Number newValue) {
 				if (newValue != oldValue) {
-					applyTime();
+					getSkinnable().forceLayout();
 				}
 			}
 		});
@@ -143,17 +143,19 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 			} else if (e.getCode() == KeyCode.UP) {
 				TimeDigitView selectedDigit = getSelectedDigit();
 				if (selectedDigit != null) {
-					int weight = getDigitMillisecondWeight(selectedDigit);
-
-					getSkinnable().timeProperty().add(weight);
+					if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+						int weight = getDigitMillisecondWeight(selectedDigit);
+						getSkinnable().setNewTime(getSkinnable().getTime() + weight);
+					}
 				}
 				e.consume();
 			} else if (e.getCode() == KeyCode.DOWN) {
 				TimeDigitView selectedDigit = getSelectedDigit();
 				if (selectedDigit != null) {
-					int weight = getDigitMillisecondWeight(selectedDigit);
-
-					getSkinnable().timeProperty().subtract(weight);
+					if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+						int weight = getDigitMillisecondWeight(selectedDigit);
+						getSkinnable().setNewTime(getSkinnable().getTime() - weight);
+					}
 				}
 				e.consume();
 			}
@@ -221,6 +223,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		} else {
 			gridPane.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 		}
+		applyTime();
 	}
 
 	public void select(TimeDigitView control) {
