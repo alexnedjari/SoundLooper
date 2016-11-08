@@ -58,6 +58,8 @@ import com.soundlooper.model.mark.Mark;
 import com.soundlooper.model.song.Song;
 import com.soundlooper.model.tag.Tag;
 import com.soundlooper.service.entite.song.SongService;
+import com.soundlooper.system.handler.NumericFieldEventFilter;
+import com.soundlooper.system.handler.NumericFieldEventHandler;
 import com.soundlooper.system.preferences.Preferences;
 import com.soundlooper.system.preferences.SoundLooperProperties;
 import com.soundlooper.system.preferences.recentfile.RecentFile;
@@ -136,6 +138,8 @@ public class SystemController {
 		spinnerTimestretch.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 200, 100, 5));
 		spinnerTimestretch.getValueFactory().valueProperty()
 				.bindBidirectional((Property) SoundLooperPlayer.getInstance().timeStretchProperty());
+		spinnerTimestretch.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
+		spinnerTimestretch.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
 
 		// -----------------------------------------------------
 		volumePotentiometer.setMin(0);
@@ -146,15 +150,8 @@ public class SystemController {
 		spinnerVolume.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100, 5));
 		spinnerVolume.getValueFactory().valueProperty()
 				.bindBidirectional((Property) SoundLooperPlayer.getInstance().volumeProperty());
-		spinnerVolume.addEventFilter(KeyEvent.KEY_TYPED, new EventHandler<KeyEvent>() {
-
-			@Override
-			public void handle(KeyEvent event) {
-				if (!event.getCharacter().matches("[1-9]")) {
-					event.consume();
-				}
-			}
-		});
+		spinnerVolume.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
+		spinnerVolume.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
 
 		// --------------------------------------------
 		favoriteMenuButton.showingProperty().addListener(new ChangeListener<Boolean>() {
@@ -769,6 +766,7 @@ public class SystemController {
 
 		try {
 			loader.load();
+			AboutController controller = loader.<AboutController> getController();
 
 			Parent root = loader.getRoot();
 
@@ -781,6 +779,8 @@ public class SystemController {
 			scene.getStylesheets().add("/style/application.css");
 
 			modalDialog.setScene(scene);
+
+			controller.init(modalDialog);
 
 			modalDialog.showAndWait();
 		} catch (IOException e) {
@@ -821,6 +821,7 @@ public class SystemController {
 
 			modalDialog.setScene(scene);
 
+			controller.init(modalDialog);
 			modalDialog.showAndWait();
 		} catch (IOException e) {
 			throw new SoundLooperRuntimeException("Unable to open help dialog", e);

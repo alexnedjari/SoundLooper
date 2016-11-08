@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +44,17 @@ public class HelpController {
 
 	private Logger logger = LogManager.getLogger(this.getClass());
 
+	public void init(Stage stage) {
+		stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent e) {
+				if (e.getCode() == KeyCode.ESCAPE) {
+					stage.close();
+				}
+			}
+		});
+	}
+
 	public void loadContent(String fileName) {
 		WebEngine engine = webView.getEngine();
 
@@ -57,6 +72,6 @@ public class HelpController {
 			engine.loadContent("Impossible de charger l'aide");
 			logger.error("Error loading file " + fileName, e);
 		}
-
 	}
+
 }

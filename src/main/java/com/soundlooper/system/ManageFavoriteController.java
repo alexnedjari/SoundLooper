@@ -11,6 +11,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -40,6 +42,15 @@ public class ManageFavoriteController {
 	private Tag root;
 
 	public void initialize(Stage stage) {
+		stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent e) {
+				if (e.getCode() == KeyCode.ESCAPE) {
+					stage.close();
+				}
+			}
+		});
+
 		root = Tag.getRoot();
 
 		rootTreeItem = new TreeItem<>(root);

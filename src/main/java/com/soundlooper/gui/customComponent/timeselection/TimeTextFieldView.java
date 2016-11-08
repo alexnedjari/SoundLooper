@@ -32,7 +32,5 @@ public class TimeTextFieldView extends Control {
 
 	public void select(TimeDigitView control) {
 		((TimeTextFieldViewSkin) getSkin()).select(control);
-
 	}
-
 }

@@ -106,16 +106,6 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		SoundLooperPlayer soundLooperPlayer = this.getSkinnable().getSoundLooperPlayer();
 
-		soundLooperPlayer.stateProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if (newValue.intValue() == PlayerState.STATE_PLAYING) {
-					// When play is lanch, focus on player to activate shortcuts
-					control.requestFocus();
-				}
-			};
-		});
-
 		soundLooperPlayer.markProperty().addListener(new ChangeListener<Mark>() {
 			@Override
 			public void changed(ObservableValue<? extends Mark> observable, Mark oldValue, Mark newValue) {

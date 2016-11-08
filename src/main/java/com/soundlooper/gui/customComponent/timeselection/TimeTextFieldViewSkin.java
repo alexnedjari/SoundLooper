@@ -8,6 +8,10 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -22,7 +26,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 	private static final int MILLISECOND_SECOND = 1000;
 	private static final int MILLISECOND_MINUT = 60000;
 
-	GridPane flowPane = new GridPane();
+	GridPane gridPane = new GridPane();
 
 	List<TimeDigitView> listDigit = new ArrayList<>();
 
@@ -68,22 +72,22 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 
 		// flowPane.setBackground(new Background(new BackgroundFill(Color.BLUE,
 		// CornerRadii.EMPTY, Insets.EMPTY)));
-		flowPane.resize(76, 23);
-		flowPane.setPadding(new Insets(0, 5, 0, 5));
-		flowPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5),
+		gridPane.resize(73, 23);
+		gridPane.setPadding(new Insets(0, 5, 0, 5));
+		gridPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5),
 				new BorderWidths(1), new Insets(0))));
 
-		flowPane.getChildren().add(digitMinutDecade);
-		flowPane.getChildren().add(digitMinutUnit);
-		flowPane.getChildren().add(labelSeparator1);
+		gridPane.getChildren().add(digitMinutDecade);
+		gridPane.getChildren().add(digitMinutUnit);
+		gridPane.getChildren().add(labelSeparator1);
 
-		flowPane.getChildren().add(digitSecondDecade);
-		flowPane.getChildren().add(digitSecondUnit);
-		flowPane.getChildren().add(labelSeparator2);
+		gridPane.getChildren().add(digitSecondDecade);
+		gridPane.getChildren().add(digitSecondUnit);
+		gridPane.getChildren().add(labelSeparator2);
 
-		flowPane.getChildren().add(digitMillisecondHundred);
-		flowPane.getChildren().add(digitMillisecondDecade);
-		flowPane.getChildren().add(digitMillisecondUnit);
+		gridPane.getChildren().add(digitMillisecondHundred);
+		gridPane.getChildren().add(digitMillisecondDecade);
+		gridPane.getChildren().add(digitMillisecondUnit);
 
 		GridPane.setConstraints(digitMinutDecade, 0, 0);
 		GridPane.setConstraints(digitMinutUnit, 1, 0);
@@ -96,7 +100,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		GridPane.setConstraints(digitMillisecondHundred, 6, 0);
 		GridPane.setConstraints(digitMillisecondDecade, 7, 0);
 		GridPane.setConstraints(digitMillisecondUnit, 8, 0);
-		getChildren().add(flowPane);
+		getChildren().add(gridPane);
 
 		getSkinnable().timeProperty().addListener(new ChangeListener<Number>() {
 			@Override
@@ -112,9 +116,73 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				if (!newValue) {
 					select(null);
+				} else {
+					select(listDigit.get(0));
 				}
+				getSkinnable().forceLayout();
 			}
 		});
+
+		getSkinnable().addEventHandler(KeyEvent.ANY, e -> {
+			if (e.getCode() == KeyCode.LEFT) {
+				TimeDigitView selectedDigit = getSelectedDigit();
+				if (selectedDigit != null && selectedDigit != listDigit.get(0)) {
+					if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+						select(listDigit.get(listDigit.indexOf(selectedDigit) - 1));
+					}
+				}
+				e.consume();
+			} else if (e.getCode() == KeyCode.RIGHT) {
+				TimeDigitView selectedDigit = getSelectedDigit();
+				if (selectedDigit != null && selectedDigit != listDigit.get(listDigit.size() - 1)) {
+					if (e.getEventType() == KeyEvent.KEY_PRESSED) {
+						select(listDigit.get(listDigit.indexOf(selectedDigit) + 1));
+					}
+				}
+				e.consume();
+			} else if (e.getCode() == KeyCode.UP) {
+				TimeDigitView selectedDigit = getSelectedDigit();
+				if (selectedDigit != null) {
+					int weight = getDigitMillisecondWeight(selectedDigit);
+
+					getSkinnable().timeProperty().add(weight);
+				}
+				e.consume();
+			} else if (e.getCode() == KeyCode.DOWN) {
+				TimeDigitView selectedDigit = getSelectedDigit();
+				if (selectedDigit != null) {
+					int weight = getDigitMillisecondWeight(selectedDigit);
+
+					getSkinnable().timeProperty().subtract(weight);
+				}
+				e.consume();
+			}
+		});
+	}
+
+	private int getDigitMillisecondWeight(TimeDigitView timeDigitView) {
+		if (timeDigitView == digitMillisecondUnit) {
+			return 1;
+		}
+		if (timeDigitView == digitMillisecondDecade) {
+			return 10;
+		}
+		if (timeDigitView == digitMillisecondHundred) {
+			return 100;
+		}
+		if (timeDigitView == digitSecondUnit) {
+			return MILLISECOND_SECOND;
+		}
+		if (timeDigitView == digitSecondDecade) {
+			return MILLISECOND_SECOND * 10;
+		}
+		if (timeDigitView == digitMinutUnit) {
+			return MILLISECOND_MINUT;
+		}
+		if (timeDigitView == digitMinutDecade) {
+			return MILLISECOND_MINUT * 10;
+		}
+		return 0;
 	}
 
 	private void applyTime() {
@@ -144,15 +212,15 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		digitMillisecondHundred.setDigit(millisecondHundred);
 		digitMillisecondDecade.setDigit(millisecondDecade);
 		digitMillisecondUnit.setDigit(millisecondUnit);
-
-		digitMinutDecade.setDigit(minutDecade);
-		digitMinutDecade.setDigit(minutDecade);
-		digitMinutDecade.setDigit(minutDecade);
-		digitMinutDecade.setDigit(minutDecade);
 	}
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+		if (getSkinnable().isFocused()) {
+			gridPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
+		} else {
+			gridPane.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+		}
 	}
 
 	public void select(TimeDigitView control) {
@@ -167,6 +235,15 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 			control.forceLayout();
 		}
 
+	}
+
+	public TimeDigitView getSelectedDigit() {
+		for (TimeDigitView timeDigitView : listDigit) {
+			if (timeDigitView.isSelected()) {
+				return timeDigitView;
+			}
+		}
+		return null;
 	}
 
 }

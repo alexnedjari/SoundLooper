@@ -9,10 +9,12 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
 	Label label = new Label("0");
+	Rectangle rectangle;
 
 	protected TimeDigitViewSkin(TimeDigitView control) {
 		super(control);
@@ -23,6 +25,8 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 		label.resize(10, 20);
 		getChildren().add(label);
 		label.textProperty().bind(control.digitProperty().asString());
+
+		rectangle = new Rectangle();
 
 		control.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
