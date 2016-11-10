@@ -6,6 +6,7 @@ import java.util.List;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.css.CssMetaData;
 import javafx.css.SimpleStyleableDoubleProperty;
 import javafx.css.SimpleStyleableStringProperty;
@@ -14,6 +15,7 @@ import javafx.css.Styleable;
 import javafx.css.StyleableDoubleProperty;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleableStringProperty;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Skin;
 import javafx.scene.control.Slider;
 
@@ -23,11 +25,11 @@ public class Potentiometer extends Slider {
 	public static final String SIZE_MEDIUM = "medium";
 
 	private StyleableStringProperty size;
-	private DoubleProperty rotationBoundaryMinInDegree = new SimpleDoubleProperty(
-			30);
-	private DoubleProperty rotationBoundaryMaxInDegree = new SimpleDoubleProperty(
-			30);
+	private DoubleProperty rotationBoundaryMinInDegree = new SimpleDoubleProperty(30);
+	private DoubleProperty rotationBoundaryMaxInDegree = new SimpleDoubleProperty(30);
 	private StyleableDoubleProperty sensibility;
+
+	private SimpleObjectProperty<ButtonBase> centralButton = new SimpleObjectProperty<>();
 
 	@Override
 	protected Skin<?> createDefaultSkin() {
@@ -36,16 +38,14 @@ public class Potentiometer extends Slider {
 
 	public StyleableStringProperty sizeProperty() {
 		if (size == null) {
-			size = new SimpleStyleableStringProperty(StyleableProperties.SIZE,
-					this, "size", Potentiometer.SIZE_SMALL);
+			size = new SimpleStyleableStringProperty(StyleableProperties.SIZE, this, "size", Potentiometer.SIZE_SMALL);
 		}
 		return size;
 	}
 
 	public StyleableDoubleProperty sensibilityProperty() {
 		if (sensibility == null) {
-			sensibility = new SimpleStyleableDoubleProperty(
-					StyleableProperties.SENSIBILITY, this, "sensibility", 1d);
+			sensibility = new SimpleStyleableDoubleProperty(StyleableProperties.SENSIBILITY, this, "sensibility", 1d);
 		}
 		return sensibility;
 	}
@@ -78,8 +78,7 @@ public class Potentiometer extends Slider {
 		return rotationBoundaryMinInDegree.get();
 	}
 
-	public void setRotationBoundaryMinInDegree(
-			double rotationBoundaryMinInDegree) {
+	public void setRotationBoundaryMinInDegree(double rotationBoundaryMinInDegree) {
 		this.rotationBoundaryMinInDegree.set(rotationBoundaryMinInDegree);
 	}
 
@@ -87,43 +86,36 @@ public class Potentiometer extends Slider {
 		return rotationBoundaryMaxInDegree.get();
 	}
 
-	public void setRotationBoundaryMaxInDegree(
-			double rotationBoundaryMaxInDegree) {
+	public void setRotationBoundaryMaxInDegree(double rotationBoundaryMaxInDegree) {
 		this.rotationBoundaryMaxInDegree.set(rotationBoundaryMaxInDegree);
 	}
 
 	private static class StyleableProperties {
 		private static final CssMetaData<Potentiometer, Number> SENSIBILITY = new CssMetaData<Potentiometer, Number>(
-				"-fx-potentiometer-sensibility",
-				new StyleConverter<String, Number>(), 1) {
+				"-fx-potentiometer-sensibility", new StyleConverter<String, Number>(), 1) {
 
 			@Override
 			public boolean isSettable(Potentiometer potentiometer) {
-				return potentiometer.sensibility == null
-						|| !potentiometer.sensibility.isBound();
+				return potentiometer.sensibility == null || !potentiometer.sensibility.isBound();
 			}
 
 			@Override
-			public StyleableProperty<Number> getStyleableProperty(
-					Potentiometer potentiometer) {
+			public StyleableProperty<Number> getStyleableProperty(Potentiometer potentiometer) {
 				return potentiometer.sensibilityProperty();
 			}
 
 		};
 
 		private static final CssMetaData<Potentiometer, String> SIZE = new CssMetaData<Potentiometer, String>(
-				"-fx-potentiometer-size", new StyleConverter<String, String>(),
-				Potentiometer.SIZE_SMALL) {
+				"-fx-potentiometer-size", new StyleConverter<String, String>(), Potentiometer.SIZE_SMALL) {
 
 			@Override
 			public boolean isSettable(Potentiometer potentiometer) {
-				return potentiometer.size == null
-						|| !potentiometer.size.isBound();
+				return potentiometer.size == null || !potentiometer.size.isBound();
 			}
 
 			@Override
-			public StyleableProperty<String> getStyleableProperty(
-					Potentiometer potentiometer) {
+			public StyleableProperty<String> getStyleableProperty(Potentiometer potentiometer) {
 				return potentiometer.sizeProperty();
 			}
 		};
@@ -145,4 +137,22 @@ public class Potentiometer extends Slider {
 	public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
 		return StyleableProperties.STYLEABLES;
 	}
+
+	public void setCentralButton(ButtonBase centralNode) {
+		this.centralButton.set(centralNode);
+	}
+
+	public ButtonBase getCentralButton() {
+		return centralButton.get();
+	}
+
+	public SimpleObjectProperty<ButtonBase> centralButtonProperty() {
+		return centralButton;
+	}
+
+	public void forceLayout() {
+		setNeedsLayout(true);
+		layout();
+	}
+
 }

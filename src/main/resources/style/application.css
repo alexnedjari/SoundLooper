@@ -26,6 +26,9 @@
 .toggleFavoriteButton {-fx-graphic: url('icon/favoriteDisabled_32.png');}
 .toggleFavoriteButton:selected {-fx-graphic: url('icon/favoriteEnabled_32.png');}
 
+.toggleMuteButton {-fx-graphic: url('icon/muteDisabled_16.png');}
+.toggleMuteButton:selected {-fx-graphic: url('icon/muteEnabled_16.png');}
+
 .saveMarkButton {-fx-graphic: url('icon/saveMark_32.png');}
 .addMarkButton {-fx-graphic: url('icon/addMark_32.png');}
 

@@ -147,6 +147,13 @@ public class SystemController {
 		volumePotentiometer.valueProperty().bindBidirectional(SoundLooperPlayer.getInstance().volumeProperty());
 		volumePotentiometer.setValue(100);
 
+		ToggleButton centralNode = new ToggleButton();
+		centralNode.setPrefSize(32, 32);
+		centralNode.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
+
+		centralNode.getStyleClass().add("toggleMuteButton");
+		volumePotentiometer.setCentralButton(centralNode);
+
 		spinnerVolume.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100, 5));
 		spinnerVolume.getValueFactory().valueProperty()
 				.bindBidirectional((Property) SoundLooperPlayer.getInstance().volumeProperty());
@@ -259,7 +266,7 @@ public class SystemController {
 						// - : decrease level
 						player.incrementVolume(-5);
 						event.consume();
-					} else if (event.getCode() == KeyCode.BEGIN) {
+					} else if (event.getCode() == KeyCode.HOME) {
 						// Origin : set the media time at the start position
 						if (player.isSoundInitialized()) {
 							player.setMediaTime(player.getLoopPointBeginMillisecond());

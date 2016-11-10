@@ -7,7 +7,9 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -55,6 +57,8 @@ public class Player {
 	 */
 	private IntegerProperty volume = new SimpleIntegerProperty(100);
 
+	private BooleanProperty mute = new SimpleBooleanProperty(false);
+
 	/**
 	 * Save the current timestretsh to apply it to the new songs
 	 */
@@ -101,6 +105,7 @@ public class Player {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				try {
 					applyVolume(newValue.intValue());
+					mute.set(false);
 				} catch (PlayerException e) {
 					MessagingUtil.displayError("Impossible de modifier le volume", e);
 				}
@@ -114,6 +119,21 @@ public class Player {
 					applyTimeStretch(oldValue.intValue(), newValue.intValue());
 				} catch (PlayerException e) {
 					MessagingUtil.displayError("Impossible de modifier le timestrech", e);
+				}
+			}
+		});
+
+		mute.addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				try {
+					if (newValue) {
+						applyVolume(0);
+					} else {
+						applyVolume(volume.intValue());
+					}
+				} catch (PlayerException e) {
+					MessagingUtil.displayError("Impossible de modifier le volume", e);
 				}
 			}
 		});
@@ -520,7 +540,7 @@ public class Player {
 		LOGGER.info("Set the volume percent : " + percent);
 		if (this.isSoundInitialized()) {
 			this.sound.setVolume(new Float(percent / 100.0).floatValue());
-			volume.set(percent);
+			// volume.set(percent);
 		}
 
 	}
@@ -591,6 +611,18 @@ public class Player {
 
 	public PlayerState getPlayerState() {
 		return playerState;
+	}
+
+	public BooleanProperty getMute() {
+		return mute;
+	}
+
+	public void setMute(BooleanProperty mute) {
+		this.mute = mute;
+	}
+
+	public BooleanProperty muteProperty() {
+		return mute;
 	}
 
 	// /////////////////END LOOP POINTS MANAGEMENT////////////////////

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.soundlooper.customComponent.playerView.*?>
+<?import com.soundlooper.customComponent.potentiometer.*?>
 <?import com.soundlooper.gui.customComponent.hspinner.*?>
 <?import com.soundlooper.gui.customComponent.potentiometer.*?>
 <?import javafx.scene.paint.*?>
@@ -15,7 +17,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.control.Button?>
 
-<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="518.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
+<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="641.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
    <top>
       <VBox prefHeight="155.0" prefWidth="710.0" BorderPane.alignment="CENTER">
          <children>
@@ -112,7 +114,7 @@
                   <VBox alignment="TOP_CENTER" layoutX="567.0" prefHeight="23.0" prefWidth="143.0" spacing="8.0" AnchorPane.rightAnchor="0.0">
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="9.0" prefWidth="119.0" text="%panel.tempo.label" textAlignment="CENTER" />
-                        <Potentiometer fx:id="timestretchPotentiometer" layoutX="30" layoutY="50" prefHeight="0.0" prefWidth="143.0" />
+                        
                         <Spinner fx:id="spinnerTimestretch" editable="true" prefHeight="31.0" prefWidth="87.0" />
                      </children>
                      <opaqueInsets>
@@ -122,7 +124,7 @@
                   <VBox alignment="TOP_CENTER" layoutX="424.0" layoutY="4.0" prefHeight="37.0" prefWidth="143.0" spacing="8.0" AnchorPane.rightAnchor="143.0">
                      <children>
                         <Label contentDisplay="CENTER" prefHeight="37.0" prefWidth="119.0" text="%panel.volume.label" textAlignment="CENTER" />
-                        <Potentiometer fx:id="volumePotentiometer" layoutX="30" layoutY="50" prefHeight="0.0" prefWidth="143.0" />
+                        
                         <Spinner fx:id="spinnerVolume" editable="true" prefHeight="31.0" prefWidth="87.0" />
                      </children>
                      <opaqueInsets>
@@ -135,31 +137,38 @@
       </VBox>
    </top>
    <bottom>
-      <AnchorPane prefHeight="58.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="100.0" prefWidth="710.0" BorderPane.alignment="CENTER">
       <children>
-            <Button fx:id="playButton" layoutX="14.0" layoutY="253.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#playSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="14.0">
+            <Button fx:id="playButton" layoutX="14.0" layoutY="45.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#playSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="14.0">
                <styleClass>
                   <String fx:value="player-button" />
                   <String fx:value="playButton" />
                </styleClass>
             </Button>
-            <Button fx:id="pauseButton" layoutX="55.0" layoutY="253.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#pauseSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="54.0">
+            <Button fx:id="pauseButton" layoutX="56.0" layoutY="45.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#pauseSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="56.0">
                <styleClass>
                   <String fx:value="player-button" />
                   <String fx:value="pauseButton" />
                </styleClass>
             </Button>
-            <Label fx:id="labelState" contentDisplay="RIGHT" layoutX="112.0" layoutY="16.0" prefHeight="41.0" prefWidth="584.0" wrapText="true" />
+            <Label fx:id="labelState" contentDisplay="RIGHT" layoutX="116.0" layoutY="13.0" prefHeight="73.0" prefWidth="372.0" wrapText="true" />
+            <Potentiometer fx:id="timestretchPotentiometer" layoutX="596.0" prefHeight="100.0" prefWidth="100.0" />
+            <Potentiometer fx:id="volumePotentiometer" layoutX="496.0" prefHeight="100.0" prefWidth="100.0" />
    </children>
       </AnchorPane>
    </bottom>
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <PlayerView fx:id="playerView" />
+            <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" />
          </center>
+         
          <bottom>
-         	<TimeSelectionView fx:id="timeSelectionView" />
+            <BorderPane prefHeight="32.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+            <center>
+         		<TimeSelectionView fx:id="timeSelectionView" />
+         		</center>   
+            </BorderPane>
          </bottom>
       </BorderPane>
    </center>
