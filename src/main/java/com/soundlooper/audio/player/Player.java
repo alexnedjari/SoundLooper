@@ -587,6 +587,15 @@ public class Player {
 			return;
 		}
 
+		if (newPercent > 200) {
+			setTimeStretch(200);
+			return;
+		}
+		if (newPercent < 50) {
+			setTimeStretch(50);
+			return;
+		}
+
 		LOGGER.info("Update timestrech from " + oldPercent + " to " + newPercent);
 
 		if (this.isSoundInitialized()) {

@@ -29,6 +29,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -41,6 +42,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
+import javafx.util.converter.NumberStringConverter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -135,6 +137,31 @@ public class SystemController {
 		timestretchPotentiometer.valueProperty().bindBidirectional(
 				SoundLooperPlayer.getInstance().timeStretchProperty());
 
+		MenuButton timestrechButton = new MenuButton("...");
+
+		timestrechButton.getItems().add(createTimestrechMenuItem(50));
+		timestrechButton.getItems().add(createTimestrechMenuItem(90));
+		timestrechButton.getItems().add(createTimestrechMenuItem(100));
+		timestrechButton.getItems().add(createTimestrechMenuItem(110));
+		timestrechButton.getItems().add(createTimestrechMenuItem(200));
+
+		TextField textfieldTimestretch = new TextField();
+		textfieldTimestretch.textProperty().bindBidirectional(SoundLooperPlayer.getInstance().timeStretchProperty(),
+				new NumberStringConverter());
+		textfieldTimestretch.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
+		textfieldTimestretch.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
+
+		textfieldTimestretch.setOnMouseClicked(e -> {
+			textfieldTimestretch.selectAll();
+		});
+
+		MenuItem menuItemSpinnerTimestrech = new MenuItem("", textfieldTimestretch);
+		timestrechButton.getItems().add(menuItemSpinnerTimestrech);
+		timestrechButton.setPrefSize(32, 32);
+
+		// timestrechButton.getStyleClass().add("toggleMuteButton");
+		timestretchPotentiometer.setCentralButton(timestrechButton);
+
 		spinnerTimestretch.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 200, 100, 5));
 		spinnerTimestretch.getValueFactory().valueProperty()
 				.bindBidirectional((Property) SoundLooperPlayer.getInstance().timeStretchProperty());
@@ -147,12 +174,12 @@ public class SystemController {
 		volumePotentiometer.valueProperty().bindBidirectional(SoundLooperPlayer.getInstance().volumeProperty());
 		volumePotentiometer.setValue(100);
 
-		ToggleButton centralNode = new ToggleButton();
-		centralNode.setPrefSize(32, 32);
-		centralNode.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
+		ToggleButton muteButton = new ToggleButton();
+		muteButton.setPrefSize(32, 32);
+		muteButton.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
 
-		centralNode.getStyleClass().add("toggleMuteButton");
-		volumePotentiometer.setCentralButton(centralNode);
+		muteButton.getStyleClass().add("toggleMuteButton");
+		volumePotentiometer.setCentralButton(muteButton);
 
 		spinnerVolume.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100, 5));
 		spinnerVolume.getValueFactory().valueProperty()
@@ -221,6 +248,18 @@ public class SystemController {
 				updateMarkList();
 			}
 		});
+	}
+
+	private MenuItem createTimestrechMenuItem(int timestrechPercent) {
+		MenuItem menuItem = new MenuItem("", new Label(String.valueOf(timestrechPercent)));
+		menuItem.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				SoundLooperPlayer.getInstance().setTimeStretch(timestrechPercent);
+
+			}
+		});
+		return menuItem;
 	}
 
 	public void initShortcut() {

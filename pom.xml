@@ -57,11 +57,11 @@
 	    <artifactId>resteasy-client</artifactId>
 	    <version>3.0.18.Final</version>
 	</dependency>
-	<dependency>
+	<!-- dependency>
 	    <groupId>org.pegdown</groupId>
 	    <artifactId>pegdown</artifactId>
 	    <version>1.6.0</version>
-	</dependency>
+	</dependency-->
   </dependencies>
 
   <build>
