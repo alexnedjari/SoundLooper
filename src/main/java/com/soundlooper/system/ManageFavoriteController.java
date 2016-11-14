@@ -72,7 +72,11 @@ public class ManageFavoriteController {
 		ChangeListener<Song> changeSongListener = new ChangeListener<Song>() {
 			@Override
 			public void changed(ObservableValue<? extends Song> observable, Song oldValue, Song newValue) {
-				tagListView.setItems(newValue.tagListProperty());
+				if (newValue != null) {
+					tagListView.setItems(newValue.tagListProperty());
+				} else {
+					tagListView.setItems(null);
+				}
 
 			}
 		};
@@ -120,6 +124,9 @@ public class ManageFavoriteController {
 		Tag newTag;
 		try {
 			TreeItem<Tag> parentTreeItem = treeView.getSelectionModel().getSelectedItem();
+			if (parentTreeItem == null) {
+				parentTreeItem = treeView.getRoot();
+			}
 			newTag = SoundLooperPlayer.getInstance().createTag(
 					MessageReader.getInstance().getMessage("tag.defaultName"), parentTreeItem.getValue());
 			TreeItem<Tag> treeItem = new TreeItem<Tag>(newTag);

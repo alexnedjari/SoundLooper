@@ -170,6 +170,11 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 	@Override
 	public Tag delete(Tag tag) {
 		try {
+			if (Tag.ROOT_TAG_ID.equals(tag.getId())) {
+				throw new SoundLooperDatabaseException("Try to delete tag root",
+						SoundLooperDatabaseException.ERROR_CODE_TAG_ID_DOES_NOT_EXISTS_IN_DATABASE);
+			}
+
 			// check that the tag with this ID exists
 			ResultSet checkQueryID = ConnectionFactory.getNewStatement().executeQuery(
 					"SELECT ID FROM TAG WHERE ID = '" + tag.getId() + "'");

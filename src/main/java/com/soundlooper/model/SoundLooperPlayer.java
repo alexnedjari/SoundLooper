@@ -439,7 +439,7 @@ public class SoundLooperPlayer extends Player {
 			if (position < getLoopPointBeginMillisecond() + MINIMAL_MS_LOOP) {
 				position = getLoopPointBeginMillisecond() + MINIMAL_MS_LOOP;
 			}
-			setLoopPoints(this.getCurrentMark().getBeginMillisecond(), position);
+			setLoopPoints(getLoopPointBeginMillisecond(), position);
 		}
 	}
 
@@ -450,10 +450,16 @@ public class SoundLooperPlayer extends Player {
 				position = 0;
 			}
 
-			if (position > getLoopPointEndMillisecond() - MINIMAL_MS_LOOP) {
-				position = getLoopPointEndMillisecond() - MINIMAL_MS_LOOP;
+			int loopPointEndMillisecond = getLoopPointEndMillisecond();
+			if (loopPointEndMillisecond > getCurrentSound().getDuration()) {
+				// Possible in we are in file loading
+				loopPointEndMillisecond = getCurrentSound().getDuration();
 			}
-			setLoopPoints(position, this.getCurrentMark().getEndMillisecond());
+
+			if (position > loopPointEndMillisecond - MINIMAL_MS_LOOP) {
+				position = loopPointEndMillisecond - MINIMAL_MS_LOOP;
+			}
+			setLoopPoints(position, loopPointEndMillisecond);
 		}
 	}
 

@@ -140,7 +140,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 					}
 				}
 				e.consume();
-			} else if (e.getCode() == KeyCode.UP) {
+			} else if (e.getCode() == KeyCode.UP && !e.isControlDown()) {
 				TimeDigitView selectedDigit = getSelectedDigit();
 				if (selectedDigit != null) {
 					if (e.getEventType() == KeyEvent.KEY_PRESSED) {
@@ -149,7 +149,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 					}
 				}
 				e.consume();
-			} else if (e.getCode() == KeyCode.DOWN) {
+			} else if (e.getCode() == KeyCode.DOWN && !e.isControlDown()) {
 				TimeDigitView selectedDigit = getSelectedDigit();
 				if (selectedDigit != null) {
 					if (e.getEventType() == KeyEvent.KEY_PRESSED) {

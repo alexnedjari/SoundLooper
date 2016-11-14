@@ -17,9 +17,9 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.control.Button?>
 
-<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="641.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
+<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
    <top>
-      <VBox prefHeight="155.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="13.0" prefWidth="710.0" BorderPane.alignment="CENTER">
          <children>
             <MenuBar onDragDropped="#openFile">
               <menus>
@@ -54,9 +54,9 @@
                   </Menu>
               </menus>
             </MenuBar>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane prefHeight="67.0" prefWidth="710.0">
                <children>
-            <ToolBar maxHeight="127.0" minHeight="45.0" prefHeight="127.0" prefWidth="420.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="290.0">
+            <ToolBar maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <items>
                   <Button contentDisplay="GRAPHIC_ONLY" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openFile" prefHeight="36.0" prefWidth="36.0" text="%button.open">
                      <tooltip>
@@ -111,26 +111,6 @@
                         
                      </items>
             </ToolBar>
-                  <VBox alignment="TOP_CENTER" layoutX="567.0" prefHeight="23.0" prefWidth="143.0" spacing="8.0" AnchorPane.rightAnchor="0.0">
-                     <children>
-                        <Label contentDisplay="CENTER" prefHeight="9.0" prefWidth="119.0" text="%panel.tempo.label" textAlignment="CENTER" />
-                        
-                        <Spinner fx:id="spinnerTimestretch" editable="true" prefHeight="31.0" prefWidth="87.0" />
-                     </children>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </VBox>
-                  <VBox alignment="TOP_CENTER" layoutX="424.0" layoutY="4.0" prefHeight="37.0" prefWidth="143.0" spacing="8.0" AnchorPane.rightAnchor="143.0">
-                     <children>
-                        <Label contentDisplay="CENTER" prefHeight="37.0" prefWidth="119.0" text="%panel.volume.label" textAlignment="CENTER" />
-                        
-                        <Spinner fx:id="spinnerVolume" editable="true" prefHeight="31.0" prefWidth="87.0" />
-                     </children>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </VBox>
                </children>
             </AnchorPane>
          </children>
@@ -160,7 +140,10 @@
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" />
+            <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0">
+               <BorderPane.margin>
+                  <Insets top="20.0" />
+               </BorderPane.margin></PlayerView>
          </center>
          
          <bottom>
@@ -170,6 +153,9 @@
          		</center>   
             </BorderPane>
          </bottom>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </BorderPane>
    </center>
 </BorderPane>

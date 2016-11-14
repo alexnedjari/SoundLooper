@@ -66,7 +66,8 @@ public class AddMarkController {
 		return result;
 	}
 
-	private void validate() {
+	@FXML
+	public void validate() {
 		if (!"".equals(labelResultat.getText())) {
 			result = labelResultat.getText();
 			cancel();

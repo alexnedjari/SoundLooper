@@ -52,8 +52,7 @@ import com.soundlooper.system.search.Searchable;
  */
 public class Song extends SoundLooperObject implements Searchable {
 
-	private static SimpleListProperty<Song> favoriteList = new SimpleListProperty<>(
-			FXCollections.observableArrayList());
+	private static SimpleListProperty<Song> favoriteList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
 	static {
 		favoriteList.addAll(SongService.getInstance().getFavoriteSongList());
@@ -64,15 +63,13 @@ public class Song extends SoundLooperObject implements Searchable {
 	 */
 	// private HashMap<String, Mark> marks = new HashMap<String, Mark>();
 
-	private SimpleMapProperty<String, Mark> marks = new SimpleMapProperty<>(
-			FXCollections.observableHashMap());
+	private SimpleMapProperty<String, Mark> marks = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
 	/**
 	 * List of this song's tags
 	 * 
 	 */
-	private SimpleListProperty<Tag> tagList = new SimpleListProperty<>(
-			FXCollections.observableArrayList());
+	private SimpleListProperty<Tag> tagList = new SimpleListProperty<>(FXCollections.observableArrayList());
 
 	/**
 	 * Favorite state of a song
@@ -92,14 +89,12 @@ public class Song extends SoundLooperObject implements Searchable {
 	public Song() {
 		isFavorite.addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> observable,
-					Boolean oldValue, Boolean newValue) {
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				SongDAO.getInstance().persist(Song.this);
 				if (Song.this.isFavorite()) {
 					favoriteList.add(Song.this);
 					if (getTagList().isEmpty()) {
-						TagService.getInstance().addTagToSong(Song.this,
-								Tag.getRoot());
+						TagService.getInstance().addTagToSong(Song.this, Tag.getRoot());
 					}
 				} else {
 					favoriteList.remove(Song.this);
@@ -200,8 +195,7 @@ public class Song extends SoundLooperObject implements Searchable {
 	 * @throws SoundLooperObjectAlreadyExistsException
 	 *             if a mark with this name already exists
 	 */
-	public void addMark(Mark markToAdd)
-			throws SoundLooperObjectAlreadyExistsException {
+	public void addMark(Mark markToAdd) throws SoundLooperObjectAlreadyExistsException {
 		if (this.marks.containsKey(markToAdd.getName())) {
 			throw new SoundLooperObjectAlreadyExistsException(this, markToAdd);
 		}
@@ -224,9 +218,7 @@ public class Song extends SoundLooperObject implements Searchable {
 
 	@Override
 	public String toString() {
-		return "Song [marks=" + marks + ", isFavorite=" + isFavorite
-				+ ", file=" + file + ", lastUseDate=" + lastUseDate + ", id="
-				+ id + "]";
+		return getFile().getName() + " (" + getFile().getParent() + ")";
 	}
 
 	@Override

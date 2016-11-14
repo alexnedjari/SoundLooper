@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import javafx.application.Platform;
-import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
@@ -27,8 +26,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.DragEvent;
@@ -112,13 +109,7 @@ public class SystemController {
 	private Potentiometer volumePotentiometer;
 
 	@FXML
-	private Spinner<Integer> spinnerVolume;
-
-	@FXML
 	private Potentiometer timestretchPotentiometer;
-
-	@FXML
-	private Spinner<Integer> spinnerTimestretch;
 
 	@FXML
 	private PlayerView playerView;
@@ -162,12 +153,6 @@ public class SystemController {
 		// timestrechButton.getStyleClass().add("toggleMuteButton");
 		timestretchPotentiometer.setCentralButton(timestrechButton);
 
-		spinnerTimestretch.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(50, 200, 100, 5));
-		spinnerTimestretch.getValueFactory().valueProperty()
-				.bindBidirectional((Property) SoundLooperPlayer.getInstance().timeStretchProperty());
-		spinnerTimestretch.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
-		spinnerTimestretch.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
-
 		// -----------------------------------------------------
 		volumePotentiometer.setMin(0);
 		volumePotentiometer.setMax(100);
@@ -180,12 +165,6 @@ public class SystemController {
 
 		muteButton.getStyleClass().add("toggleMuteButton");
 		volumePotentiometer.setCentralButton(muteButton);
-
-		spinnerVolume.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 100, 100, 5));
-		spinnerVolume.getValueFactory().valueProperty()
-				.bindBidirectional((Property) SoundLooperPlayer.getInstance().volumeProperty());
-		spinnerVolume.addEventFilter(KeyEvent.ANY, new NumericFieldEventFilter());
-		spinnerVolume.addEventHandler(KeyEvent.ANY, new NumericFieldEventHandler());
 
 		// --------------------------------------------
 		favoriteMenuButton.showingProperty().addListener(new ChangeListener<Boolean>() {
