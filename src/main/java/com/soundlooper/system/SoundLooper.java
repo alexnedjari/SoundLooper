@@ -50,6 +50,13 @@ public class SoundLooper extends Application {
 			logger.info("After window close");
 			Platform.exit();
 			logger.info("After platform exit");
+			try {
+				Lock.unlock(SoundLooper.LOCK_NAME);
+			} catch (IOException e1) {
+				logger.error("Unable to remove lock '" + SoundLooper.LOCK_NAME + "'", e);
+			}
+			logger.info("After unlock");
+
 			System.exit(0);
 			logger.info("After system exit");
 		});
