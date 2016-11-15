@@ -149,6 +149,7 @@ public class SystemController {
 		MenuItem menuItemSpinnerTimestrech = new MenuItem("", textfieldTimestretch);
 		timestrechButton.getItems().add(menuItemSpinnerTimestrech);
 		timestrechButton.setPrefSize(32, 32);
+		timestrechButton.setFocusTraversable(false);
 
 		// timestrechButton.getStyleClass().add("toggleMuteButton");
 		timestretchPotentiometer.setCentralButton(timestrechButton);
@@ -162,6 +163,7 @@ public class SystemController {
 		ToggleButton muteButton = new ToggleButton();
 		muteButton.setPrefSize(32, 32);
 		muteButton.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
+		muteButton.setFocusTraversable(false);
 
 		muteButton.getStyleClass().add("toggleMuteButton");
 		volumePotentiometer.setCentralButton(muteButton);

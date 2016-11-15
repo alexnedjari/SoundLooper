@@ -24,6 +24,8 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 
 	protected TimeSelectionViewSkin(TimeSelectionView control) {
 		super(control);
+		borderPane.setFocusTraversable(false);
+		control.setFocusTraversable(false);
 		timeTextFieldBegin = new TimeTextFieldView() {
 			@Override
 			public void setNewTime(int newTime) {
@@ -75,7 +77,7 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
 		borderPane.resize(contentWidth, 35);
 		borderPane.setPadding(new Insets(MARGIN_TOP, MARGIN_RIGHT, 0, MARGIN_LEFT));
-		
+
 	}
 
 	public void initBinding() {

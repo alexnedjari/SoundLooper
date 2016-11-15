@@ -9,21 +9,21 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="879.0" prefWidth="1207.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.ManageFavoriteController">
    <center>
-      <SplitPane dividerPositions="0.31618257261410787" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.31618257261410787" focusTraversable="false" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <BorderPane prefHeight="821.0" prefWidth="377.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <top>
-                        <ToolBar prefHeight="7.0" prefWidth="377.0" BorderPane.alignment="CENTER">
+                        <ToolBar focusTraversable="false" prefHeight="7.0" prefWidth="377.0" BorderPane.alignment="CENTER">
                           <items>
-                            <Button maxHeight="20.0" maxWidth="30.0" minHeight="20.0" minWidth="30.0" mnemonicParsing="false" onAction="#addTag" prefHeight="20.0" prefWidth="30.0">
+                            <Button focusTraversable="false" maxHeight="20.0" maxWidth="30.0" minHeight="20.0" minWidth="30.0" mnemonicParsing="false" onAction="#addTag" prefHeight="20.0" prefWidth="30.0">
                                  <styleClass>
                                     <String fx:value="toolbar-button" />
                                     <String fx:value="addTagButton" />
                                  </styleClass>
                               </Button>
-                              <Button maxHeight="20.0" maxWidth="30.0" minHeight="20.0" minWidth="30.0" mnemonicParsing="false" onAction="#deleteTag" prefHeight="20.0" prefWidth="30.0">
+                              <Button focusTraversable="false" maxHeight="20.0" maxWidth="30.0" minHeight="20.0" minWidth="30.0" mnemonicParsing="false" onAction="#deleteTag" prefHeight="20.0" prefWidth="30.0">
                                  <styleClass>
                                     <String fx:value="toolbar-button" />
                                     <String fx:value="deleteTagButton" />
@@ -40,7 +40,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <SplitPane dividerPositions="0.5775335775335775" layoutX="-19.0" layoutY="61.0" orientation="VERTICAL" prefHeight="821.0" prefWidth="548.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <SplitPane dividerPositions="0.5775335775335775" focusTraversable="false" layoutX="-19.0" layoutY="61.0" orientation="VERTICAL" prefHeight="821.0" prefWidth="548.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="545.0" prefWidth="546.0">
                            <children>
@@ -49,9 +49,9 @@
                                     <ListView fx:id="songListView" prefHeight="501.0" prefWidth="818.0" BorderPane.alignment="CENTER" />
                                  </center>
                                  <top>
-                                    <ToolBar prefHeight="7.0" prefWidth="377.0" BorderPane.alignment="CENTER">
+                                    <ToolBar focusTraversable="false" prefHeight="7.0" prefWidth="377.0" BorderPane.alignment="CENTER">
                                        <items>
-                                          <Button maxHeight="20.0" maxWidth="30.0" minHeight="20.0" minWidth="30.0" mnemonicParsing="false" onAction="#deleteFavorite" prefHeight="20.0" prefWidth="30.0">
+                                          <Button focusTraversable="false" maxHeight="20.0" maxWidth="30.0" minHeight="20.0" minWidth="30.0" mnemonicParsing="false" onAction="#deleteFavorite" prefHeight="20.0" prefWidth="30.0">
                                              <styleClass>
                                                 <String fx:value="toolbar-button" />
                                                 <String fx:value="deleteTagButton" />

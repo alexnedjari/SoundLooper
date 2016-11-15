@@ -16,8 +16,8 @@
    <bottom>
       <AnchorPane prefHeight="34.0" prefWidth="327.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="labelResultat" layoutX="7.0" layoutY="3.0" prefHeight="21.0" prefWidth="228.0" text="Label" />
-            <Button onAction="#validate" layoutX="259.0" layoutY="-2.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="55.0" AnchorPane.rightAnchor="13.0">
+            <Label fx:id="labelResultat" focusTraversable="false" layoutX="7.0" layoutY="3.0" prefHeight="21.0" prefWidth="228.0" text="Label" />
+            <Button focusTraversable="false" layoutX="259.0" layoutY="-2.0" mnemonicParsing="false" onAction="#validate" prefHeight="31.0" prefWidth="55.0" AnchorPane.rightAnchor="13.0">
                <styleClass>
                   <String fx:value="toolbar-button" />
                   <String fx:value="validateButton" />

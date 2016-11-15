@@ -101,6 +101,7 @@ public class SoundLooper extends Application {
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
 			scene.getStylesheets().add("/style/application.css");
+
 			primaryStage.setScene(scene);
 			primaryStage.setAlwaysOnTop(Preferences.getInstance().getAlwaysOnTop());
 			controller.initShortcut();

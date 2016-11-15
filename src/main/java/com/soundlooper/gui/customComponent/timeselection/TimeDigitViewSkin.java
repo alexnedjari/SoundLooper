@@ -28,6 +28,10 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
 		rectangle = new Rectangle();
 
+		label.setFocusTraversable(false);
+		rectangle.setFocusTraversable(false);
+		control.setFocusTraversable(false);
+
 		control.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {

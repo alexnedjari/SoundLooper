@@ -21,7 +21,7 @@
    <top>
       <VBox prefHeight="13.0" prefWidth="710.0" BorderPane.alignment="CENTER">
          <children>
-            <MenuBar onDragDropped="#openFile">
+            <MenuBar focusTraversable="false" onDragDropped="#openFile">
               <menus>
                 <Menu mnemonicParsing="false" onShowing="#populateRecentFileMenu" text="%menu.file">
                   <items>
@@ -56,9 +56,9 @@
             </MenuBar>
             <AnchorPane prefHeight="67.0" prefWidth="710.0">
                <children>
-            <ToolBar maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <ToolBar focusTraversable="false" maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <items>
-                  <Button contentDisplay="GRAPHIC_ONLY" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openFile" prefHeight="36.0" prefWidth="36.0" text="%button.open">
+                  <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openFile" prefHeight="36.0" prefWidth="36.0" text="%button.open">
                      <tooltip>
                         <Tooltip text="%button.openFile" />
                      </tooltip>
@@ -67,47 +67,47 @@
                               <String fx:value="openFileButton" />
                            </styleClass>
                   </Button>
-                        <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <ToggleButton fx:id="alwaysOnTopButton" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0">
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                  <ToggleButton fx:id="alwaysOnTopButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0">
                            <styleClass>
                               <String fx:value="toggleAlwaysOntopButton" />
                               <String fx:value="toolbar-button" />
                            </styleClass>
                         </ToggleButton>
-                        <Separator orientation="VERTICAL" prefHeight="200.0" />
-                        <Button fx:id="setBeginAlignmentButton" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#setBeginAlignment" prefHeight="36.0" prefWidth="36.0">
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                        <Button fx:id="setBeginAlignmentButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#setBeginAlignment" prefHeight="36.0" prefWidth="36.0">
                            <styleClass>
                               <String fx:value="beginAlignmentButton" />
                               <String fx:value="toolbar-button" />
                            </styleClass>
                         </Button>
-                        <Button fx:id="setEndAlignmentButton" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#setEndAlignment" prefHeight="36.0" prefWidth="36.0">
+                        <Button fx:id="setEndAlignmentButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#setEndAlignment" prefHeight="36.0" prefWidth="36.0">
                            <styleClass>
                               <String fx:value="endAlignmentButton" />
                               <String fx:value="toolbar-button" />
                            </styleClass>
                         </Button>
-                        <Separator orientation="VERTICAL" prefHeight="200.0" />
-                        <ToggleButton fx:id="favoriteButton" mnemonicParsing="false">
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                        <ToggleButton fx:id="favoriteButton" focusTraversable="false" mnemonicParsing="false">
                            <styleClass>
                               <String fx:value="toggleFavoriteButton" />
                               <String fx:value="toolbar-button" />
                            </styleClass></ToggleButton>
-                        <MenuButton fx:id="favoriteMenuButton" maxWidth="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="20.0" styleClass="toolbar-button" />
-                        <Separator orientation="VERTICAL" prefHeight="200.0" />
-                        <Button fx:id="saveMarkButton" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#saveCurrentMark" prefHeight="36.0" prefWidth="36.0">
+                        <MenuButton fx:id="favoriteMenuButton" focusTraversable="false" maxWidth="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="20.0" styleClass="toolbar-button" />
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                        <Button fx:id="saveMarkButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#saveCurrentMark" prefHeight="36.0" prefWidth="36.0">
                            <styleClass>
                               <String fx:value="saveMarkButton" />
                               <String fx:value="toolbar-button" />
                            </styleClass>
                         </Button>
-                        <Button fx:id="addMarkButton" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openAddMarkDialog" prefHeight="36.0" prefWidth="36.0">
+                        <Button fx:id="addMarkButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openAddMarkDialog" prefHeight="36.0" prefWidth="36.0">
                            <styleClass>
                               <String fx:value="addMarkButton" />
                               <String fx:value="toolbar-button" />
                            </styleClass>
                         </Button>
-                        <MenuButton fx:id="markMenuButton" maxWidth="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="20.0" styleClass="toolbar-button" />
+                        <MenuButton fx:id="markMenuButton" focusTraversable="false" maxWidth="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="20.0" styleClass="toolbar-button" />
                         
                      </items>
             </ToolBar>
@@ -119,31 +119,29 @@
    <bottom>
       <AnchorPane prefHeight="100.0" prefWidth="710.0" BorderPane.alignment="CENTER">
       <children>
-            <Button fx:id="playButton" layoutX="14.0" layoutY="45.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#playSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="14.0">
+            <Button fx:id="playButton" focusTraversable="false" layoutX="14.0" layoutY="45.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#playSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="14.0">
                <styleClass>
                   <String fx:value="player-button" />
                   <String fx:value="playButton" />
                </styleClass>
             </Button>
-            <Button fx:id="pauseButton" layoutX="56.0" layoutY="45.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#pauseSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="56.0">
+            <Button fx:id="pauseButton" focusTraversable="false" layoutX="56.0" layoutY="45.0" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#pauseSong" prefHeight="36.0" prefWidth="36.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="56.0">
                <styleClass>
                   <String fx:value="player-button" />
                   <String fx:value="pauseButton" />
                </styleClass>
             </Button>
-            <Label fx:id="labelState" contentDisplay="RIGHT" layoutX="116.0" layoutY="13.0" prefHeight="73.0" prefWidth="372.0" wrapText="true" />
-            <Potentiometer fx:id="timestretchPotentiometer" layoutX="596.0" prefHeight="100.0" prefWidth="100.0" />
-            <Potentiometer fx:id="volumePotentiometer" layoutX="496.0" prefHeight="100.0" prefWidth="100.0" />
+            <Label fx:id="labelState" contentDisplay="RIGHT" focusTraversable="false" layoutX="116.0" layoutY="13.0" prefHeight="73.0" prefWidth="372.0" wrapText="true" />
+            <Potentiometer fx:id="timestretchPotentiometer" focusTraversable="false" layoutX="596.0" prefHeight="100.0" prefWidth="100.0" />
+            <Potentiometer fx:id="volumePotentiometer" focusTraversable="false" layoutX="496.0" prefHeight="100.0" prefWidth="100.0" />
    </children>
       </AnchorPane>
    </bottom>
    <center>
       <BorderPane BorderPane.alignment="CENTER">
          <center>
-            <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0">
-               <BorderPane.margin>
-                  <Insets top="20.0" />
-               </BorderPane.margin></PlayerView>
+            <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" />
+               
          </center>
          
          <bottom>

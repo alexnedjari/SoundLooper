@@ -131,6 +131,15 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 		});
 
+		control.focusedProperty().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue) {
+					control.forceLayout();
+				}
+			}
+		});
+
 		imageView = new ImageView(ImageGetter.getIconURL("loading_32.png"));
 		imageView.setPreserveRatio(false);
 
