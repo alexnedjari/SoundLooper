@@ -14,15 +14,18 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.soundlooper.exception.AlreadyLockedException;
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.exception.SoundLooperRuntimeException;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.database.ConnectionFactory;
 import com.soundlooper.system.preferences.Preferences;
+import com.soundlooper.system.util.Lock;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class SoundLooper extends Application {
 
+	private static final String LOCK_NAME = ".lock";
 	private Stage primaryStage;
 	private BorderPane rootLayout;
 	private static SoundLooper instance;
@@ -111,13 +114,14 @@ public class SoundLooper extends Application {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AlreadyLockedException, IOException {
 		logger.info("Launch with arguments : " + StringUtils.join(args));
 		if (containsArg(args, "-uninstall")) {
 			logger.info("Uninstall, nothing to do");
 			return;
 		}
 
+		Lock.lock(SoundLooper.LOCK_NAME);
 		launch(args);
 	}
 
