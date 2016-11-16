@@ -9,6 +9,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -29,8 +30,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import sun.net.www.protocol.jar.JarURLConnection;
 
 import com.soundlooper.exception.SoundLooperRuntimeException;
 import com.soundlooper.system.preferences.SoundLooperProperties;
@@ -196,19 +195,23 @@ public final class ConnectionFactory {
 			URL resource = ConnectionFactory.class.getClassLoader().getResource("db");
 
 			if (StringUtils.startsWith(resource.toString(), "jar:")) {
-				JarURLConnection connection = new JarURLConnection(resource, null);
-				JarFile jarFile = connection.getJarFile();
-
-				Enumeration<JarEntry> entries = jarFile.entries();
-				while (entries.hasMoreElements()) {
-					JarEntry jarEntry = entries.nextElement();
-					String fullName = jarEntry.getName();
-					if (fullName.matches("db/.*sql")) {
-						String name = fullName.substring(fullName.lastIndexOf("/") + 1);
-						if (!listeFichierExecute.contains(name)) {
-							executeScript(name, jarFile.getInputStream(jarEntry));
+				try {
+					JarURLConnection connection = (JarURLConnection) resource.toURI().toURL().openConnection();
+					JarFile jarFile = connection.getJarFile();
+					Enumeration<JarEntry> entries = jarFile.entries();
+					while (entries.hasMoreElements()) {
+						JarEntry jarEntry = entries.nextElement();
+						String fullName = jarEntry.getName();
+						if (fullName.matches("db/.*sql")) {
+							String name = fullName.substring(fullName.lastIndexOf("/") + 1);
+							if (!listeFichierExecute.contains(name)) {
+								executeScript(name, jarFile.getInputStream(jarEntry));
+							}
 						}
 					}
+				} catch (URISyntaxException e) {
+					logger.error(e);
+					throw new SoundLooperRuntimeException("Unable to transform URL to URI : " + resource, e);
 				}
 			} else {
 				// We re not in a jar, developement environment
