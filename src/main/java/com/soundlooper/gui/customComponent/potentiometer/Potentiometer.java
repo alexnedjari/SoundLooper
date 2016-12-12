@@ -8,10 +8,12 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.css.CssMetaData;
+import javafx.css.SimpleStyleableBooleanProperty;
 import javafx.css.SimpleStyleableDoubleProperty;
 import javafx.css.SimpleStyleableStringProperty;
 import javafx.css.StyleConverter;
 import javafx.css.Styleable;
+import javafx.css.StyleableBooleanProperty;
 import javafx.css.StyleableDoubleProperty;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleableStringProperty;
@@ -28,6 +30,7 @@ public class Potentiometer extends Slider {
 	private DoubleProperty rotationBoundaryMinInDegree = new SimpleDoubleProperty(30);
 	private DoubleProperty rotationBoundaryMaxInDegree = new SimpleDoubleProperty(30);
 	private StyleableDoubleProperty sensibility;
+	private StyleableBooleanProperty displayValue;
 
 	private SimpleObjectProperty<ButtonBase> centralButton = new SimpleObjectProperty<>();
 
@@ -43,11 +46,23 @@ public class Potentiometer extends Slider {
 		return size;
 	}
 
+	public StyleableBooleanProperty displayValueProperty() {
+		if (displayValue == null) {
+			displayValue = new SimpleStyleableBooleanProperty(StyleableProperties.DISPLAY_VALUE, this, "display-value",
+					false);
+		}
+		return displayValue;
+	}
+
 	public StyleableDoubleProperty sensibilityProperty() {
 		if (sensibility == null) {
 			sensibility = new SimpleStyleableDoubleProperty(StyleableProperties.SENSIBILITY, this, "sensibility", 1d);
 		}
 		return sensibility;
+	}
+
+	public boolean getDisplayValue() {
+		return displayValue == null ? false : displayValue.get();
 	}
 
 	public double getSensibility() {
@@ -120,10 +135,24 @@ public class Potentiometer extends Slider {
 			}
 		};
 
+		private static final CssMetaData<Potentiometer, Boolean> DISPLAY_VALUE = new CssMetaData<Potentiometer, Boolean>(
+				"-fx-potentiometer-display-value", new StyleConverter<String, Boolean>(), false) {
+
+			@Override
+			public boolean isSettable(Potentiometer potentiometer) {
+				return potentiometer.displayValue == null || !potentiometer.displayValue.isBound();
+			}
+
+			@Override
+			public StyleableProperty<Boolean> getStyleableProperty(Potentiometer potentiometer) {
+				return potentiometer.displayValueProperty();
+			}
+		};
+
 		private static final List<CssMetaData<? extends Styleable, ?>> STYLEABLES;
 		static {
 			final List<CssMetaData<? extends Styleable, ?>> styleables = new ArrayList<>();
-			Collections.addAll(styleables, SENSIBILITY, SIZE);
+			Collections.addAll(styleables, SENSIBILITY, SIZE, DISPLAY_VALUE);
 			STYLEABLES = Collections.unmodifiableList(styleables);
 		}
 

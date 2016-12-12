@@ -14,6 +14,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextArea;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -32,6 +34,8 @@ import com.soundlooper.exception.PlayerNotInitializedException;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.system.ImageGetter;
+import com.soundlooper.system.SoundLooperColor;
+import com.soundlooper.system.SoundLooperLigthing;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class PlayerViewSkin extends SkinBase<PlayerView> {
@@ -142,18 +146,28 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		imageView = new ImageView(ImageGetter.getIconURL("loading_32.png"));
 		imageView.setPreserveRatio(false);
+		imageView.setEffect(new InnerShadow());
 
 		rightHandleImage = ImageGetter.getIcon("rightHandle.png");
+		rightHandleImage.setEffect(new DropShadow());
+
 		leftHandleImage = ImageGetter.getIcon("leftHandle.png");
+		leftHandleImage.setEffect(new DropShadow());
 
 		loopPointBeginLine = new Line(0, TOP_MARGIN, 0, 0);
 		loopPointEndLine = new Line(0, TOP_MARGIN, 0, 0);
 
 		loopBarBackground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		loopBarBackground.setFill(Color.LIGHTGRAY);
+		InnerShadow shadowLoopbarBackground = new InnerShadow();
+		shadowLoopbarBackground.setInput(SoundLooperLigthing.getBarLighting());
+		loopBarBackground.setEffect(shadowLoopbarBackground);
+		loopBarBackground.setFill(SoundLooperColor.WHITE);
 
 		loopBarForeground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		loopBarForeground.setFill(Color.BLUE);
+		DropShadow shadowLoopbarForeground = new DropShadow();
+		shadowLoopbarForeground.setInput(SoundLooperLigthing.getBarLighting());
+		loopBarForeground.setEffect(shadowLoopbarForeground);
+		loopBarForeground.setFill(SoundLooperColor.DARK_GRAY);
 
 		unselectedZoneBegin = new Rectangle(LEFT_MARGIN, TOP_MARGIN, 0, 0);
 		unselectedZoneBegin.setFill(new Color(0, 0, 0, 0.20));
@@ -219,12 +233,6 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
 		PlayerView playerView = getSkinnable();
 		SoundLooperPlayer player = playerView.getSoundLooperPlayer();
-
-		if (getSkinnable().isFocused()) {
-			loopBarForeground.setFill(Color.BLUE);
-		} else {
-			loopBarForeground.setFill(Color.DARKBLUE);
-		}
 
 		int mediaTime;
 		int loopPointBegin;
@@ -395,13 +403,12 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 					dragStartLoopBarForegroundPx = 0;
 					loopBarForegroundDrag = false;
 
-					setMediaTimeIfNeeded(player, contentWidth);
-					setLoopPointEnd(player, newTimeEndMs);
-					setLoopPointBegin(player, newTimeBeginMs);
-					playerView.forceLayout();
-					me.consume();
-				});
+					// setMediaTimeIfNeeded(player, contentWidth);
 
+						setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
+						playerView.forceLayout();
+						me.consume();
+					});
 			}
 		}
 		invalidWidth = false;
@@ -415,6 +422,16 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 		} catch (PlayerException e) {
 			MessagingUtil.displayError("Impossible de modifier la position de début", e);
+		}
+	}
+
+	private void setLoopPoints(SoundLooperPlayer player, double newTimeBeginMs, double newTimeEndMs) {
+		try {
+			if (player.isSoundInitialized()) {
+				player.setLoopPoints(new Double(newTimeBeginMs).intValue(), new Double(newTimeEndMs).intValue());
+			}
+		} catch (PlayerException e) {
+			MessagingUtil.displayError("Impossible de modifier les positions", e);
 		}
 	}
 

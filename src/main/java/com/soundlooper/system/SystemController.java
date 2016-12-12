@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.MapChangeListener;
@@ -128,7 +129,8 @@ public class SystemController {
 		timestretchPotentiometer.valueProperty().bindBidirectional(
 				SoundLooperPlayer.getInstance().timeStretchProperty());
 
-		MenuButton timestrechButton = new MenuButton("...");
+		MenuButton timestrechButton = new MenuButton();
+		timestrechButton.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
 
 		timestrechButton.getItems().add(createTimestrechMenuItem(50));
 		timestrechButton.getItems().add(createTimestrechMenuItem(90));
@@ -148,8 +150,9 @@ public class SystemController {
 
 		MenuItem menuItemSpinnerTimestrech = new MenuItem("", textfieldTimestretch);
 		timestrechButton.getItems().add(menuItemSpinnerTimestrech);
-		timestrechButton.setPrefSize(32, 32);
+		timestrechButton.setPrefSize(40, 32);
 		timestrechButton.setFocusTraversable(false);
+		timestrechButton.getStyleClass().add("timestrechButton");
 
 		// timestrechButton.getStyleClass().add("toggleMuteButton");
 		timestretchPotentiometer.setCentralButton(timestrechButton);
@@ -161,7 +164,7 @@ public class SystemController {
 		volumePotentiometer.setValue(100);
 
 		ToggleButton muteButton = new ToggleButton();
-		muteButton.setPrefSize(32, 32);
+		muteButton.setPrefSize(40, 32);
 		muteButton.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
 		muteButton.setFocusTraversable(false);
 

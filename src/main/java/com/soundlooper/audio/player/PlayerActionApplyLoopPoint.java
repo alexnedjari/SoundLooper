@@ -69,13 +69,5 @@ public class PlayerActionApplyLoopPoint extends PlayerAction {
 	public void run() throws PlayerException {
 		logger.info("Start action : " + this.getClass().getSimpleName());
 		this.getPlayer().getCurrentSound().setLoopPoints(this.beginPoint, this.endPoint);
-
-		int mediaTime = this.getPlayer().getCurrentSound().getMediaTime();
-		if (mediaTime < this.beginPoint || mediaTime > this.endPoint) {
-			// If current mefia time is out of new positions, put it on the
-			// begin of the loop
-			this.getPlayer().setMediaTime(this.beginPoint);
-		}
-
 	}
 }

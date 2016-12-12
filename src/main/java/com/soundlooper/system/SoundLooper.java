@@ -41,6 +41,9 @@ public class SoundLooper extends Application {
 
 		primaryStage.getIcons().add(ImageGetter.getSoundLooper64().getImage());
 
+		primaryStage.setMinWidth(750);
+		primaryStage.setMinHeight(375);
+
 		instance = this;
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Sound Looper");
@@ -101,8 +104,10 @@ public class SoundLooper extends Application {
 
 			File lastFile = new File(Preferences.getInstance().getLastPathUsed());
 			if (lastFile.exists()) {
+
 				try {
 					SoundLooperPlayer.getInstance().loadSong(lastFile);
+					MessagingUtil.displayMessage("Fichier '" + lastFile.getAbsolutePath() + " chargé");
 				} catch (PlayerException e) {
 					MessagingUtil.displayError("Impossible de charger la chanson " + lastFile, e);
 				}
@@ -112,9 +117,15 @@ public class SoundLooper extends Application {
 			Scene scene = new Scene(rootLayout);
 			scene.getStylesheets().add("/style/application.css");
 
+			// Light light = new Light.Point(, 40, 300, Color.WHITE);
+			// Lighting lighting = new Lighting();
+			// lighting.setLight(light);
+			// scene.getRoot().setEffect(lighting);
+
 			primaryStage.setScene(scene);
 			primaryStage.setAlwaysOnTop(Preferences.getInstance().getAlwaysOnTop());
 			controller.initShortcut();
+
 			primaryStage.show();
 		} catch (IOException e) {
 			throw new SoundLooperRuntimeException("Unable to load the root layout", e);

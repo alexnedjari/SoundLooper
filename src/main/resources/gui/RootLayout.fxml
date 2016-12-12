@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import com.soundlooper.customComponent.playerView.*?>
 <?import com.soundlooper.customComponent.potentiometer.*?>
 <?import com.soundlooper.gui.customComponent.hspinner.*?>
@@ -17,11 +18,11 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.control.Button?>
 
-<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
+<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" styleClass="gray25" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
    <top>
       <VBox prefHeight="13.0" prefWidth="710.0" BorderPane.alignment="CENTER">
          <children>
-            <MenuBar focusTraversable="false" onDragDropped="#openFile">
+            <MenuBar focusTraversable="false" onDragDropped="#openFile" styleClass="gray10">
               <menus>
                 <Menu mnemonicParsing="false" onShowing="#populateRecentFileMenu" text="%menu.file">
                   <items>
@@ -56,7 +57,7 @@
             </MenuBar>
             <AnchorPane prefHeight="67.0" prefWidth="710.0">
                <children>
-            <ToolBar focusTraversable="false" maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <ToolBar focusTraversable="false" maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" styleClass="gray10" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <items>
                   <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openFile" prefHeight="36.0" prefWidth="36.0" text="%button.open">
                      <tooltip>
@@ -114,6 +115,9 @@
                </children>
             </AnchorPane>
          </children>
+         <effect>
+            <DropShadow />
+         </effect>
       </VBox>
    </top>
    <bottom>
@@ -139,10 +143,6 @@
    </bottom>
    <center>
       <BorderPane BorderPane.alignment="CENTER">
-         <center>
-            <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" />
-               
-         </center>
          
          <bottom>
             <BorderPane prefHeight="32.0" prefWidth="710.0" BorderPane.alignment="CENTER">
@@ -154,6 +154,16 @@
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
+         <center>
+            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <top>
+                  <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" BorderPane.alignment="CENTER" />
+               </top>
+               <BorderPane.margin>
+                  <Insets left="5.0" right="5.0" top="20.0" />
+               </BorderPane.margin>
+            </BorderPane>
+         </center>
       </BorderPane>
    </center>
 </BorderPane>

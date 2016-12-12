@@ -57,9 +57,22 @@
 .favoriteTreeSong {-fx-graphic: url("icon/song_16.png");}
 .favoriteTreeTag {-fx-graphic: url("icon/tag_16.png");}
 
-#volumePotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;}
-#timestretchPotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;}
+#volumePotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: false;}
+#timestretchPotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: true;}
 
 .label {-fx-text-fill: black; -fx-alignment: center;}
 .labelInformation {-fx-text-fill: blue; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 .labelError {-fx-text-fill: red; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
+
+.white {-fx-background-color: #FFFFFF}
+.gray5 {-fx-background-color: #F3F3F3}
+.gray10 {-fx-background-color: #E7E7E7}
+.gray25 {-fx-background-color: #BFBFBF}
+.gray50 {-fx-background-color: #7F7F7F}
+.darkGray {-fx-background-color: #373737}
+.lightGray {-fx-background-color: #434343}
+
+.timestrechButton .arrow, .timestrechButton .arrow-button {
+	-fx-background-color: transparent;
+	-fx-pref-width: 0;
+}

@@ -8,16 +8,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
@@ -26,7 +25,13 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 	private static final int MILLISECOND_SECOND = 1000;
 	private static final int MILLISECOND_MINUT = 60000;
 
-	GridPane gridPane = new GridPane();
+	public static final int DIGIT_WIDTH = 8;
+
+	private static final int WIDTH = 85;
+	private static final int HEIGHT = 23;
+
+	private static final int DIGIT_OFFSET = (WIDTH - (DIGIT_WIDTH * 9)) / 2;
+	AnchorPane gridPane = new AnchorPane();
 
 	List<TimeDigitView> listDigit = new ArrayList<>();
 
@@ -65,41 +70,65 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		// labelSeparator1.setBackground(new Background(new
 		// BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
 		labelSeparator1.setTextAlignment(TextAlignment.CENTER);
-		labelSeparator1.resize(10, 20);
+		labelSeparator1.resize(DIGIT_WIDTH, 20);
 
 		Label labelSeparator2 = new Label(" :");
-		labelSeparator2.resize(10, 20);
+		labelSeparator2.resize(DIGIT_WIDTH, 20);
 
 		// flowPane.setBackground(new Background(new BackgroundFill(Color.BLUE,
 		// CornerRadii.EMPTY, Insets.EMPTY)));
-		gridPane.resize(73, 23);
-		gridPane.setPadding(new Insets(0, 5, 0, 5));
-		gridPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(5),
+		gridPane.resize(WIDTH, HEIGHT);
+
+		// gridPane.setPadding(new Insets(0, 5, 0, 5));
+		gridPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(0),
 				new BorderWidths(1), new Insets(0))));
+		// gridPane.setBackground(new Background(new
+		// BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), new
+		// Insets(0))));
+		gridPane.getStyleClass().add("white");
 
 		gridPane.getChildren().add(digitMinutDecade);
+		digitMinutDecade.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 0, 1);
+
 		gridPane.getChildren().add(digitMinutUnit);
+		digitMinutUnit.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 1, 1);
+
 		gridPane.getChildren().add(labelSeparator1);
+		labelSeparator1.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 2, 1);
 
 		gridPane.getChildren().add(digitSecondDecade);
+		digitSecondDecade.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 3, 1);
+
 		gridPane.getChildren().add(digitSecondUnit);
+		digitSecondUnit.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 4, 1);
+
 		gridPane.getChildren().add(labelSeparator2);
+		labelSeparator2.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 5, 1);
 
 		gridPane.getChildren().add(digitMillisecondHundred);
+		digitMillisecondHundred.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 6, 1);
+
 		gridPane.getChildren().add(digitMillisecondDecade);
+		digitMillisecondDecade.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 7, 1);
+
 		gridPane.getChildren().add(digitMillisecondUnit);
+		digitMillisecondUnit.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 8, 1);
 
-		GridPane.setConstraints(digitMinutDecade, 0, 0);
-		GridPane.setConstraints(digitMinutUnit, 1, 0);
-		GridPane.setConstraints(labelSeparator1, 2, 0);
+		InnerShadow shadow = new InnerShadow();
+		shadow.setRadius(5);
+		gridPane.setEffect(shadow);
 
-		GridPane.setConstraints(digitSecondDecade, 3, 0);
-		GridPane.setConstraints(digitSecondUnit, 4, 0);
-		GridPane.setConstraints(labelSeparator2, 5, 0);
-
-		GridPane.setConstraints(digitMillisecondHundred, 6, 0);
-		GridPane.setConstraints(digitMillisecondDecade, 7, 0);
-		GridPane.setConstraints(digitMillisecondUnit, 8, 0);
+		// GridPane.setConstraints(digitMinutDecade, 0, 0);
+		// GridPane.setConstraints(digitMinutUnit, 1, 0);
+		// GridPane.setConstraints(labelSeparator1, 2, 0);
+		//
+		// GridPane.setConstraints(digitSecondDecade, 3, 0);
+		// GridPane.setConstraints(digitSecondUnit, 4, 0);
+		// GridPane.setConstraints(labelSeparator2, 5, 0);
+		//
+		// GridPane.setConstraints(digitMillisecondHundred, 6, 0);
+		// GridPane.setConstraints(digitMillisecondDecade, 7, 0);
+		// GridPane.setConstraints(digitMillisecondUnit, 8, 0);
 		getChildren().add(gridPane);
 
 		getSkinnable().timeProperty().addListener(new ChangeListener<Number>() {
@@ -162,6 +191,42 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		});
 	}
 
+	@Override
+	protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return HEIGHT;
+	}
+
+	@Override
+	protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return HEIGHT;
+	}
+
+	@Override
+	protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return WIDTH;
+	}
+
+	@Override
+	protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return WIDTH;
+	}
+
+	@Override
+	protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return HEIGHT;
+	}
+
+	@Override
+	protected double computePrefWidth(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return WIDTH;
+	}
+
 	private int getDigitMillisecondWeight(TimeDigitView timeDigitView) {
 		if (timeDigitView == digitMillisecondUnit) {
 			return 1;
@@ -218,11 +283,13 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		if (getSkinnable().isFocused()) {
-			gridPane.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
-		} else {
-			gridPane.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-		}
+		// if (getSkinnable().isFocused()) {
+		// gridPane.setBackground(new Background(new BackgroundFill(Color.WHITE,
+		// CornerRadii.EMPTY, Insets.EMPTY)));
+		// } else {
+		// gridPane.setBackground(new Background(new
+		// BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+		// }
 		applyTime();
 	}
 

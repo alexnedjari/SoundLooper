@@ -243,7 +243,8 @@ public class SoundFile {
 		soundImage.seekData(0);
 		BufferedImage off_Image = new BufferedImage(largeurImage, hauteurImage, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = off_Image.createGraphics();
-		g2.setColor(new Color(36, 168, 206));
+		// g2.setColor(new Color(36, 168, 206));
+		g2.setColor(new Color(127, 127, 127));
 		g2.fillRect(0, 0, largeurImage, hauteurImage);
 		g2.setColor(Color.WHITE);
 		int pixelX = 0;
@@ -532,13 +533,18 @@ public class SoundFile {
 	 *             if a PlayerException is threw
 	 */
 	public void setLoopPoints(int beginPoint, int endPoint) throws PlayerException {
-		this.logger.info("JNI : Avant set loop points " + beginPoint + " to " + endPoint + "(position:"
-				+ this.getMediaTime() + ", duration:" + this.getDuration() + ")");
+		int mediaTime = getMediaTime();
+		this.logger.info("JNI : Avant set loop points " + beginPoint + " to " + endPoint + "(position:" + mediaTime
+				+ ", duration:" + this.getDuration() + ")");
 		if (endPoint == this.duration) {
 			endPoint--;
 		}
-		this.channel
-				.setLoopPoints(beginPoint, FMOD_TIMEUNIT.FMOD_TIMEUNIT_MS, endPoint, FMOD_TIMEUNIT.FMOD_TIMEUNIT_MS);
+		logger.error("CHANGEMENT DE LOOP POINT : " + beginPoint + " -> " + endPoint);
+		Player.errorCheck(this.channel.setLoopPoints(beginPoint, FMOD_TIMEUNIT.FMOD_TIMEUNIT_MS, endPoint,
+				FMOD_TIMEUNIT.FMOD_TIMEUNIT_MS));
+		if (mediaTime > endPoint || mediaTime < beginPoint) {
+			setMediaTime(beginPoint);
+		}
 
 		this.logger.info("JNI : Après set loop points ");
 
