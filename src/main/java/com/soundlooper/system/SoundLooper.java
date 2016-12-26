@@ -2,17 +2,22 @@ package com.soundlooper.system;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.kohsuke.github.GHIssue;
 
 import com.soundlooper.exception.AlreadyLockedException;
 import com.soundlooper.exception.PlayerException;
@@ -20,13 +25,14 @@ import com.soundlooper.exception.SoundLooperRuntimeException;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.database.ConnectionFactory;
 import com.soundlooper.system.preferences.Preferences;
+import com.soundlooper.system.util.IssueSender;
 import com.soundlooper.system.util.Lock;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class SoundLooper extends Application {
 
 	private static final String LOCK_NAME = ".lock";
-	private Stage primaryStage;
+	private static Stage primaryStage;
 	private BorderPane rootLayout;
 	private static SoundLooper instance;
 	private SystemController controller;
@@ -45,8 +51,8 @@ public class SoundLooper extends Application {
 		primaryStage.setMinHeight(375);
 
 		instance = this;
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Sound Looper");
+		SoundLooper.primaryStage = primaryStage;
+		SoundLooper.primaryStage.setTitle("Sound Looper");
 		primaryStage.setOnCloseRequest(e -> {
 			logger.info("On close request");
 			onWindowClose();
@@ -72,9 +78,27 @@ public class SoundLooper extends Application {
 	}
 
 	private static void onException(Thread t, Throwable e) {
-		// TODO, open window if is possible
 		logger.error("An uncauch exception is detected on the thread " + t.getName() + " : " + e, e);
+		Alert alert = new Alert(AlertType.ERROR, "Souhaitez-vous envoyer un rapport d'erreur ?", ButtonType.OK,
+				ButtonType.CANCEL);
+		alert.initOwner(primaryStage);
+		alert.setTitle("Erreur critique");
+		alert.setHeaderText("Une erreur inattendue est survenue");
 
+		Optional<ButtonType> result = alert.showAndWait();
+		if (result.get() == ButtonType.OK) {
+			logger.info("User want to create a github issue");
+			GHIssue issue = IssueSender.sendIssue(e);
+			logger.info("Issue " + issue.getNumber() + " created");
+			Alert issueConfirmationAlert = new Alert(AlertType.INFORMATION, "Le ticket de bug numéro '"
+					+ issue.getNumber() + "' a bien été créé");
+			issueConfirmationAlert.setTitle("Création du rapport d'erreur");
+			issueConfirmationAlert.setHeaderText("Le rapport d'erreur a été envoyé avec succès");
+			issueConfirmationAlert.initOwner(primaryStage);
+			issueConfirmationAlert.showAndWait();
+		} else {
+			logger.info("User doesn't want to create a github issue");
+		}
 	}
 
 	public void onWindowClose() {

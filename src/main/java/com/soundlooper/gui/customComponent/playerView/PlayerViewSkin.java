@@ -275,11 +275,13 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		unselectedZoneEnd.setWidth(screenRight - rightHandleImage.getX());
 		if (invalidWidth || invalidHeight) {
 			loopBarBackground.setWidth(getScreenWidth(contentWidth));
-			unselectedZoneBegin.setHeight(getScreenHeight(contentHeight));
+			double screenHeight = getScreenHeight(contentHeight);
+			unselectedZoneBegin.setHeight(screenHeight);
+			System.out.println("SCREEN HEIGHT : " + screenHeight + " - Content : " + contentHeight);
 
-			unselectedZoneEnd.setHeight(getScreenHeight(contentHeight));
+			unselectedZoneEnd.setHeight(screenHeight);
 			pane.setPrefSize(contentWidth, contentHeight);
-			imageView.setFitHeight(getScreenHeight(contentHeight));
+			imageView.setFitHeight(screenHeight);
 			imageView.setFitWidth(getScreenWidth(contentWidth));
 			imageView.setX(LEFT_MARGIN);
 			imageView.setY(TOP_MARGIN);

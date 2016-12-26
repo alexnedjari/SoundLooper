@@ -7,6 +7,7 @@ import javafx.scene.paint.Color;
 public class SoundLooperLigthing {
 
 	private static Lighting potentiometerLighting;
+	private static Lighting potentiometerLightingOver;
 	private static Lighting barLighting;
 
 	public static synchronized Lighting getPotentiometerLighting() {
@@ -14,6 +15,13 @@ public class SoundLooperLigthing {
 			potentiometerLighting = createPotentiometerLighting();
 		}
 		return potentiometerLighting;
+	}
+
+	public static synchronized Lighting getPotentiometerLightingOver() {
+		if (potentiometerLightingOver == null) {
+			potentiometerLightingOver = createPotentiometerLightingOver();
+		}
+		return potentiometerLightingOver;
 	}
 
 	public static synchronized Lighting getBarLighting() {
@@ -28,6 +36,13 @@ public class SoundLooperLigthing {
 		Light light = new Light.Point(80, 40, 100, Color.WHITE);
 		potentiometerLighting.setLight(light);
 		return potentiometerLighting;
+	}
+
+	private static Lighting createPotentiometerLightingOver() {
+		potentiometerLightingOver = new Lighting();
+		Light light = new Light.Point(80, 40, 200, Color.WHITE);
+		potentiometerLightingOver.setLight(light);
+		return potentiometerLightingOver;
 	}
 
 	private static Lighting createBarLighting() {

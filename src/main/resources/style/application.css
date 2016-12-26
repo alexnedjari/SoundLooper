@@ -36,14 +36,11 @@
 .player-button {
 	-fx-border-width: 0.0mm ;
 	-fx-background-color:transparent;
-	
 }
 
 .playButton {-fx-graphic: url('icon/play_32.png');}
-.playButton:hover {-fx-graphic: url('icon/play_over_32.png');}
 
 .pauseButton {-fx-graphic: url('icon/pause_32.png');}
-.pauseButton:hover {-fx-graphic: url('icon/pause_over_32.png');}
 
 /* FAVORITE MANAGEMENT BUTTONS */
 .addTagButton {-fx-graphic: url('icon/add_16.png');}

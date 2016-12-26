@@ -232,6 +232,7 @@ public class SystemController {
 				updateMarkList();
 			}
 		});
+
 	}
 
 	private MenuItem createTimestrechMenuItem(int timestrechPercent) {
@@ -355,6 +356,7 @@ public class SystemController {
 
 	@FXML
 	public void increaseLevel(ActionEvent e) {
+
 		int newVolume = SoundLooperPlayer.getInstance().getVolume() + 5;
 		if (newVolume > 100) {
 			newVolume = 100;
@@ -446,6 +448,7 @@ public class SystemController {
 	private void openSearchDialog(List<? extends Searchable> favoriteSongList, String title,
 			Consumer<SearchDialogController> onDialogClosed) {
 		try {
+
 			FXMLLoader loader = new FXMLLoader();
 			loader.setLocation(getClass().getResource("/gui/SearchDialog.fxml"));
 			loader.load();

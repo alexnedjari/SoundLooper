@@ -4,3 +4,5 @@ Ce logiciel utilise les librairies suivantes :
  - log4j 2.4.1
  - common-io 2.5
  - common-lang3 3.4
+ - org.kohsuke.github-api 1.82
+ - pegdown 1.6.0
