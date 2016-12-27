@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import com.soundlooper.customComponent.playerView.*?>
+<?import com.soundlooper.customComponent.potentiometer.*?>
+<?import com.soundlooper.gui.customComponent.hspinner.*?>
+<?import com.soundlooper.gui.customComponent.potentiometer.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import com.soundlooper.gui.customComponent.playerView.*?>
+<?import com.soundlooper.gui.customComponent.timeselection.*?>
+<?import com.soundlooper.gui.customComponent.playerbutton.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.control.Button?>
+
+<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" styleClass="gray25" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
+   <top>
+      <VBox prefHeight="13.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+         <children>
+            <MenuBar focusTraversable="false" onDragDropped="#openFile" styleClass="gray10">
+              <menus>
+                <Menu mnemonicParsing="false" onShowing="#populateRecentFileMenu" text="%menu.file">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#openFile" text="%menu.open" />
+                        <Menu fx:id="recentFileMenu" mnemonicParsing="false" text="%menu.recentFile">
+                          <items>
+                            <MenuItem mnemonicParsing="false" text="Action 1" />
+                          </items>
+                        </Menu>
+                        <MenuItem mnemonicParsing="false" onAction="#close" text="%menu.quit" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%menu.edition">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#manageFavorite" text="%menu.manageFavorite" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="%menu.search">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#searchFavorite" text="%menu.search.favorite" />
+                        <MenuItem mnemonicParsing="false" onAction="#searchMark" text="%menu.search.mark" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="?">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#openHelpDialog" text="%menu.help" />
+                        <MenuItem mnemonicParsing="false" onAction="#openShortcutDialog" text="%menu.help.shortcut" />
+                        <MenuItem mnemonicParsing="false" onAction="#openAboutDialog" text="%menu.about" />
+                    </items>
+                  </Menu>
+              </menus>
+            </MenuBar>
+            <AnchorPane prefHeight="67.0" prefWidth="710.0">
+               <children>
+            <ToolBar focusTraversable="false" maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" styleClass="gray10" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <items>
+                  <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openFile" prefHeight="36.0" prefWidth="36.0" text="%button.open">
+                     <tooltip>
+                        <Tooltip text="%button.openFile" />
+                     </tooltip>
+                           <styleClass>
+                              <String fx:value="toolbar-button" />
+                              <String fx:value="openFileButton" />
+                           </styleClass>
+                  </Button>
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                  <ToggleButton fx:id="alwaysOnTopButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0">
+                           <styleClass>
+                              <String fx:value="toggleAlwaysOntopButton" />
+                              <String fx:value="toolbar-button" />
+                           </styleClass>
+                        </ToggleButton>
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                        <Button fx:id="setBeginAlignmentButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#setBeginAlignment" prefHeight="36.0" prefWidth="36.0">
+                           <styleClass>
+                              <String fx:value="beginAlignmentButton" />
+                              <String fx:value="toolbar-button" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="setEndAlignmentButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#setEndAlignment" prefHeight="36.0" prefWidth="36.0">
+                           <styleClass>
+                              <String fx:value="endAlignmentButton" />
+                              <String fx:value="toolbar-button" />
+                           </styleClass>
+                        </Button>
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                        <ToggleButton fx:id="favoriteButton" focusTraversable="false" mnemonicParsing="false">
+                           <styleClass>
+                              <String fx:value="toggleFavoriteButton" />
+                              <String fx:value="toolbar-button" />
+                           </styleClass></ToggleButton>
+                        <MenuButton fx:id="favoriteMenuButton" focusTraversable="false" maxWidth="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="20.0" styleClass="toolbar-button" />
+                        <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
+                        <Button fx:id="saveMarkButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#saveCurrentMark" prefHeight="36.0" prefWidth="36.0">
+                           <styleClass>
+                              <String fx:value="saveMarkButton" />
+                              <String fx:value="toolbar-button" />
+                           </styleClass>
+                        </Button>
+                        <Button fx:id="addMarkButton" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openAddMarkDialog" prefHeight="36.0" prefWidth="36.0">
+                           <styleClass>
+                              <String fx:value="addMarkButton" />
+                              <String fx:value="toolbar-button" />
+                           </styleClass>
+                        </Button>
+                        <MenuButton fx:id="markMenuButton" focusTraversable="false" maxWidth="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="20.0" styleClass="toolbar-button" />
+                        
+                     </items>
+            </ToolBar>
+               </children>
+            </AnchorPane>
+         </children>
+         <effect>
+            <DropShadow />
+         </effect>
+      </VBox>
+   </top>
+   <bottom>
+      <AnchorPane prefHeight="100.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+      <children>
+            <PlayerButton fx:id="playButton" focusTraversable="false" layoutX="20" layoutY="50.0" maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" onAction="#playSong" prefHeight="32.0" prefWidth="32.0">
+               <Insets top="0" right="0" left="0" bottom="0"/> 
+               <styleClass>
+                  <String fx:value="player-button" />
+                  <String fx:value="playButton" />
+               </styleClass>
+            </PlayerButton>
+            <PlayerButton fx:id="pauseButton" focusTraversable="false" layoutX="60.0" layoutY="50.0" maxHeight="32.0" maxWidth="32.0" minHeight="32.0" minWidth="32.0" mnemonicParsing="false" onAction="#pauseSong" prefHeight="32.0" prefWidth="32.0">
+               <Insets top="0" right="0" left="0" bottom="0"/>
+               <styleClass>
+                  <String fx:value="player-button" />
+                  <String fx:value="pauseButton" />
+               </styleClass>
+            </PlayerButton>
+            <Label fx:id="labelState" contentDisplay="RIGHT" focusTraversable="false" layoutX="116.0" layoutY="13.0" prefHeight="73.0" prefWidth="372.0" wrapText="true" AnchorPane.rightAnchor="210" AnchorPane.leftAnchor="116" />
+            <Potentiometer fx:id="timestretchPotentiometer" focusTraversable="false" layoutX="596.0" prefHeight="100.0" prefWidth="100.0" AnchorPane.rightAnchor="10"/>
+            <Potentiometer fx:id="volumePotentiometer" focusTraversable="false" layoutX="496.0" prefHeight="100.0" prefWidth="100.0" AnchorPane.rightAnchor="100" />
+   </children>
+      </AnchorPane>
+   </bottom>
+   <center>
+      <BorderPane BorderPane.alignment="CENTER">
+         
+         <bottom>
+            <BorderPane prefHeight="32.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+            <center>
+         		<TimeSelectionView fx:id="timeSelectionView" />
+         		</center>   
+            </BorderPane>
+         </bottom>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
+         <center>
+            <BorderPane BorderPane.alignment="CENTER">
+               <center>
+                  <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" BorderPane.alignment="CENTER" />
+               </center>
+               <BorderPane.margin>
+                  <Insets left="5.0" right="5.0" top="20.0" />
+               </BorderPane.margin>
+            </BorderPane>
+         </center>
+      </BorderPane>
+   </center>
+</BorderPane>

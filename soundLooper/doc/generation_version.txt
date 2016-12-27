@@ -1,7 +1,0 @@
- - Penser à mettre les infos de licence dans tous les nouveaux fichiers
- - Mettre à jour les fichiers POM des deux projets
- - Vider les répertoires target de AudioEngine et SoundLooper
- - Lancer "maven install" sur AudioEngine, puis sur soundLooper
- - récupérer les fichiers générés dans install/release
-
-  

@@ -1,0 +1,75 @@
+/* BOUTONS DE LA BARRE OUTIL */
+.toolbar-button {
+	-fx-border-width: 0.0mm ;
+	-fx-background-color:transparent;
+}
+.toolbar-button:disabled {
+	/*-fx-border-width: 0.0mm ;
+	-fx-background-color:#999999;*/
+}
+.toolbar-button:hover {
+	/*-fx-background-color:#990000;*/
+	-fx-border-width: 1px ;
+	-fx-border-color:#2222BB ;
+	-fx-background-radius: 3px;
+	-fx-border-radius: 3px;
+}
+
+.openFileButton {-fx-graphic: url('icon/open_32.png');}
+
+.beginAlignmentButton {-fx-graphic: url('icon/beginAlignment_32.png');}
+.endAlignmentButton {-fx-graphic: url('icon/endAlignment_32.png');}
+
+.toggleAlwaysOntopButton {-fx-graphic: url('icon/alwaisOnTopDisabled_32.gif');}
+.toggleAlwaysOntopButton:selected {-fx-graphic: url('icon/alwaisOnTopEnabled_32.png');}
+
+.toggleFavoriteButton {-fx-graphic: url('icon/favoriteDisabled_32.png');}
+.toggleFavoriteButton:selected {-fx-graphic: url('icon/favoriteEnabled_32.png');}
+
+.toggleMuteButton {-fx-graphic: url('icon/muteDisabled_16.png');}
+.toggleMuteButton:selected {-fx-graphic: url('icon/muteEnabled_16.png');}
+
+.saveMarkButton {-fx-graphic: url('icon/saveMark_32.png');}
+.addMarkButton {-fx-graphic: url('icon/addMark_32.png');}
+
+/* BOUTONS DU LECTEUR */
+.player-button {
+	-fx-border-width: 0.0mm ;
+	-fx-background-color:transparent;
+}
+
+.playButton {-fx-graphic: url('icon/play_32.png');}
+
+.pauseButton {-fx-graphic: url('icon/pause_32.png');}
+
+/* FAVORITE MANAGEMENT BUTTONS */
+.addTagButton {-fx-graphic: url('icon/add_16.png');}
+.deleteTagButton {-fx-graphic: url('icon/delete_16.png');}
+
+/* BOUTONS DIVERS */
+.validateButton {-fx-graphic: url('icon/validate_32.png');}
+.deleteButton {-fx-graphic: url('icon/delete_16.png');}
+.deleteButton:hover {-fx-graphic: url('icon/delete_16.png');}
+
+.favoriteTreeSong {-fx-graphic: url("icon/song_16.png");}
+.favoriteTreeTag {-fx-graphic: url("icon/tag_16.png");}
+
+#volumePotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: false;}
+#timestretchPotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: true;}
+
+.label {-fx-text-fill: black; -fx-alignment: center;}
+.labelInformation {-fx-text-fill: blue; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
+.labelError {-fx-text-fill: red; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
+
+.white {-fx-background-color: #FFFFFF}
+.gray5 {-fx-background-color: #F3F3F3}
+.gray10 {-fx-background-color: #E7E7E7}
+.gray25 {-fx-background-color: #BFBFBF}
+.gray50 {-fx-background-color: #7F7F7F}
+.darkGray {-fx-background-color: #373737}
+.lightGray {-fx-background-color: #434343}
+
+.timestrechButton .arrow, .timestrechButton .arrow-button {
+	-fx-background-color: transparent;
+	-fx-pref-width: 0;
+}
