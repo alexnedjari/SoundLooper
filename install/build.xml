@@ -7,6 +7,8 @@
 	<target name="deploy" description="Package the application">
 		<echo>DEPLOY ${version}</echo> 
 		<echo>BASE DIR : ${basedir}</echo>
+		
+		<property name="jdk" value="jdk1.8.0_77-32"/>
 
 		<echo message="Expand script file" />
 		<delete file="package/windows/SoundLooper.iss" failonerror="false"/>
@@ -24,7 +26,7 @@
 			</filterchain>
 		</copy>
 		
-		
+		<echo>Create SoundLooper-${version}.exe</echo>
 		<fx:deploy width="800" height="600" outdir="dist"  
 		        outfile="SoundLooper" nativeBundles="installer" verbose="true" >
 		    <fx:application name="SoundLooper"
@@ -35,12 +37,33 @@
 		    	<fx:fileset dir="${basedir}/package/common/" includes="LICENCE.txt"/>
 		    	<fx:fileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
 		    	<fx:fileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
-		    	<fx:fileset dir="${basedir}/../target/classes" includes="log4j2.xml"/>
 		    </fx:resources>
-			<fx:platform basedir="${basedir}/jdk1.8.0_77-32"/>
+			<fx:platform basedir="${basedir}/${jdk}"/>
 			<fx:info title="SoundLooper" vendor="Alexandre NEDJARI" />
 			<fx:preferences menu="true" shortcut="true"/>
 		</fx:deploy> 
+		
+		<!-- TODO ajouter sh -->
+		<!-- TODO ajouter jre -->
+		<!-- TODO packager deb -->
+		<!-- TODO configurer sh pour utiliser jre -->
+		<echo>Create SoundLooper-${version}.zip</echo>
+		<copy file="package/linux/SoundLooper.base.sh" tofile="package/linux/SoundLooper.sh">
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</copy>
+		
+		<delete file="../dist/bundles/*.zip"/>
+		<zip destfile="../dist/bundles/SoundLooper-${version}.zip">
+			<zipfileset dir="${basedir}/../target/" includes="SoundLooper-${version}.jar"/>
+			<zipfileset dir="${basedir}/../target/" includes="dependency-jars/*.*"/>
+			<zipfileset dir="${basedir}" includes="${jdk}/**/**"/>
+	    	<zipfileset dir="${basedir}/package/common/" includes="LICENCE.txt"/>
+	    	<zipfileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
+	    	<zipfileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
+			<zipfileset dir="${basedir}/package/linux/" includes="SoundLooper.sh"/>
+		</zip>
 	</target>
 	
 	<target name="install-maven" description="Launch install target on soundLooper project">
