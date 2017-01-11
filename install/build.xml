@@ -38,15 +38,11 @@
 		    	<fx:fileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
 		    	<fx:fileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
 		    </fx:resources>
-			<fx:platform basedir="${basedir}/${jdk}"/>
+			<fx:platform basedir="${basedir}/package/windows/${jdk}"/>
 			<fx:info title="SoundLooper" vendor="Alexandre NEDJARI" />
 			<fx:preferences menu="true" shortcut="true"/>
 		</fx:deploy> 
 		
-		<!-- TODO ajouter sh -->
-		<!-- TODO ajouter jre -->
-		<!-- TODO packager deb -->
-		<!-- TODO configurer sh pour utiliser jre -->
 		<echo>Create SoundLooper-${version}.zip</echo>
 		<copy file="package/linux/SoundLooper.base.sh" tofile="package/linux/SoundLooper.sh">
 			<filterchain>
@@ -58,7 +54,6 @@
 		<zip destfile="../dist/bundles/SoundLooper-${version}.zip">
 			<zipfileset dir="${basedir}/../target/" includes="SoundLooper-${version}.jar"/>
 			<zipfileset dir="${basedir}/../target/" includes="dependency-jars/*.*"/>
-			<zipfileset dir="${basedir}" includes="${jdk}/**/**"/>
 	    	<zipfileset dir="${basedir}/package/common/" includes="LICENCE.txt"/>
 	    	<zipfileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
 	    	<zipfileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
