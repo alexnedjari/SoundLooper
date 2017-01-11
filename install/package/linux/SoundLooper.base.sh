@@ -1,1 +1,1 @@
-./${jdk}/bin/java -jar SoundLooper-2.0.0.jar
+java -jar SoundLooper-${version}.jar

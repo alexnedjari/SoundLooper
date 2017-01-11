@@ -17,10 +17,11 @@ soundLooper/preferences.properties
 .classpath
 .project
 dist/
-install/jdk1.8.0_77-32/
 .settings/
 data/
 preferences.properties
 target/
 travail/
 /bin/
+install/package/linux/jdk1.8.0_77-32/
+install/package/windows/jdk1.8.0_77-32/
