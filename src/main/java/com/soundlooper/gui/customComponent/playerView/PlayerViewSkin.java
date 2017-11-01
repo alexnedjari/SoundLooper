@@ -12,15 +12,19 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextArea;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
@@ -35,14 +39,15 @@ import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.system.ImageGetter;
 import com.soundlooper.system.SoundLooperColor;
-import com.soundlooper.system.SoundLooperLigthing;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class PlayerViewSkin extends SkinBase<PlayerView> {
-	private final static int LEFT_MARGIN = 30;
+	public final static int LEFT_MARGIN = 30;
 	private final static int HANDLE_WIDTH = LEFT_MARGIN;
 	private final static int RIGTH_MARGIN = 30;
 	private final static int TOP_MARGIN = 30;
+	private final static int TOP_PADDING = 30;
+	private final static int BORDER_PADDING = 10;
 	private final static int MIN_HANDLE_SPACING = 2;
 	private final static int DEFAULT_DURATION = 1000;
 
@@ -55,15 +60,17 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		}
 	};
 
-	private Rectangle loopBarBackground;
-	private Rectangle loopBarForeground;
+	// private Rectangle loopBarBackground;
+	// private Rectangle loopBarForeground;
+
+	private Line lineTop1 = new Line();
 
 	private Rectangle unselectedZoneBegin;
 	private Rectangle unselectedZoneEnd;
 
 	private Line currentTimeLine;
-	private Line loopPointBeginLine;
-	private Line loopPointEndLine;
+	// private Line loopPointBeginLine;
+	// private Line loopPointEndLine;
 	TextArea label = new TextArea("texte");
 	ImageView imageView;
 
@@ -83,8 +90,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 	private boolean invalidWidth = true;
 	private boolean invalidHeight = true;
+	Border borderTop = new Border(LEFT_MARGIN);
+	Border borderBottom = new Border(LEFT_MARGIN);
 
 	Pane pane = new Pane();
+	FlowPane stackPane = new FlowPane(Orientation.HORIZONTAL);
 
 	protected PlayerViewSkin(PlayerView control) {
 		super(control);
@@ -146,62 +156,78 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		imageView = new ImageView(ImageGetter.getIconURL("loading_32.png"));
 		imageView.setPreserveRatio(false);
-		imageView.setEffect(new InnerShadow());
 
 		rightHandleImage = ImageGetter.getIcon("rightHandle.png");
-		rightHandleImage.setEffect(new DropShadow());
 
 		leftHandleImage = ImageGetter.getIcon("leftHandle.png");
-		leftHandleImage.setEffect(new DropShadow());
 
-		loopPointBeginLine = new Line(0, TOP_MARGIN, 0, 0);
-		loopPointEndLine = new Line(0, TOP_MARGIN, 0, 0);
+		// loopPointBeginLine = new Line(0, TOP_MARGIN, 0, 0);
+		// loopPointEndLine = new Line(0, TOP_MARGIN, 0, 0);
 
-		loopBarBackground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		InnerShadow shadowLoopbarBackground = new InnerShadow();
-		shadowLoopbarBackground.setInput(SoundLooperLigthing.getBarLighting());
-		loopBarBackground.setEffect(shadowLoopbarBackground);
-		loopBarBackground.setFill(SoundLooperColor.WHITE);
+		// loopBarBackground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
+		// loopBarBackground.setFill(SoundLooperColor.WHITE);
 
-		loopBarForeground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		DropShadow shadowLoopbarForeground = new DropShadow();
-		shadowLoopbarForeground.setInput(SoundLooperLigthing.getBarLighting());
-		loopBarForeground.setEffect(shadowLoopbarForeground);
-		loopBarForeground.setFill(SoundLooperColor.DARK_GRAY);
+		// loopBarForeground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
+		// loopBarForeground.setFill(SoundLooperColor.DARK_GRAY);
 
-		unselectedZoneBegin = new Rectangle(LEFT_MARGIN, TOP_MARGIN, 0, 0);
-		unselectedZoneBegin.setFill(new Color(0, 0, 0, 0.20));
+		unselectedZoneBegin = new Rectangle(LEFT_MARGIN, 0, 0, 0);
+		unselectedZoneBegin.setFill(SoundLooperColor.getWhite(0.6));
 
-		unselectedZoneEnd = new Rectangle(0, TOP_MARGIN, 0, 0);
-		unselectedZoneEnd.setFill(new Color(0, 0, 0, 0.20));
+		unselectedZoneEnd = new Rectangle(0, 0, 0, 0);
+		unselectedZoneEnd.setFill(SoundLooperColor.getWhite(0.6));
 
 		currentTimeLine = new Line(0, 0, 100, 100);
-		currentTimeLine.setStroke(Color.RED);
+		currentTimeLine.setStroke(SoundLooperColor.getSeparatorColor());
 
-		loopPointEndLine.startXProperty().bind(rightHandleImage.xProperty());
-		loopPointEndLine.endXProperty().bind(rightHandleImage.xProperty());
+		// loopPointEndLine.startXProperty().bind(rightHandleImage.xProperty());
+		// loopPointEndLine.endXProperty().bind(rightHandleImage.xProperty());
 		unselectedZoneEnd.xProperty().bind(rightHandleImage.xProperty());
 
 		DoubleBinding leftPropertyBinding = leftHandleImage.xProperty().add(HANDLE_WIDTH);
-		loopPointBeginLine.startXProperty().bind(leftPropertyBinding);
-		loopPointBeginLine.endXProperty().bind(leftPropertyBinding);
+		// loopPointBeginLine.startXProperty().bind(leftPropertyBinding);
+		// loopPointBeginLine.endXProperty().bind(leftPropertyBinding);
 		unselectedZoneBegin.widthProperty().bind(leftPropertyBinding.subtract(LEFT_MARGIN));
 
-		loopBarForeground.xProperty().bind(leftPropertyBinding);
-		loopBarForeground.widthProperty().bind(rightHandleImage.xProperty().subtract(leftPropertyBinding));
+		// loopBarForeground.xProperty().bind(leftPropertyBinding);
+		// loopBarForeground.widthProperty().bind(rightHandleImage.xProperty().subtract(leftPropertyBinding));
 
-		getChildren().add(pane);
+		// getChildren().add(pane);
 		pane.getChildren().add(imageView);
 		pane.getChildren().add(currentTimeLine);
-		pane.getChildren().add(loopBarBackground);
-		pane.getChildren().add(loopBarForeground);
-		pane.getChildren().add(loopPointBeginLine);
-		pane.getChildren().add(loopPointEndLine);
+		// pane.getChildren().add(loopBarBackground);
+		// pane.getChildren().add(loopBarForeground);
+		// pane.getChildren().add(loopPointBeginLine);
+		// pane.getChildren().add(loopPointEndLine);
 		pane.getChildren().add(rightHandleImage);
 		pane.getChildren().add(leftHandleImage);
 		pane.getChildren().add(unselectedZoneBegin);
 		pane.getChildren().add(unselectedZoneEnd);
+		// pane.getChildren().add(lineTop1);
+		// pane.getChildren().add(borderTop);
 		// getChildren().add(label);
+
+		getChildren().add(stackPane);
+		stackPane.setPadding(new Insets(TOP_PADDING, BORDER_PADDING, 0, BORDER_PADDING));
+
+		Label e2 = new Label("Pane1");
+		e2.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.BLUE, CornerRadii.EMPTY,
+				Insets.EMPTY)));
+
+		Pane handlePanel = new Pane();
+		handlePanel.getChildren().add(leftHandleImage);
+		handlePanel.getChildren().add(rightHandleImage);
+		stackPane.getChildren().add(handlePanel);
+
+		stackPane.getChildren().add(borderTop);
+
+		Pane imagePane = new Pane();
+		imagePane.getChildren().add(imageView);
+		imagePane.getChildren().add(unselectedZoneBegin);
+		imagePane.getChildren().add(unselectedZoneEnd);
+		imagePane.getChildren().add(currentTimeLine);
+		stackPane.getChildren().add(imagePane);
+
+		stackPane.getChildren().add(borderBottom);
 
 		control.widthProperty().addListener(l -> {
 			invalidWidth = true;
@@ -268,23 +294,34 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		if (!rightHandleDrag && !loopBarForegroundDrag) {
 			rightHandleImage.setX(loopPointEndPx);
 		}
-		loopPointBeginLine.setEndY(contentHeight);
-		loopPointEndLine.setEndY(contentHeight);
+		// loopPointBeginLine.setEndY(contentHeight);
+		// loopPointEndLine.setEndY(contentHeight);
 		double screenRight = getScreenRight(contentWidth);
 
+		lineTop1.setStartX(LEFT_MARGIN);
+		lineTop1.setStartY(TOP_MARGIN);
+		lineTop1.setEndX(screenRight);
+		lineTop1.setEndY(TOP_MARGIN);
+
 		unselectedZoneEnd.setWidth(screenRight - rightHandleImage.getX());
+		double screenHeight = getScreenHeight(contentHeight);
 		if (invalidWidth || invalidHeight) {
-			loopBarBackground.setWidth(getScreenWidth(contentWidth));
-			double screenHeight = getScreenHeight(contentHeight);
+
+			// loopBarBackground.setWidth(getScreenWidth(contentWidth));
 			unselectedZoneBegin.setHeight(screenHeight);
-			System.out.println("SCREEN HEIGHT : " + screenHeight + " - Content : " + contentHeight);
 
 			unselectedZoneEnd.setHeight(screenHeight);
-			pane.setPrefSize(contentWidth, contentHeight);
+			stackPane.setPrefSize(contentWidth, contentHeight);
+			stackPane.setMaxSize(contentWidth, contentHeight);
+			stackPane.setMinSize(contentWidth, contentHeight);
+			System.out.println("PARENT : " + contentWidth + ", " + contentHeight);
+			System.out.println("PANE : " + stackPane.getWidth() + ", " + stackPane.getHeight());
+
 			imageView.setFitHeight(screenHeight);
-			imageView.setFitWidth(getScreenWidth(contentWidth));
+			double screenWidth = getScreenWidth(contentWidth);
+			imageView.setFitWidth(screenWidth);
 			imageView.setX(LEFT_MARGIN);
-			imageView.setY(TOP_MARGIN);
+			imageView.setY(0);
 			imageView.setOnMouseClicked(me -> {
 				double newTimeMs = convertPxToMs(PlayerViewSkin.this.getSkinnable().getWidth(), me.getX());
 				setMediaTime(player, new Double(newTimeMs).intValue());
@@ -292,14 +329,18 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				me.consume();
 
 			});
+
+			borderTop.setLineWidth(screenWidth);
+			borderBottom.setLineWidth(screenWidth);
+
 		}
 
 		double mediaTimePx = convertMsToPx(contentWidth, mediaTime, duration, true);
 
 		currentTimeLine.setStartX(mediaTimePx);
 		currentTimeLine.setEndX(mediaTimePx);
-		currentTimeLine.setStartY(TOP_MARGIN);
-		currentTimeLine.setEndY(contentHeight);
+		currentTimeLine.setStartY(0);
+		currentTimeLine.setEndY(screenHeight);
 
 		if (invalidWidth) {
 			invalidWidth = false;
@@ -371,47 +412,53 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				});
 			}
 
-			if (dragStartLoopBarForegroundPx == 0) {
-				loopBarForeground.setOnMousePressed(me -> {
-					loopBarForegroundDrag = true;
-					dragOffset = me.getSceneX() - loopBarForeground.getX();
-					dragStartLoopBarForegroundPx = me.getSceneX();
-				});
-
-				loopBarForeground.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartLoopBarForegroundPx;
-					double newHandleX = dragStartLoopBarForegroundPx + move - dragOffset;
-					double positionLeftHandle = newHandleX - HANDLE_WIDTH;
-					double positionRightHandle = newHandleX + loopBarForeground.getWidth();
-					if (positionLeftHandle <= 0) {
-						positionLeftHandle = 0;
-						positionRightHandle = loopBarForeground.getWidth() + HANDLE_WIDTH;
-					}
-					if (positionRightHandle >= screenRight) {
-						positionRightHandle = screenRight;
-						positionLeftHandle = screenRight - loopBarForeground.getWidth() - HANDLE_WIDTH;
-					}
-
-					leftHandleImage.setX(positionLeftHandle);
-					rightHandleImage.setX(positionRightHandle);
-
-				});
-
-				loopBarForeground.setOnMouseReleased(me -> {
-					double newTimeBeginPx = loopBarForeground.getX();
-					double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
-					double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
-					double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
-					dragStartLoopBarForegroundPx = 0;
-					loopBarForegroundDrag = false;
-
-					// setMediaTimeIfNeeded(player, contentWidth);
-
-						setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
-						playerView.forceLayout();
-						me.consume();
-					});
-			}
+			// if (dragStartLoopBarForegroundPx == 0) {
+			// loopBarForeground.setOnMousePressed(me -> {
+			// loopBarForegroundDrag = true;
+			// dragOffset = me.getSceneX() - loopBarForeground.getX();
+			// dragStartLoopBarForegroundPx = me.getSceneX();
+			// });
+			//
+			// loopBarForeground.setOnMouseDragged(me -> {
+			// double move = me.getSceneX() - dragStartLoopBarForegroundPx;
+			// double newHandleX = dragStartLoopBarForegroundPx + move -
+			// dragOffset;
+			// double positionLeftHandle = newHandleX - HANDLE_WIDTH;
+			// double positionRightHandle = newHandleX +
+			// loopBarForeground.getWidth();
+			// if (positionLeftHandle <= 0) {
+			// positionLeftHandle = 0;
+			// positionRightHandle = loopBarForeground.getWidth() +
+			// HANDLE_WIDTH;
+			// }
+			// if (positionRightHandle >= screenRight) {
+			// positionRightHandle = screenRight;
+			// positionLeftHandle = screenRight - loopBarForeground.getWidth() -
+			// HANDLE_WIDTH;
+			// }
+			//
+			// leftHandleImage.setX(positionLeftHandle);
+			// rightHandleImage.setX(positionRightHandle);
+			//
+			// });
+			//
+			// loopBarForeground.setOnMouseReleased(me -> {
+			// double newTimeBeginPx = loopBarForeground.getX();
+			// double newTimeEndPx = loopBarForeground.getX() +
+			// loopBarForeground.getWidth();
+			// double newTimeBeginMs = convertPxToMs(contentWidth,
+			// newTimeBeginPx);
+			// double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
+			// dragStartLoopBarForegroundPx = 0;
+			// loopBarForegroundDrag = false;
+			//
+			// // setMediaTimeIfNeeded(player, contentWidth);
+			//
+			// setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
+			// playerView.forceLayout();
+			// me.consume();
+			// });
+			// }
 		}
 		invalidWidth = false;
 		invalidHeight = false;
@@ -448,9 +495,9 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	}
 
 	private void setMediaTimeIfNeeded(Player player, double contentWidth) {
-		if (currentTimeLine.getStartX() > loopPointEndLine.getStartX()
-				|| currentTimeLine.getStartX() < loopPointBeginLine.getStartX()) {
-			double newTime = convertPxToMs(contentWidth, loopPointBeginLine.getStartX());
+		double startX = unselectedZoneBegin.getX() + unselectedZoneBegin.getWidth();
+		if (currentTimeLine.getStartX() > unselectedZoneEnd.getX() || currentTimeLine.getStartX() < startX) {
+			double newTime = convertPxToMs(contentWidth, startX);
 			setMediaTime(player, newTime);
 		}
 	}
@@ -498,11 +545,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	}
 
 	private double getScreenWidth(double contentWidth) {
-		return contentWidth - LEFT_MARGIN - RIGTH_MARGIN;
+		return contentWidth - LEFT_MARGIN - RIGTH_MARGIN - BORDER_PADDING * 2;
 	}
 
 	private double getScreenHeight(double contentHeight) {
-		return contentHeight - TOP_MARGIN;
+		return contentHeight - TOP_MARGIN - TOP_PADDING - borderBottom.getHeight() - borderTop.getHeight();
 	}
 
 	public void startTimer() {
@@ -517,5 +564,41 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				}
 			}
 		}, new Date(), 100);
+	}
+
+	@Override
+	protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return 400;
+	}
+
+	@Override
+	protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return 50;
+	}
+
+	@Override
+	protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return super.computeMaxWidth(height, topInset, rightInset, bottomInset, leftInset);
+	}
+
+	@Override
+	protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return super.computeMinWidth(height, topInset, rightInset, bottomInset, leftInset);
+	}
+
+	@Override
+	protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return 50;
+	}
+
+	@Override
+	protected double computePrefWidth(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return super.computePrefWidth(width, topInset, rightInset, bottomInset, leftInset);
 	}
 }

@@ -19,11 +19,11 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.control.Button?>
 
-<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" styleClass="gray25" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
+<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" styleClass="windowsBackground" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
    <top>
       <VBox prefHeight="13.0" prefWidth="710.0" BorderPane.alignment="CENTER">
          <children>
-            <MenuBar focusTraversable="false" onDragDropped="#openFile" styleClass="gray10">
+            <MenuBar focusTraversable="false" onDragDropped="#openFile" styleClass="blue">
               <menus>
                 <Menu mnemonicParsing="false" onShowing="#populateRecentFileMenu" text="%menu.file">
                   <items>
@@ -58,7 +58,7 @@
             </MenuBar>
             <AnchorPane prefHeight="67.0" prefWidth="710.0">
                <children>
-            <ToolBar focusTraversable="false" maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" styleClass="gray10" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <ToolBar focusTraversable="false" maxHeight="127.0" minHeight="43.0" prefHeight="43.0" prefWidth="710.0" styleClass="blue" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <items>
                   <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" onAction="#openFile" prefHeight="36.0" prefWidth="36.0" text="%button.open">
                      <tooltip>
@@ -116,9 +116,7 @@
                </children>
             </AnchorPane>
          </children>
-         <effect>
-            <DropShadow />
-         </effect>
+        
       </VBox>
    </top>
    <bottom>
@@ -145,27 +143,26 @@
       </AnchorPane>
    </bottom>
    <center>
-      <BorderPane BorderPane.alignment="CENTER">
-         
+      <BorderPane BorderPane.alignment="CENTER" maxHeight="500" minHeight="100">
          <bottom>
-            <BorderPane prefHeight="32.0" prefWidth="710.0" BorderPane.alignment="CENTER">
-            <center>
+            <!-- BorderPane prefHeight="32.0" prefWidth="710.0" BorderPane.alignment="CENTER">
+            <center -->
          		<TimeSelectionView fx:id="timeSelectionView" />
-         		</center>   
-            </BorderPane>
+         		<!--/center>   
+            </BorderPane-->
          </bottom>
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>
          <center>
-            <BorderPane BorderPane.alignment="CENTER">
-               <center>
-                  <PlayerView fx:id="playerView" prefHeight="300.0" prefWidth="710.0" BorderPane.alignment="CENTER" />
-               </center>
+            <!-- BorderPane BorderPane.alignment="CENTER" -->
+               <!-- center -->
+                  <PlayerView fx:id="playerView" BorderPane.alignment="CENTER" />
+               <!-- /center>
                <BorderPane.margin>
                   <Insets left="5.0" right="5.0" top="20.0" />
                </BorderPane.margin>
-            </BorderPane>
+            </BorderPane -->
          </center>
       </BorderPane>
    </center>

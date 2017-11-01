@@ -130,7 +130,8 @@ public class SystemController {
 				SoundLooperPlayer.getInstance().timeStretchProperty());
 
 		MenuButton timestrechButton = new MenuButton();
-		timestrechButton.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
+
+		// timestrechButton.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
 
 		timestrechButton.getItems().add(createTimestrechMenuItem(50));
 		timestrechButton.getItems().add(createTimestrechMenuItem(90));
@@ -150,12 +151,18 @@ public class SystemController {
 
 		MenuItem menuItemSpinnerTimestrech = new MenuItem("", textfieldTimestretch);
 		timestrechButton.getItems().add(menuItemSpinnerTimestrech);
-		timestrechButton.setPrefSize(40, 32);
+		timestrechButton.setPrefSize(32, 32);
 		timestrechButton.setFocusTraversable(false);
 		timestrechButton.getStyleClass().add("timestrechButton");
+		timestrechButton.getStyleClass().add("player-button");
 
 		// timestrechButton.getStyleClass().add("toggleMuteButton");
-		timestretchPotentiometer.setCentralButton(timestrechButton);
+		timestretchPotentiometer.setBottomLeftControl(timestrechButton);
+		Label timestretchLabel = new Label();
+
+		timestretchLabel.getStyleClass().add("bluetext");
+		timestretchLabel.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
+		timestretchPotentiometer.setBottomRightControl(timestretchLabel);
 
 		// -----------------------------------------------------
 		volumePotentiometer.setMin(0);
@@ -164,12 +171,13 @@ public class SystemController {
 		volumePotentiometer.setValue(100);
 
 		ToggleButton muteButton = new ToggleButton();
-		muteButton.setPrefSize(40, 32);
+		muteButton.setPrefSize(32, 32);
 		muteButton.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
 		muteButton.setFocusTraversable(false);
 
 		muteButton.getStyleClass().add("toggleMuteButton");
-		volumePotentiometer.setCentralButton(muteButton);
+		muteButton.getStyleClass().add("player-button");
+		volumePotentiometer.setBottomLeftControl(muteButton);
 
 		// --------------------------------------------
 		favoriteMenuButton.showingProperty().addListener(new ChangeListener<Boolean>() {

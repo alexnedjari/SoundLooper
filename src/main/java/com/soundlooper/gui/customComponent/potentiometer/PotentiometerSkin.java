@@ -2,21 +2,16 @@ package com.soundlooper.gui.customComponent.potentiometer;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
-import javafx.scene.effect.DropShadow;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Rotate;
 
-import com.soundlooper.system.SoundLooperLigthing;
+import com.soundlooper.gui.customComponent.util.ArrowFactory;
+import com.soundlooper.system.ImageGetter;
 
 public class PotentiometerSkin extends SkinBase<Potentiometer> {
 
@@ -24,41 +19,54 @@ public class PotentiometerSkin extends SkinBase<Potentiometer> {
 	private Label valueLabel;
 
 	private AnchorPane potentiometerView;
-	Circle circle;
+	ImageView imageView;
 
 	private double dragStart;
 	private double initialValue;
 
 	private AnchorPane anchorPane = new AnchorPane();
 	Rotate rotate = new Rotate(0, 25, 25, 0, Rotate.Z_AXIS);
+	Polygon arrow;
 
 	protected PotentiometerSkin(Potentiometer control) {
 		super(control);
 
+		// this.getSkinnable().setBackground(
+		// new Background(new BackgroundFill(new Color(1, 0, 0, 1),
+		// CornerRadii.EMPTY, Insets.EMPTY)));
 		if (Potentiometer.SIZE_MEDIUM.equals(control.getSize())) {
 			// imageView = ImageGetter.getIconePotentiometer50();
 			anchorPane.resize(100, 100);
 
 			potentiometerView = new AnchorPane();
+			// potentiometerView.setBackground(new Background(new
+			// BackgroundFill(new Color(0, 1, 0, 1), CornerRadii.EMPTY,
+			// Insets.EMPTY)));
 			potentiometerView.resize(50, 50);
-			circle = new Circle(25);
-			circle.setFill(new Color(0.215d, 0.215d, 0.215d, 1));
+			imageView = ImageGetter.getDrawablePotentiometer50();
 
-			DropShadow shadow = new DropShadow();
-			shadow.setRadius(2);
-			circle.setEffect(shadow);
+			potentiometerView.getChildren().add(imageView);
 
-			potentiometerView.getChildren().add(circle);
-			circle.relocate(0, 0);
-
-			Polygon arrow = new Polygon();
-			arrow.getPoints().setAll(0d, 0d, 10d, 0d, 5d, 10d);
+			arrow = ArrowFactory.getArrow(0.50);
+			// double factor = 0.50;
+			// arrow.getPoints().setAll(0d, 64d * factor, 0d, 0d, 17d * factor,
+			// 37d * factor, 9d * factor, 37d * factor,
+			// 9d * factor, 64d * factor);
+			// arrow.getPoints().setAll(10d * factor, 27d * factor, 10d *
+			// factor, 0d, 21d * factor, 0d, 21d * factor,
+			// 64d * factor, 0d, 27d * factor);
+			// arrow.setRotationAxis(new Point3D(0, 27 * factor, 0));
+			// arrow.setRotationAxis(new Point3D(0, 0, 0));
 			potentiometerView.getChildren().add(arrow);
-			arrow.relocate(20, 41);
+
+			rotate = new Rotate(0, 8, 15, 0, Rotate.Z_AXIS);
+			arrow.relocate(17, 10);
+			arrow.setFill(new Color(0.95, 0.95, 0.95, 1));
 
 			// potentiometerView.setBorder(new Border(new
 			// BorderStroke(Color.RED, BorderStrokeStyle.SOLID,
 			// CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			// arrow.getTransforms().add(rotate);
 
 		} else if (Potentiometer.SIZE_SMALL.equals(control.getSize())) {
 			// imageView = ImageGetter.getIconePotentiometer30();
@@ -75,36 +83,38 @@ public class PotentiometerSkin extends SkinBase<Potentiometer> {
 			}
 		});
 
-		control.setEffect(SoundLooperLigthing.getPotentiometerLighting());
+		// control.setEffect(SoundLooperLigthing.getPotentiometerLighting());
 
 		anchorPane.getChildren().add(potentiometerView);
-		potentiometerView.relocate(25, 0);
-		potentiometerView.getTransforms().add(rotate);
 
-		control.centralButtonProperty().addListener(new ChangeListener<ButtonBase>() {
-			@Override
-			public void changed(ObservableValue<? extends ButtonBase> observable, ButtonBase oldValue,
-					ButtonBase newValue) {
-				if (oldValue != null) {
-					anchorPane.getChildren().remove(oldValue);
-				}
+		arrow.getTransforms().add(rotate);
 
-				if (newValue != null) {
-					anchorPane.getChildren().add(0, newValue);
-					getSkinnable().forceLayout();
-				}
+		// control.getBottomLeftControl().addListener(new
+		// ChangeListener<ButtonBase>() {
+		// @Override
+		// public void changed(ObservableValue<? extends ButtonBase> observable,
+		// ButtonBase oldValue,
+		// ButtonBase newValue) {
+		// if (oldValue != null) {
+		// anchorPane.getChildren().remove(oldValue);
+		// }
+		//
+		// if (newValue != null) {
+		// anchorPane.getChildren().add(0, newValue);
+		// getSkinnable().forceLayout();
+		// }
+		//
+		// }
+		// });
+		if (control.getBottomLeftControl() != null) {
 
-			}
-		});
-		if (control.getCentralButton() != null) {
-			DropShadow shadow = new DropShadow();
-			control.getCentralButton().setEffect(shadow);
-			anchorPane.getChildren().add(0, control.getCentralButton());
+			anchorPane.getChildren().add(0, control.getBottomLeftControl());
 			getSkinnable().forceLayout();
-			control.getCentralButton().setBackground(
-					new Background(new BackgroundFill(Color.LIGHTYELLOW, new CornerRadii(16), Insets.EMPTY)));
+			// control.getCentralButton().setBackground(
+			// new Background(new BackgroundFill(Color.LIGHTYELLOW, new
+			// CornerRadii(16), Insets.EMPTY)));
 
-			control.getCentralButton().relocate(10, 60);
+			control.getBottomLeftControl().relocate(0, 60);
 
 			// if (control.getDisplayValue()) {
 			// // valueLabel = new Label();
@@ -117,8 +127,16 @@ public class PotentiometerSkin extends SkinBase<Potentiometer> {
 			// NumberStringConverter());
 			// }
 		}
+		if (control.getBottomRightControl() != null) {
 
+			anchorPane.getChildren().add(0, control.getBottomRightControl());
+			getSkinnable().forceLayout();
+			control.getBottomRightControl().relocate(70, 70);
+		}
 		getChildren().add(anchorPane);
+
+		potentiometerView.relocate(25, 0);
+		imageView.relocate(0, 0);
 	}
 
 	@Override

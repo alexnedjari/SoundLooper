@@ -5,20 +5,14 @@ import java.util.List;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+
+import com.soundlooper.system.SoundLooperColor;
 
 public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 
@@ -69,19 +63,22 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		Label labelSeparator1 = new Label(" :");
 		// labelSeparator1.setBackground(new Background(new
 		// BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+		labelSeparator1.setTextFill(SoundLooperColor.getBlue());
 		labelSeparator1.setTextAlignment(TextAlignment.CENTER);
 		labelSeparator1.resize(DIGIT_WIDTH, 20);
 
 		Label labelSeparator2 = new Label(" :");
 		labelSeparator2.resize(DIGIT_WIDTH, 20);
+		labelSeparator2.setTextFill(SoundLooperColor.getBlue());
 
 		// flowPane.setBackground(new Background(new BackgroundFill(Color.BLUE,
 		// CornerRadii.EMPTY, Insets.EMPTY)));
 		gridPane.resize(WIDTH, HEIGHT);
 
 		// gridPane.setPadding(new Insets(0, 5, 0, 5));
-		gridPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(0),
-				new BorderWidths(1), new Insets(0))));
+		// gridPane.setBorder(new Border(new BorderStroke(Color.GRAY,
+		// BorderStrokeStyle.SOLID, new CornerRadii(0),
+		// new BorderWidths(1), new Insets(0))));
 		// gridPane.setBackground(new Background(new
 		// BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), new
 		// Insets(0))));
@@ -113,10 +110,6 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 
 		gridPane.getChildren().add(digitMillisecondUnit);
 		digitMillisecondUnit.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 8, 1);
-
-		InnerShadow shadow = new InnerShadow();
-		shadow.setRadius(5);
-		gridPane.setEffect(shadow);
 
 		// GridPane.setConstraints(digitMinutDecade, 0, 0);
 		// GridPane.setConstraints(digitMinutUnit, 1, 0);

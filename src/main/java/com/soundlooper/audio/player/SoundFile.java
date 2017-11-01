@@ -3,7 +3,6 @@
  */
 package com.soundlooper.audio.player;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -32,6 +31,7 @@ import org.jouvieje.fmodex.utils.SizeOfPrimitive;
 
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.model.SoundLooperPlayer;
+import com.soundlooper.system.SoundLooperColor;
 
 /**
  * ----------------------------------------------------------------------------
@@ -228,7 +228,11 @@ public class SoundFile {
 
 		int largeurImage = 2048;
 		int hauteurImage = 512;
-		int facteurImageY = Integer.MAX_VALUE / hauteurImage * 2;
+		int facteurImageY = (Integer.MAX_VALUE / hauteurImage * 2);
+
+		// The signal must take 60 percent of the total height
+		facteurImageY = facteurImageY / 60 * 100;
+
 		int sampleParPixel = tailleTotaleInt / largeurImage;
 
 		// La taille du beffer est un multiple du nombre de samble par pixel *
@@ -243,10 +247,11 @@ public class SoundFile {
 		soundImage.seekData(0);
 		BufferedImage off_Image = new BufferedImage(largeurImage, hauteurImage, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = off_Image.createGraphics();
-		// g2.setColor(new Color(36, 168, 206));
-		g2.setColor(new Color(127, 127, 127));
+
+		g2.setColor(SoundLooperColor.getAwtWhite());
 		g2.fillRect(0, 0, largeurImage, hauteurImage);
-		g2.setColor(Color.WHITE);
+		g2.setColor(SoundLooperColor.getAwtBlue());
+
 		int pixelX = 0;
 		FMOD_RESULT resultat;
 		int lu;

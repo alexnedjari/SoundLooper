@@ -26,8 +26,18 @@
 .toggleFavoriteButton {-fx-graphic: url('icon/favoriteDisabled_32.png');}
 .toggleFavoriteButton:selected {-fx-graphic: url('icon/favoriteEnabled_32.png');}
 
-.toggleMuteButton {-fx-graphic: url('icon/muteDisabled_16.png');}
-.toggleMuteButton:selected {-fx-graphic: url('icon/muteEnabled_16.png');}
+.bluetext {
+    -fx-text-fill: #396e75;
+    -fx-font-weight: bold
+}
+
+.timestrechButton {-fx-graphic: url('drawable/indic-tempo_00.png');-fx-border-radius: 0 0 0 0;
+  -fx-background-radius: 0 0 0 0;-fx-mark-color: transparent;}
+
+
+.toggleMuteButton {-fx-graphic: url('drawable/indic-volume_01.png');}
+.toggleMuteButton:selected {-fx-graphic: url('drawable/indic-mute_01.png'); -fx-border-radius: 0 0 0 0;
+  -fx-background-radius: 0 0 0 0;}
 
 .saveMarkButton {-fx-graphic: url('icon/saveMark_32.png');}
 .addMarkButton {-fx-graphic: url('icon/addMark_32.png');}
@@ -38,9 +48,9 @@
 	-fx-background-color:transparent;
 }
 
-.playButton {-fx-graphic: url('icon/play_32.png');}
+.playButton {-fx-graphic: url('drawable/button-play-full_00.png');}
 
-.pauseButton {-fx-graphic: url('icon/pause_32.png');}
+.pauseButton {-fx-graphic: url('drawable/button-pause-full_00.png');}
 
 /* FAVORITE MANAGEMENT BUTTONS */
 .addTagButton {-fx-graphic: url('icon/add_16.png');}
@@ -57,11 +67,15 @@
 #volumePotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: false;}
 #timestretchPotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: true;}
 
-.label {-fx-text-fill: black; -fx-alignment: center;}
+.label {-fx-alignment: center;}
 .labelInformation {-fx-text-fill: blue; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 .labelError {-fx-text-fill: red; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 
-.white {-fx-background-color: #FFFFFF}
+.windowsBackground {-fx-background-color: linear-gradient(from 100% 0px to 100% 134px, rgb(225, 225, 226), rgb(242, 243, 243))}
+
+.white {-fx-background-color: rgb(242, 243, 243)}
+.blue {-fx-background-color: rgb(46, 167, 195)}
+
 .gray5 {-fx-background-color: #F3F3F3}
 .gray10 {-fx-background-color: #E7E7E7}
 .gray25 {-fx-background-color: #BFBFBF}
@@ -72,4 +86,12 @@
 .timestrechButton .arrow, .timestrechButton .arrow-button {
 	-fx-background-color: transparent;
 	-fx-pref-width: 0;
+}
+.timestrechButton > .arrow-button {
+    -fx-padding: 0;
+}
+
+
+.timestrechButtonn > .arrow-button > .arrow {
+    -fx-padding: 0;
 }

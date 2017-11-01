@@ -6,6 +6,8 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 
+import com.soundlooper.system.SoundLooperColor;
+
 public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
 	Label label = new Label("0");
@@ -20,6 +22,7 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 		label.resize(TimeTextFieldViewSkin.DIGIT_WIDTH, 20);
 		getChildren().add(label);
 		label.textProperty().bind(control.digitProperty().asString());
+		label.setTextFill(SoundLooperColor.getBlue());
 
 		rectangle = new Rectangle();
 

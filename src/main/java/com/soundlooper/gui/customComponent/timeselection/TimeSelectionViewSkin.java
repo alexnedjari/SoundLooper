@@ -3,12 +3,17 @@ package com.soundlooper.gui.customComponent.timeselection;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.SkinBase;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 
 import com.soundlooper.exception.PlayerException;
+import com.soundlooper.gui.customComponent.util.ArrowFactory;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
+import com.soundlooper.system.SoundLooperColor;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
@@ -51,8 +56,11 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 		// borderPane.setBackground(new Background(new BackgroundFill(Color.RED,
 		// CornerRadii.EMPTY, Insets.EMPTY)));
 
-		borderPane.setLeft(timeTextFieldBegin);
-		borderPane.setRight(timeTextFieldEnd);
+		BorderPane borderPaneLeft = getLeftPane();
+		BorderPane borderPaneRight = getRightPane();
+
+		borderPane.setLeft(borderPaneLeft);
+		borderPane.setRight(borderPaneRight);
 
 		this.getChildren().add(borderPane);
 
@@ -73,9 +81,48 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 
 	}
 
+	private BorderPane getLeftPane() {
+		BorderPane borderPaneLeft = new BorderPane();
+		borderPaneLeft.setCenter(timeTextFieldBegin);
+		Polygon arrow = ArrowFactory.getArrow(0.3);
+		arrow.setFill(SoundLooperColor.getBlue());
+		borderPaneLeft.setLeft(arrow);
+		BorderPane.setAlignment(arrow, Pos.CENTER);
+
+		Line line = getUnderscore();
+		BorderPane.setAlignment(line, Pos.TOP_RIGHT);
+		borderPaneLeft.setBottom(line);
+
+		return borderPaneLeft;
+	}
+
+	private BorderPane getRightPane() {
+		BorderPane borderPaneRight = new BorderPane();
+		borderPaneRight.setCenter(timeTextFieldEnd);
+		Polygon arrow = ArrowFactory.getArrow(0.3);
+		arrow.setScaleX(-1);
+		arrow.setFill(SoundLooperColor.getBlue());
+		borderPaneRight.setRight(arrow);
+		BorderPane.setAlignment(arrow, Pos.CENTER);
+
+		Line line = getUnderscore();
+		BorderPane.setAlignment(line, Pos.TOP_LEFT);
+		borderPaneRight.setBottom(line);
+
+		return borderPaneRight;
+	}
+
+	private Line getUnderscore() {
+		Line line = new Line(0, 0, 85, 0);
+		line.setStroke(SoundLooperColor.getBlue());
+		line.setStrokeWidth(0.5);
+
+		return line;
+	}
+
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		borderPane.resize(contentWidth, 35);
+		borderPane.resize(contentWidth, 25);
 		borderPane.setPadding(new Insets(MARGIN_TOP, MARGIN_RIGHT, 0, MARGIN_LEFT));
 
 	}
