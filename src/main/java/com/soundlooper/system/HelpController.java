@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.pegdown.PegDownProcessor;
 
 /**
  * Properned is a software that can be used to edit java properties files 2015
@@ -64,10 +63,10 @@ public class HelpController {
 				throw new IOException("The stream is null");
 			}
 			String markdown = IOUtils.toString(stream, Charset.forName("UTF-8"));
-			PegDownProcessor processor = new PegDownProcessor();
+			// PegDownProcessor processor = new PegDownProcessor();
 
-			String html = processor.markdownToHtml(markdown);
-			engine.loadContent(html);
+			// String html = processor.markdownToHtml(markdown);
+			// engine.loadContent(html);
 		} catch (IOException e) {
 			engine.loadContent("Impossible de charger l'aide");
 			logger.error("Error loading file " + fileName, e);

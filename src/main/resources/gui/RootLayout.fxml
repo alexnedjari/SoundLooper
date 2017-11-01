@@ -90,7 +90,7 @@
                            </styleClass>
                         </Button>
                         <Separator focusTraversable="false" orientation="VERTICAL" prefHeight="200.0" />
-                        <ToggleButton fx:id="favoriteButton" focusTraversable="false" mnemonicParsing="false">
+                        <ToggleButton fx:id="favoriteButton"  focusTraversable="false" maxHeight="36.0" maxWidth="36.0" minHeight="36.0" minWidth="36.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="36.0">
                            <styleClass>
                               <String fx:value="toggleFavoriteButton" />
                               <String fx:value="toolbar-button" />
@@ -143,7 +143,7 @@
       </AnchorPane>
    </bottom>
    <center>
-      <BorderPane BorderPane.alignment="CENTER" maxHeight="500" minHeight="100">
+      <BorderPane BorderPane.alignment="CENTER" maxHeight="225" minHeight="100">
          <bottom>
             <!-- BorderPane prefHeight="32.0" prefWidth="710.0" BorderPane.alignment="CENTER">
             <center -->
@@ -151,9 +151,9 @@
          		<!--/center>   
             </BorderPane-->
          </bottom>
-         <BorderPane.margin>
+         <!-- <BorderPane.margin>
             <Insets />
-         </BorderPane.margin>
+         </BorderPane.margin> -->
          <center>
             <!-- BorderPane BorderPane.alignment="CENTER" -->
                <!-- center -->

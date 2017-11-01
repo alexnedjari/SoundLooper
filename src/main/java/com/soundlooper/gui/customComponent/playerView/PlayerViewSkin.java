@@ -13,7 +13,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextArea;
@@ -26,6 +25,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +35,7 @@ import com.soundlooper.audio.player.Player;
 import com.soundlooper.audio.player.Player.PlayerState;
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.exception.PlayerNotInitializedException;
+import com.soundlooper.gui.customComponent.util.ArrowFactory;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.system.ImageGetter;
@@ -43,7 +44,6 @@ import com.soundlooper.system.util.MessagingUtil;
 
 public class PlayerViewSkin extends SkinBase<PlayerView> {
 	public final static int LEFT_MARGIN = 30;
-	private final static int HANDLE_WIDTH = LEFT_MARGIN;
 	private final static int RIGTH_MARGIN = 30;
 	private final static int TOP_MARGIN = 30;
 	private final static int TOP_PADDING = 30;
@@ -52,6 +52,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	private final static int DEFAULT_DURATION = 1000;
 
 	private Logger logger = LogManager.getLogger(this.getClass());
+	private double handleWidth;
+	private double handleHeight;
 
 	ChangeListener<Number> markTimeListener = new ChangeListener<Number>() {
 		@Override
@@ -74,8 +76,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	TextArea label = new TextArea("texte");
 	ImageView imageView;
 
-	ImageView leftHandleImage;
-	ImageView rightHandleImage;
+	// ImageView leftHandleImage;
+	// ImageView rightHandleImage;
+
+	Polygon leftHandle;
+	Polygon rightHandle;
 
 	private double dragStartLeftHandlePx;
 	private boolean leftHandleDrag = false;
@@ -94,7 +99,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	Border borderBottom = new Border(LEFT_MARGIN);
 
 	Pane pane = new Pane();
-	FlowPane stackPane = new FlowPane(Orientation.HORIZONTAL);
+	FlowPane stackPane = new FlowPane();
 
 	protected PlayerViewSkin(PlayerView control) {
 		super(control);
@@ -157,9 +162,19 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		imageView = new ImageView(ImageGetter.getIconURL("loading_32.png"));
 		imageView.setPreserveRatio(false);
 
-		rightHandleImage = ImageGetter.getIcon("rightHandle.png");
+		leftHandle = ArrowFactory.getArrow(0.7);
+		leftHandle.setFill(SoundLooperColor.getBlue());
 
-		leftHandleImage = ImageGetter.getIcon("leftHandle.png");
+		rightHandle = ArrowFactory.getArrow(0.7);
+		rightHandle.setScaleX(-1);
+		rightHandle.setFill(SoundLooperColor.getBlue());
+
+		handleWidth = leftHandle.getBoundsInParent().getWidth();
+		handleHeight = leftHandle.getBoundsInParent().getHeight();
+
+		// rightHandleImage = ImageGetter.getIcon("rightHandle.png");
+
+		// leftHandleImage = ImageGetter.getIcon("leftHandle.png");
 
 		// loopPointBeginLine = new Line(0, TOP_MARGIN, 0, 0);
 		// loopPointEndLine = new Line(0, TOP_MARGIN, 0, 0);
@@ -181,9 +196,9 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		// loopPointEndLine.startXProperty().bind(rightHandleImage.xProperty());
 		// loopPointEndLine.endXProperty().bind(rightHandleImage.xProperty());
-		unselectedZoneEnd.xProperty().bind(rightHandleImage.xProperty());
+		unselectedZoneEnd.xProperty().bind(rightHandle.translateXProperty());
 
-		DoubleBinding leftPropertyBinding = leftHandleImage.xProperty().add(HANDLE_WIDTH);
+		DoubleBinding leftPropertyBinding = leftHandle.translateXProperty().add(handleWidth);
 		// loopPointBeginLine.startXProperty().bind(leftPropertyBinding);
 		// loopPointBeginLine.endXProperty().bind(leftPropertyBinding);
 		unselectedZoneBegin.widthProperty().bind(leftPropertyBinding.subtract(LEFT_MARGIN));
@@ -198,8 +213,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		// pane.getChildren().add(loopBarForeground);
 		// pane.getChildren().add(loopPointBeginLine);
 		// pane.getChildren().add(loopPointEndLine);
-		pane.getChildren().add(rightHandleImage);
-		pane.getChildren().add(leftHandleImage);
+		pane.getChildren().add(rightHandle);
+		pane.getChildren().add(leftHandle);
 		pane.getChildren().add(unselectedZoneBegin);
 		pane.getChildren().add(unselectedZoneEnd);
 		// pane.getChildren().add(lineTop1);
@@ -214,8 +229,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				Insets.EMPTY)));
 
 		Pane handlePanel = new Pane();
-		handlePanel.getChildren().add(leftHandleImage);
-		handlePanel.getChildren().add(rightHandleImage);
+		handlePanel.getChildren().add(leftHandle);
+		handlePanel.getChildren().add(rightHandle);
 		stackPane.getChildren().add(handlePanel);
 
 		stackPane.getChildren().add(borderTop);
@@ -289,22 +304,18 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		// left handle and decorations
 		if (!leftHandleDrag && !loopBarForegroundDrag) {
-			leftHandleImage.setX(loopPointBeginPx - HANDLE_WIDTH);
+			leftHandle.setTranslateX(loopPointBeginPx - handleWidth);
 		}
 		if (!rightHandleDrag && !loopBarForegroundDrag) {
-			rightHandleImage.setX(loopPointEndPx);
+			rightHandle.setTranslateX(loopPointEndPx);
 		}
 		// loopPointBeginLine.setEndY(contentHeight);
 		// loopPointEndLine.setEndY(contentHeight);
 		double screenRight = getScreenRight(contentWidth);
 
-		lineTop1.setStartX(LEFT_MARGIN);
-		lineTop1.setStartY(TOP_MARGIN);
-		lineTop1.setEndX(screenRight);
-		lineTop1.setEndY(TOP_MARGIN);
-
-		unselectedZoneEnd.setWidth(screenRight - rightHandleImage.getX());
+		unselectedZoneEnd.setWidth(screenRight - rightHandle.getTranslateX());
 		double screenHeight = getScreenHeight(contentHeight);
+		double screenWidth = getScreenWidth(contentWidth);
 		if (invalidWidth || invalidHeight) {
 
 			// loopBarBackground.setWidth(getScreenWidth(contentWidth));
@@ -318,7 +329,6 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			System.out.println("PANE : " + stackPane.getWidth() + ", " + stackPane.getHeight());
 
 			imageView.setFitHeight(screenHeight);
-			double screenWidth = getScreenWidth(contentWidth);
 			imageView.setFitWidth(screenWidth);
 			imageView.setX(LEFT_MARGIN);
 			imageView.setY(0);
@@ -345,26 +355,26 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		if (invalidWidth) {
 			invalidWidth = false;
 			if (dragStartLeftHandlePx == 0) {
-				leftHandleImage.setOnMousePressed(me -> {
+				leftHandle.setOnMousePressed(me -> {
 					leftHandleDrag = true;
-					dragOffset = me.getSceneX() - leftHandleImage.getX();
+					dragOffset = me.getSceneX() - leftHandle.getTranslateX();
 					dragStartLeftHandlePx = me.getSceneX();
 				});
 
-				leftHandleImage.setOnMouseDragged(me -> {
+				leftHandle.setOnMouseDragged(me -> {
 					double move = me.getSceneX() - dragStartLeftHandlePx;
 					double newHandleX = dragStartLeftHandlePx + move - dragOffset;
 					if (newHandleX < 0) {
 						newHandleX = 0;
 					}
-					if (newHandleX + HANDLE_WIDTH + MIN_HANDLE_SPACING > rightHandleImage.getX()) {
-						newHandleX = rightHandleImage.getX() - HANDLE_WIDTH - MIN_HANDLE_SPACING;
+					if (newHandleX + handleWidth + MIN_HANDLE_SPACING > rightHandle.getTranslateX()) {
+						newHandleX = rightHandle.getTranslateX() - handleWidth - MIN_HANDLE_SPACING;
 					}
-					leftHandleImage.setX(newHandleX);
+					leftHandle.setTranslateX(newHandleX);
 				});
 
-				leftHandleImage.setOnMouseReleased(me -> {
-					double newTimePx = leftHandleImage.getX() + HANDLE_WIDTH;
+				leftHandle.setOnMouseReleased(me -> {
+					double newTimePx = leftHandle.getTranslateX() + handleWidth;
 					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
 					leftHandleDrag = false;
 					dragStartLeftHandlePx = 0;
@@ -378,13 +388,13 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 
 			if (dragStartRightHandlePx == 0) {
-				rightHandleImage.setOnMousePressed(me -> {
+				rightHandle.setOnMousePressed(me -> {
 					rightHandleDrag = true;
-					dragOffset = me.getSceneX() - rightHandleImage.getX();
+					dragOffset = me.getSceneX() - rightHandle.getTranslateX();
 					dragStartRightHandlePx = me.getSceneX();
 				});
 
-				rightHandleImage.setOnMouseDragged(me -> {
+				rightHandle.setOnMouseDragged(me -> {
 					double move = me.getSceneX() - dragStartRightHandlePx;
 					double newHandleX = dragStartRightHandlePx + move - dragOffset;
 
@@ -392,15 +402,15 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 						newHandleX = screenRight;
 					}
 
-					if (newHandleX - MIN_HANDLE_SPACING < leftHandleImage.getX() + HANDLE_WIDTH) {
-						newHandleX = MIN_HANDLE_SPACING + leftHandleImage.getX() + HANDLE_WIDTH;
+					if (newHandleX - MIN_HANDLE_SPACING < leftHandle.getTranslateX() + handleWidth) {
+						newHandleX = MIN_HANDLE_SPACING + leftHandle.getTranslateX() + handleWidth;
 					}
 
-					rightHandleImage.setX(newHandleX);
+					rightHandle.setTranslateX(newHandleX);
 				});
 
-				rightHandleImage.setOnMouseReleased(me -> {
-					double newTimePx = rightHandleImage.getX();
+				rightHandle.setOnMouseReleased(me -> {
+					double newTimePx = rightHandle.getTranslateX();
 					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
 					dragStartRightHandlePx = 0;
 					rightHandleDrag = false;
@@ -459,6 +469,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			// me.consume();
 			// });
 			// }
+
 		}
 		invalidWidth = false;
 		invalidHeight = false;
@@ -549,7 +560,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	}
 
 	private double getScreenHeight(double contentHeight) {
-		return contentHeight - TOP_MARGIN - TOP_PADDING - borderBottom.getHeight() - borderTop.getHeight();
+		return contentHeight - handleHeight - TOP_PADDING - borderBottom.getHeight() - borderTop.getHeight();
 	}
 
 	public void startTimer() {

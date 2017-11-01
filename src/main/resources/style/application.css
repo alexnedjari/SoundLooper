@@ -15,16 +15,16 @@
 	-fx-border-radius: 3px;
 }
 
-.openFileButton {-fx-graphic: url('icon/open_32.png');}
+.openFileButton {-fx-graphic: url('drawable/open_32.png');}
 
-.beginAlignmentButton {-fx-graphic: url('icon/beginAlignment_32.png');}
-.endAlignmentButton {-fx-graphic: url('icon/endAlignment_32.png');}
+.beginAlignmentButton {-fx-graphic: url('drawable/beginAlignment_32.png');}
+.endAlignmentButton {-fx-graphic: url('drawable/endAlignment_32.png');}
 
-.toggleAlwaysOntopButton {-fx-graphic: url('icon/alwaisOnTopDisabled_32.gif');}
-.toggleAlwaysOntopButton:selected {-fx-graphic: url('icon/alwaisOnTopEnabled_32.png');}
+.toggleAlwaysOntopButton {-fx-graphic: url('drawable/alwaisOnTopDisabled_32.png');}
+.toggleAlwaysOntopButton:selected {-fx-graphic: url('drawable/alwaisOnTopEnabled_32.png');}
 
-.toggleFavoriteButton {-fx-graphic: url('icon/favoriteDisabled_32.png');}
-.toggleFavoriteButton:selected {-fx-graphic: url('icon/favoriteEnabled_32.png');}
+.toggleFavoriteButton {-fx-graphic: url('drawable/favoriteDisabled_32.png');}
+.toggleFavoriteButton:selected {-fx-graphic: url('drawable/favoriteEnabled_32.png');}
 
 .bluetext {
     -fx-text-fill: #396e75;
@@ -39,7 +39,7 @@
 .toggleMuteButton:selected {-fx-graphic: url('drawable/indic-mute_01.png'); -fx-border-radius: 0 0 0 0;
   -fx-background-radius: 0 0 0 0;}
 
-.saveMarkButton {-fx-graphic: url('icon/saveMark_32.png');}
+.saveMarkButton {-fx-graphic: url('drawable/saveMark_32.png');}
 .addMarkButton {-fx-graphic: url('icon/addMark_32.png');}
 
 /* BOUTONS DU LECTEUR */
