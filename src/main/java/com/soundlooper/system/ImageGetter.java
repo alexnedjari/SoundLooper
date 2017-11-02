@@ -37,6 +37,6 @@ public class ImageGetter {
 	}
 
 	public static ImageView getSoundLooper64() {
-		return getIcon("soundLooper64.png");
+		return getDrawable("soundLooper.png");
 	}
 }

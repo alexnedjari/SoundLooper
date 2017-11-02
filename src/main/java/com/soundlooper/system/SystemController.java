@@ -29,6 +29,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
@@ -118,9 +119,16 @@ public class SystemController {
 	@FXML
 	private TimeSelectionView timeSelectionView;
 
+	@FXML
+	private ImageView backgroundImage;
+
 	public void init() {
 		initInterfaceState();
 
+		backgroundImage.fitWidthProperty().bind(SoundLooper.getInstance().getPrimaryStage().widthProperty());
+		backgroundImage.fitHeightProperty().bind(
+				SoundLooper.getInstance().getPrimaryStage().heightProperty().subtract(200));
+		backgroundImage.setPreserveRatio(true);
 		// --------------------------------------------------
 
 		timestretchPotentiometer.setMin(50);

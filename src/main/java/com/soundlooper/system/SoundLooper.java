@@ -11,7 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +33,6 @@ public class SoundLooper extends Application {
 
 	private static final String LOCK_NAME = ".lock";
 	private static Stage primaryStage;
-	private BorderPane rootLayout;
 	private static SoundLooper instance;
 	private SystemController controller;
 
@@ -48,11 +47,12 @@ public class SoundLooper extends Application {
 		primaryStage.getIcons().add(ImageGetter.getSoundLooper64().getImage());
 
 		primaryStage.setMinWidth(750);
-		primaryStage.setMinHeight(375);
+		primaryStage.setMinHeight(335);
 
 		instance = this;
 		SoundLooper.primaryStage = primaryStage;
 		SoundLooper.primaryStage.setTitle("Sound Looper");
+
 		primaryStage.setOnCloseRequest(e -> {
 			logger.info("On close request");
 			onWindowClose();
@@ -121,7 +121,7 @@ public class SoundLooper extends Application {
 
 			loader.setResources(MessageReader.getInstance().getBundle());
 			loader.setLocation(SoundLooper.class.getResource("/gui/RootLayout.fxml"));
-			rootLayout = (BorderPane) loader.load();
+			Pane rootLayout = (Pane) loader.load();
 
 			controller = (SystemController) loader.getController();
 			controller.init();

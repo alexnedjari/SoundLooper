@@ -73,7 +73,9 @@
 .labelInformation {-fx-text-fill: blue; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 .labelError {-fx-text-fill: red; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 
-.windowsBackground {-fx-background-color: linear-gradient(from 100% 0px to 100% 134px, rgb(225, 225, 226), rgb(242, 243, 243))}
+.windowsBackground {
+	-fx-background-color: linear-gradient(from 100% 0px to 100% 134px, rgb(225, 225, 226), rgb(242, 243, 243));
+}
 
 .white {-fx-background-color: rgb(242, 243, 243)}
 .blue {-fx-background-color: rgb(46, 167, 195)}
@@ -102,6 +104,10 @@
     -fx-padding: 0;
 }
 
-#toolbar .spacer {
-	-fx-padding: 0 0 0 15;
+#toolbar {
+	-fx-padding: 0 0 0 16;
+}
+
+#backgroundImage {
+	-fx-graphic: url("drawable/soundLooper.png");
 }

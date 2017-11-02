@@ -43,10 +43,10 @@ import com.soundlooper.system.SoundLooperColor;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class PlayerViewSkin extends SkinBase<PlayerView> {
-	public final static int LEFT_MARGIN = 30;
-	private final static int RIGTH_MARGIN = 30;
+	public final static int LEFT_MARGIN = 20;
+	private final static int RIGTH_MARGIN = 20;
 	private final static int TOP_MARGIN = 30;
-	private final static int TOP_PADDING = 30;
+	private final static int TOP_PADDING = 5;
 	private final static int BORDER_PADDING = 10;
 	private final static int MIN_HANDLE_SPACING = 2;
 	private final static int DEFAULT_DURATION = 1000;
