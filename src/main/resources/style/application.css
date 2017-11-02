@@ -1,6 +1,6 @@
 /* BOUTONS DE LA BARRE OUTIL */
 .toolbar-button {
-	-fx-border-width: 0.0mm ;
+	-fx-border-width: 1.0px ;
 	-fx-background-color:transparent;
 }
 .toolbar-button:disabled {
@@ -10,9 +10,10 @@
 .toolbar-button:hover {
 	/*-fx-background-color:#990000;*/
 	-fx-border-width: 1px ;
-	-fx-border-color:#2222BB ;
-	-fx-background-radius: 3px;
-	-fx-border-radius: 3px;
+	-fx-border-color:#232322 ;
+	-fx-background-radius: 0px;
+	-fx-background-color: #5cb9c6;
+	-fx-border-radius: 0px;
 }
 
 .openFileButton {-fx-graphic: url('drawable/open_32.png');}
@@ -40,7 +41,8 @@
   -fx-background-radius: 0 0 0 0;}
 
 .saveMarkButton {-fx-graphic: url('drawable/saveMark_32.png');}
-.addMarkButton {-fx-graphic: url('icon/addMark_32.png');}
+.addMarkButton {-fx-graphic: url('drawable/addMark_32.png');}
+.markMenuButton {-fx-graphic: url('drawable/listMark_32.png'); -fx-padding: 0 0 0 8; }
 
 /* BOUTONS DU LECTEUR */
 .player-button {
@@ -92,6 +94,14 @@
 }
 
 
-.timestrechButtonn > .arrow-button > .arrow {
+.markMenuButton .arrow, .timestrechButton .arrow-button {
+	-fx-background-color: transparent;
+	-fx-pref-width: 0;
+}
+.markMenuButton > .arrow-button > .arrow {
     -fx-padding: 0;
+}
+
+#toolbar .spacer {
+	-fx-padding: 0 0 0 15;
 }
