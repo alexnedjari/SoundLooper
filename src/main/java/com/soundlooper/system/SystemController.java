@@ -125,10 +125,10 @@ public class SystemController {
 	public void init() {
 		initInterfaceState();
 
-		backgroundImage.fitWidthProperty().bind(SoundLooper.getInstance().getPrimaryStage().widthProperty());
-		backgroundImage.fitHeightProperty().bind(
-				SoundLooper.getInstance().getPrimaryStage().heightProperty().subtract(200));
-		backgroundImage.setPreserveRatio(true);
+		// backgroundImage.fitWidthProperty().bind(SoundLooper.getInstance().getPrimaryStage().widthProperty());
+		// backgroundImage.fitHeightProperty().bind(
+		// SoundLooper.getInstance().getPrimaryStage().heightProperty().subtract(200));
+		// backgroundImage.setPreserveRatio(true);
 		// --------------------------------------------------
 
 		timestretchPotentiometer.setMin(50);

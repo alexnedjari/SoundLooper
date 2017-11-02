@@ -74,7 +74,8 @@
 .labelError {-fx-text-fill: red; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 
 .windowsBackground {
-	-fx-background-color: linear-gradient(from 100% 0px to 100% 134px, rgb(225, 225, 226), rgb(242, 243, 243));
+	/*-fx-background-color: linear-gradient(from 100% 0px to 100% 134px, rgb(225, 225, 226), rgb(242, 243, 243));*/
+	-fx-background-color: transparent;
 }
 
 .white {-fx-background-color: rgb(242, 243, 243)}

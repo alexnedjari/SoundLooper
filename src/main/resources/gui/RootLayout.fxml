@@ -22,9 +22,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.layout.HBox?>
 
 <StackPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.SystemController">
-	<BorderPane fx:id="rootPane" onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" styleClass="windowsBackground" >
+		<ImageView fx:id="backgroundImage" AnchorPane.topAnchor="100.0" AnchorPane.bottomAnchor="60.0" opacity="0.09" fitWidth="400" fitHeight="400" >
+			<image>
+			   <Image url="/style/drawable/soundLooper.png"/>
+			</image>
+		</ImageView>
+	<BorderPane onDragDropped="#onDragDropped" onDragOver="#onDragOver" prefHeight="510.0" prefWidth="710.0" styleClass="windowsBackground" >
 	   <top>
 	      <VBox prefHeight="13.0" prefWidth="710.0" BorderPane.alignment="CENTER">
 	         <children>
@@ -170,13 +176,5 @@
 	      </BorderPane>
 	   </center>
 	</BorderPane> 
-	<AnchorPane >
-		<children>
-			<ImageView fx:id="backgroundImage" AnchorPane.topAnchor="100.0" AnchorPane.bottomAnchor="60.0">
-			<image>
-			   <Image url="/style/drawable/soundLooper.png"/>
-			</image>
-			</ImageView>
-		</children>
-	</AnchorPane>
+	
 </StackPane>
