@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.DoubleBinding;
@@ -15,7 +16,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +24,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -43,11 +44,8 @@ import com.soundlooper.system.SoundLooperColor;
 import com.soundlooper.system.util.MessagingUtil;
 
 public class PlayerViewSkin extends SkinBase<PlayerView> {
-	public final static int LEFT_MARGIN = 20;
-	private final static int RIGTH_MARGIN = 20;
-	private final static int TOP_MARGIN = 30;
-	private final static int TOP_PADDING = 5;
-	private final static int BORDER_PADDING = 10;
+	private final static int TOP_MARGIN = 35;
+	private final static int BORDER_PADDING = 20;
 	private final static int MIN_HANDLE_SPACING = 2;
 	private final static int DEFAULT_DURATION = 1000;
 
@@ -58,26 +56,17 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	ChangeListener<Number> markTimeListener = new ChangeListener<Number>() {
 		@Override
 		public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-			getSkinnable().forceLayout();
+			layout();
 		}
 	};
 
-	// private Rectangle loopBarBackground;
-	// private Rectangle loopBarForeground;
-
-	private Line lineTop1 = new Line();
+	private Rectangle loopBarForeground;
 
 	private Rectangle unselectedZoneBegin;
 	private Rectangle unselectedZoneEnd;
 
 	private Line currentTimeLine;
-	// private Line loopPointBeginLine;
-	// private Line loopPointEndLine;
-	TextArea label = new TextArea("texte");
-	ImageView imageView;
-
-	// ImageView leftHandleImage;
-	// ImageView rightHandleImage;
+	private ImageView imageView;
 
 	Polygon leftHandle;
 	Polygon rightHandle;
@@ -95,8 +84,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 	private boolean invalidWidth = true;
 	private boolean invalidHeight = true;
-	Border borderTop = new Border(LEFT_MARGIN);
-	Border borderBottom = new Border(LEFT_MARGIN);
+	Border borderTop;
+	Border borderBottom;
 
 	Pane pane = new Pane();
 	FlowPane stackPane = new FlowPane();
@@ -118,7 +107,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				if (!newPropertyValue) {
 					// must refresh on focus lost, to set control to "unfocused"
 					// aspect
-					control.requestLayout();
+					layout();
 				}
 			}
 		});
@@ -128,7 +117,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		soundLooperPlayer.markProperty().addListener(new ChangeListener<Mark>() {
 			@Override
 			public void changed(ObservableValue<? extends Mark> observable, Mark oldValue, Mark newValue) {
-				PlayerViewSkin.this.getSkinnable().forceLayout();
+				layout();
 				updateMarkTimeListener(oldValue, newValue);
 			};
 		});
@@ -137,12 +126,13 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		soundLooperPlayer.currentSongImageProperty().addListener(new InvalidationListener() {
 			@Override
 			public void invalidated(Observable observable) {
-				logger.info("The image is changing in the player view");
+				logger.info("The image is changing in the player view " + new Date().getTime());
 				File file = soundLooperPlayer.currentSongImageProperty().get();
 				try {
 					imageView.setImage(new Image(file.toURI().toURL().toExternalForm()));
-					imageView.setPreserveRatio(false);
-					PlayerViewSkin.this.getSkinnable().forceLayout();
+					imageView.setSmooth(true);
+					// imageView.setPreserveRatio(false);
+					// layout();
 				} catch (MalformedURLException e) {
 					// This exception will normally never be throwed
 					logger.error("Unable to get new Image", e);
@@ -154,12 +144,12 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				if (newValue) {
-					control.forceLayout();
+					layout();
 				}
 			}
 		});
 
-		imageView = new ImageView(ImageGetter.getIconURL("loading_32.png"));
+		imageView = new ImageView(ImageGetter.getDrawableURL("loading_32.png"));
 		imageView.setPreserveRatio(false);
 
 		leftHandle = ArrowFactory.getArrow(0.7);
@@ -172,20 +162,14 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		handleWidth = leftHandle.getBoundsInParent().getWidth();
 		handleHeight = leftHandle.getBoundsInParent().getHeight();
 
-		// rightHandleImage = ImageGetter.getIcon("rightHandle.png");
+		double screenLeft = getScreenLeft();
+		borderTop = new Border(screenLeft);
+		borderBottom = new Border(screenLeft);
 
-		// leftHandleImage = ImageGetter.getIcon("leftHandle.png");
+		loopBarForeground = new Rectangle(screenLeft, 0, 0, TOP_MARGIN);
+		loopBarForeground.setFill(Color.TRANSPARENT);
 
-		// loopPointBeginLine = new Line(0, TOP_MARGIN, 0, 0);
-		// loopPointEndLine = new Line(0, TOP_MARGIN, 0, 0);
-
-		// loopBarBackground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		// loopBarBackground.setFill(SoundLooperColor.WHITE);
-
-		// loopBarForeground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		// loopBarForeground.setFill(SoundLooperColor.DARK_GRAY);
-
-		unselectedZoneBegin = new Rectangle(LEFT_MARGIN, 0, 0, 0);
+		unselectedZoneBegin = new Rectangle(screenLeft, 0, 0, 0);
 		unselectedZoneBegin.setFill(SoundLooperColor.getWhite(0.6));
 
 		unselectedZoneEnd = new Rectangle(0, 0, 0, 0);
@@ -194,35 +178,16 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		currentTimeLine = new Line(0, 0, 100, 100);
 		currentTimeLine.setStroke(SoundLooperColor.getSeparatorColor());
 
-		// loopPointEndLine.startXProperty().bind(rightHandleImage.xProperty());
-		// loopPointEndLine.endXProperty().bind(rightHandleImage.xProperty());
 		unselectedZoneEnd.xProperty().bind(rightHandle.translateXProperty());
 
 		DoubleBinding leftPropertyBinding = leftHandle.translateXProperty().add(handleWidth);
-		// loopPointBeginLine.startXProperty().bind(leftPropertyBinding);
-		// loopPointBeginLine.endXProperty().bind(leftPropertyBinding);
-		unselectedZoneBegin.widthProperty().bind(leftPropertyBinding.subtract(LEFT_MARGIN));
+		unselectedZoneBegin.widthProperty().bind(leftPropertyBinding.subtract(handleWidth));
 
-		// loopBarForeground.xProperty().bind(leftPropertyBinding);
-		// loopBarForeground.widthProperty().bind(rightHandleImage.xProperty().subtract(leftPropertyBinding));
-
-		// getChildren().add(pane);
-		pane.getChildren().add(imageView);
-		pane.getChildren().add(currentTimeLine);
-		// pane.getChildren().add(loopBarBackground);
-		// pane.getChildren().add(loopBarForeground);
-		// pane.getChildren().add(loopPointBeginLine);
-		// pane.getChildren().add(loopPointEndLine);
-		pane.getChildren().add(rightHandle);
-		pane.getChildren().add(leftHandle);
-		pane.getChildren().add(unselectedZoneBegin);
-		pane.getChildren().add(unselectedZoneEnd);
-		// pane.getChildren().add(lineTop1);
-		// pane.getChildren().add(borderTop);
-		// getChildren().add(label);
+		loopBarForeground.xProperty().bind(leftPropertyBinding);
+		loopBarForeground.widthProperty().bind(rightHandle.translateXProperty().subtract(leftPropertyBinding));
 
 		getChildren().add(stackPane);
-		stackPane.setPadding(new Insets(TOP_PADDING, BORDER_PADDING, 0, BORDER_PADDING));
+		stackPane.setPadding(new Insets(0, BORDER_PADDING, 0, BORDER_PADDING));
 
 		Label e2 = new Label("Pane1");
 		e2.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.BLUE, CornerRadii.EMPTY,
@@ -231,6 +196,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		Pane handlePanel = new Pane();
 		handlePanel.getChildren().add(leftHandle);
 		handlePanel.getChildren().add(rightHandle);
+		handlePanel.getChildren().add(loopBarForeground);
+
 		stackPane.getChildren().add(handlePanel);
 
 		stackPane.getChildren().add(borderTop);
@@ -245,6 +212,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		stackPane.getChildren().add(borderBottom);
 
 		control.widthProperty().addListener(l -> {
+			System.out.println("Invalid width");
 			invalidWidth = true;
 		});
 		control.heightProperty().addListener(l -> {
@@ -267,11 +235,16 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	}
 
 	private double getScreenRight(double contentWidth) {
-		return contentWidth - RIGTH_MARGIN;
+		return contentWidth - handleWidth - BORDER_PADDING * 2;
+	}
+
+	private double getScreenLeft() {
+		return handleWidth;
 	}
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+		System.out.println("contentWidth : " + contentWidth);
 		PlayerView playerView = getSkinnable();
 		SoundLooperPlayer player = playerView.getSoundLooperPlayer();
 
@@ -296,54 +269,59 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 		}
 
-		// boundRectangle.setHeight(contentHeight);
-		// boundRectangle.setWidth(contentWidth);
-
 		double loopPointBeginPx = convertMsToPx(contentWidth, loopPointBegin, duration, true);
 		double loopPointEndPx = convertMsToPx(contentWidth, loopPointEnd, duration, true);
 
 		// left handle and decorations
 		if (!leftHandleDrag && !loopBarForegroundDrag) {
+
 			leftHandle.setTranslateX(loopPointBeginPx - handleWidth);
 		}
 		if (!rightHandleDrag && !loopBarForegroundDrag) {
 			rightHandle.setTranslateX(loopPointEndPx);
 		}
-		// loopPointBeginLine.setEndY(contentHeight);
-		// loopPointEndLine.setEndY(contentHeight);
 		double screenRight = getScreenRight(contentWidth);
 
 		unselectedZoneEnd.setWidth(screenRight - rightHandle.getTranslateX());
 		double screenHeight = getScreenHeight(contentHeight);
 		double screenWidth = getScreenWidth(contentWidth);
-		if (invalidWidth || invalidHeight) {
+		// if (invalidWidth || invalidHeight) {
 
-			// loopBarBackground.setWidth(getScreenWidth(contentWidth));
-			unselectedZoneBegin.setHeight(screenHeight);
+		// loopBarBackground.setWidth(getScreenWidth(contentWidth));
+		unselectedZoneBegin.setHeight(screenHeight);
 
-			unselectedZoneEnd.setHeight(screenHeight);
-			stackPane.setPrefSize(contentWidth, contentHeight);
-			stackPane.setMaxSize(contentWidth, contentHeight);
-			stackPane.setMinSize(contentWidth, contentHeight);
-			System.out.println("PARENT : " + contentWidth + ", " + contentHeight);
-			System.out.println("PANE : " + stackPane.getWidth() + ", " + stackPane.getHeight());
+		unselectedZoneEnd.setHeight(screenHeight);
+		stackPane.setPrefSize(contentWidth, contentHeight);
+		stackPane.setMaxSize(contentWidth, contentHeight);
+		stackPane.setMinSize(contentWidth, contentHeight);
 
-			imageView.setFitHeight(screenHeight);
-			imageView.setFitWidth(screenWidth);
-			imageView.setX(LEFT_MARGIN);
-			imageView.setY(0);
-			imageView.setOnMouseClicked(me -> {
-				double newTimeMs = convertPxToMs(PlayerViewSkin.this.getSkinnable().getWidth(), me.getX());
-				setMediaTime(player, new Double(newTimeMs).intValue());
-				playerView.forceLayout();
-				me.consume();
+		imageView.setFitHeight(screenHeight);
+		imageView.setFitWidth(screenWidth);
+		imageView.setX(handleWidth);
+		imageView.setY(0);
+		imageView.setOnMouseClicked(me -> {
+			double newTimeMs = convertPxToMs(PlayerViewSkin.this.getSkinnable().getWidth(), me.getX());
+			setMediaTime(player, new Double(newTimeMs).intValue());
+			layout();
+			me.consume();
 
-			});
+		});
 
-			borderTop.setLineWidth(screenWidth);
-			borderBottom.setLineWidth(screenWidth);
+		unselectedZoneBegin.setOnMouseClicked(me -> {
+			setMediaTimeBegin(player);
+			layout();
+			me.consume();
+		});
+		unselectedZoneEnd.setOnMouseClicked(me -> {
+			setMediaTimeBegin(player);
+			layout();
+			me.consume();
+		});
 
-		}
+		borderTop.setLineWidth(screenWidth);
+		borderBottom.setLineWidth(screenWidth);
+
+		// }
 
 		double mediaTimePx = convertMsToPx(contentWidth, mediaTime, duration, true);
 
@@ -352,125 +330,119 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		currentTimeLine.setStartY(0);
 		currentTimeLine.setEndY(screenHeight);
 
-		if (invalidWidth) {
-			invalidWidth = false;
-			if (dragStartLeftHandlePx == 0) {
-				leftHandle.setOnMousePressed(me -> {
-					leftHandleDrag = true;
-					dragOffset = me.getSceneX() - leftHandle.getTranslateX();
-					dragStartLeftHandlePx = me.getSceneX();
-				});
+		// if (invalidWidth) {
+		invalidWidth = false;
+		if (dragStartLeftHandlePx == 0) {
+			leftHandle.setOnMousePressed(me -> {
+				leftHandleDrag = true;
+				dragOffset = me.getSceneX() - leftHandle.getTranslateX();
+				dragStartLeftHandlePx = me.getSceneX();
+			});
 
-				leftHandle.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartLeftHandlePx;
-					double newHandleX = dragStartLeftHandlePx + move - dragOffset;
-					if (newHandleX < 0) {
-						newHandleX = 0;
-					}
-					if (newHandleX + handleWidth + MIN_HANDLE_SPACING > rightHandle.getTranslateX()) {
-						newHandleX = rightHandle.getTranslateX() - handleWidth - MIN_HANDLE_SPACING;
-					}
-					leftHandle.setTranslateX(newHandleX);
-				});
+			leftHandle.setOnMouseDragged(me -> {
+				double move = me.getSceneX() - dragStartLeftHandlePx;
+				double newHandleX = dragStartLeftHandlePx + move - dragOffset;
+				if (newHandleX < 0) {
+					newHandleX = 0;
+				}
+				if (newHandleX + handleWidth + MIN_HANDLE_SPACING > rightHandle.getTranslateX()) {
+					newHandleX = rightHandle.getTranslateX() - handleWidth - MIN_HANDLE_SPACING;
+				}
+				leftHandle.setTranslateX(newHandleX);
+			});
 
-				leftHandle.setOnMouseReleased(me -> {
-					double newTimePx = leftHandle.getTranslateX() + handleWidth;
-					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					leftHandleDrag = false;
-					dragStartLeftHandlePx = 0;
+			leftHandle.setOnMouseReleased(me -> {
+				double newTimePx = leftHandle.getTranslateX() + handleWidth;
+				double newTimeMs = convertPxToMs(contentWidth, newTimePx);
+				leftHandleDrag = false;
+				dragStartLeftHandlePx = 0;
 
-					setMediaTimeIfNeeded(player, contentWidth);
+				setMediaTimeIfNeeded(player, contentWidth);
 
-					setLoopPointBegin(player, newTimeMs);
-					playerView.forceLayout();
-					me.consume();
-				});
-			}
-
-			if (dragStartRightHandlePx == 0) {
-				rightHandle.setOnMousePressed(me -> {
-					rightHandleDrag = true;
-					dragOffset = me.getSceneX() - rightHandle.getTranslateX();
-					dragStartRightHandlePx = me.getSceneX();
-				});
-
-				rightHandle.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartRightHandlePx;
-					double newHandleX = dragStartRightHandlePx + move - dragOffset;
-
-					if (newHandleX > screenRight) {
-						newHandleX = screenRight;
-					}
-
-					if (newHandleX - MIN_HANDLE_SPACING < leftHandle.getTranslateX() + handleWidth) {
-						newHandleX = MIN_HANDLE_SPACING + leftHandle.getTranslateX() + handleWidth;
-					}
-
-					rightHandle.setTranslateX(newHandleX);
-				});
-
-				rightHandle.setOnMouseReleased(me -> {
-					double newTimePx = rightHandle.getTranslateX();
-					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					dragStartRightHandlePx = 0;
-					rightHandleDrag = false;
-
-					setMediaTimeIfNeeded(player, contentWidth);
-					setLoopPointEnd(player, newTimeMs);
-					playerView.forceLayout();
-					me.consume();
-				});
-			}
-
-			// if (dragStartLoopBarForegroundPx == 0) {
-			// loopBarForeground.setOnMousePressed(me -> {
-			// loopBarForegroundDrag = true;
-			// dragOffset = me.getSceneX() - loopBarForeground.getX();
-			// dragStartLoopBarForegroundPx = me.getSceneX();
-			// });
-			//
-			// loopBarForeground.setOnMouseDragged(me -> {
-			// double move = me.getSceneX() - dragStartLoopBarForegroundPx;
-			// double newHandleX = dragStartLoopBarForegroundPx + move -
-			// dragOffset;
-			// double positionLeftHandle = newHandleX - HANDLE_WIDTH;
-			// double positionRightHandle = newHandleX +
-			// loopBarForeground.getWidth();
-			// if (positionLeftHandle <= 0) {
-			// positionLeftHandle = 0;
-			// positionRightHandle = loopBarForeground.getWidth() +
-			// HANDLE_WIDTH;
-			// }
-			// if (positionRightHandle >= screenRight) {
-			// positionRightHandle = screenRight;
-			// positionLeftHandle = screenRight - loopBarForeground.getWidth() -
-			// HANDLE_WIDTH;
-			// }
-			//
-			// leftHandleImage.setX(positionLeftHandle);
-			// rightHandleImage.setX(positionRightHandle);
-			//
-			// });
-			//
-			// loopBarForeground.setOnMouseReleased(me -> {
-			// double newTimeBeginPx = loopBarForeground.getX();
-			// double newTimeEndPx = loopBarForeground.getX() +
-			// loopBarForeground.getWidth();
-			// double newTimeBeginMs = convertPxToMs(contentWidth,
-			// newTimeBeginPx);
-			// double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
-			// dragStartLoopBarForegroundPx = 0;
-			// loopBarForegroundDrag = false;
-			//
-			// // setMediaTimeIfNeeded(player, contentWidth);
-			//
-			// setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
-			// playerView.forceLayout();
-			// me.consume();
-			// });
-			// }
-
+				setLoopPointBegin(player, newTimeMs);
+				layout();
+				me.consume();
+			});
 		}
+
+		if (dragStartRightHandlePx == 0) {
+			rightHandle.setOnMousePressed(me -> {
+				rightHandleDrag = true;
+				dragOffset = me.getSceneX() - rightHandle.getTranslateX();
+				dragStartRightHandlePx = me.getSceneX();
+			});
+
+			rightHandle.setOnMouseDragged(me -> {
+				double move = me.getSceneX() - dragStartRightHandlePx;
+
+				double newHandleX = dragStartRightHandlePx + move - dragOffset;
+
+				if (newHandleX > screenRight) {
+					newHandleX = screenRight;
+				}
+
+				if (newHandleX - MIN_HANDLE_SPACING < leftHandle.getTranslateX() + handleWidth) {
+					newHandleX = MIN_HANDLE_SPACING + leftHandle.getTranslateX() + handleWidth;
+				}
+
+				rightHandle.setTranslateX(newHandleX);
+			});
+
+			rightHandle.setOnMouseReleased(me -> {
+				double newTimePx = rightHandle.getTranslateX();
+				double newTimeMs = convertPxToMs(contentWidth, newTimePx);
+				dragStartRightHandlePx = 0;
+				rightHandleDrag = false;
+
+				setMediaTimeIfNeeded(player, contentWidth);
+				setLoopPointEnd(player, newTimeMs);
+				layout();
+				me.consume();
+			});
+		}
+
+		if (dragStartLoopBarForegroundPx == 0) {
+			loopBarForeground.setOnMousePressed(me -> {
+				loopBarForegroundDrag = true;
+				dragOffset = me.getSceneX() - loopBarForeground.getX();
+				dragStartLoopBarForegroundPx = me.getSceneX();
+			});
+
+			loopBarForeground.setOnMouseDragged(me -> {
+				double move = me.getSceneX() - dragStartLoopBarForegroundPx;
+				double newHandleX = dragStartLoopBarForegroundPx + move - dragOffset;
+				double positionLeftHandle = newHandleX - handleWidth;
+				double positionRightHandle = newHandleX + loopBarForeground.getWidth();
+				if (positionLeftHandle <= 0) {
+					positionLeftHandle = 0;
+					positionRightHandle = loopBarForeground.getWidth() + handleWidth;
+				}
+
+				if (positionRightHandle >= screenRight) {
+					positionRightHandle = screenRight;
+					positionLeftHandle = screenRight - loopBarForeground.getWidth() - handleWidth;
+				}
+
+				leftHandle.setTranslateX(positionLeftHandle);
+				rightHandle.setTranslateX(positionRightHandle);
+
+			});
+
+			loopBarForeground.setOnMouseReleased(me -> {
+				double newTimeBeginPx = loopBarForeground.getX();
+				double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
+				double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
+				double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
+				dragStartLoopBarForegroundPx = 0;
+				loopBarForegroundDrag = false;
+
+				setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
+				layout();
+				me.consume();
+			});
+		}
+
+		// }
 		invalidWidth = false;
 		invalidHeight = false;
 	}
@@ -523,19 +495,30 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		}
 	}
 
+	private void setMediaTimeBegin(SoundLooperPlayer player) {
+		try {
+			if (player.isSoundInitialized()) {
+				int loopPointBenginMs = player.getLoopPointBeginMillisecond();
+				player.setMediaTime(loopPointBenginMs);
+			}
+		} catch (PlayerException e) {
+			MessagingUtil.displayError("Impossible de modifier la position actuelle", e);
+		}
+	}
+
 	private double convertMsToPx(double contentWidth, int ms, int totalMs, boolean addMargin) {
 		if (totalMs == 0) {
 			return 0;
 		}
-		int margin = 0;
+		double margin = 0;
 		if (addMargin) {
-			margin = LEFT_MARGIN;
+			margin = handleWidth;
 		}
 		return margin + (getScreenWidth(contentWidth) * ms) / totalMs;
 	}
 
 	private double convertPxToMs(double contentWidth, double px) {
-		double pxInScreen = px - LEFT_MARGIN;
+		double pxInScreen = px - handleWidth;
 
 		int duration = getDuration();
 		double screenWidth = getScreenWidth(contentWidth);
@@ -556,11 +539,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	}
 
 	private double getScreenWidth(double contentWidth) {
-		return contentWidth - LEFT_MARGIN - RIGTH_MARGIN - BORDER_PADDING * 2;
+		return getScreenRight(contentWidth) - getScreenLeft();
 	}
 
 	private double getScreenHeight(double contentHeight) {
-		return contentHeight - handleHeight - TOP_PADDING - borderBottom.getHeight() - borderTop.getHeight();
+		return contentHeight - handleHeight - borderBottom.getHeight() - borderTop.getHeight();
 	}
 
 	public void startTimer() {
@@ -570,11 +553,22 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			public void run() {
 				SoundLooperPlayer soundLooperPlayer = SoundLooperPlayer.getInstance();
 				if (soundLooperPlayer.getState() == PlayerState.STATE_PLAYING) {
-					PlayerViewSkin.this.getSkinnable().forceLayout();
-
+					layout();
 				}
 			}
+
 		}, new Date(), 100);
+	}
+
+	protected void layout() {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				// PlayerViewSkin.this.getSkinnable().requestLayout();
+				// PlayerViewSkin.this.getSkinnable().layout();
+				PlayerViewSkin.this.getSkinnable().forceLayout();
+			}
+		});
 	}
 
 	@Override

@@ -12,7 +12,7 @@ public class Border extends FlowPane {
 	Line line2 = new Line(0, 0, this.getWidth(), 0);
 	Line line3 = new Line(0, 0, this.getWidth(), 0);
 
-	public Border(int leftPaddin) {
+	public Border(double leftPaddin) {
 		this.setOrientation(Orientation.HORIZONTAL);
 
 		line1.setStroke(SoundLooperColor.getSeparatorColor());
