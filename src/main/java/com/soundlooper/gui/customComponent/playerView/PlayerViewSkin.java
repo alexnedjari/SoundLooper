@@ -70,16 +70,20 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	private Border borderTop;
 	private Border borderBottom;
 
-	private FlowPane stackPane = new FlowPane();
+	private FlowPane flowPane = new FlowPane();
 
 	// -------- Events variable -----------//
 	private SoundLooperPlayerDragEvent leftHandleDrag = new SoundLooperPlayerDragEvent();
 	private SoundLooperPlayerDragEvent rightHandleDrag = new SoundLooperPlayerDragEvent();
 	private SoundLooperPlayerDragEvent loopBarDrag = new SoundLooperPlayerDragEvent();
 
-	// -------- Size change flags -----------//
+	// -------- Size values and change flags -----------//
 	private boolean invalidWidth = true;
 	private boolean invalidHeight = true;
+	private double contentWidth = 0;
+
+	PlayerView playerView = getSkinnable();
+	SoundLooperPlayer player = getSkinnable().getSoundLooperPlayer();
 
 	private ChangeListener<Number> markTimeListener = new ChangeListener<Number>() {
 		@Override
@@ -181,8 +185,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		currentTimeLine = new Line(0, 0, 100, 100);
 		currentTimeLine.setStroke(SoundLooperColor.getSeparatorColor());
 
-		getChildren().add(stackPane);
-		stackPane.setPadding(new Insets(0, BORDER_PADDING, 0, BORDER_PADDING));
+		getChildren().add(flowPane);
+		flowPane.setPadding(new Insets(0, BORDER_PADDING, 0, BORDER_PADDING));
 
 		Label e2 = new Label("Pane1");
 		e2.setBackground(
@@ -193,18 +197,18 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		handlePanel.getChildren().add(rightHandle);
 		handlePanel.getChildren().add(loopBarForeground);
 
-		stackPane.getChildren().add(handlePanel);
+		flowPane.getChildren().add(handlePanel);
 
-		stackPane.getChildren().add(borderTop);
+		flowPane.getChildren().add(borderTop);
 
 		Pane imagePane = new Pane();
 		imagePane.getChildren().add(imageView);
 		imagePane.getChildren().add(unselectedZoneBegin);
 		imagePane.getChildren().add(unselectedZoneEnd);
 		imagePane.getChildren().add(currentTimeLine);
-		stackPane.getChildren().add(imagePane);
+		flowPane.getChildren().add(imagePane);
 
-		stackPane.getChildren().add(borderBottom);
+		flowPane.getChildren().add(borderBottom);
 
 		control.widthProperty().addListener(l -> {
 			invalidWidth = true;
@@ -212,6 +216,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		control.heightProperty().addListener(l -> {
 			invalidHeight = true;
 		});
+		initDragEvents();
 		startTimer();
 	}
 
@@ -238,8 +243,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		PlayerView playerView = getSkinnable();
-		SoundLooperPlayer player = playerView.getSoundLooperPlayer();
+		this.contentWidth = contentWidth;
 
 		int mediaTime;
 		int loopPointBegin;
@@ -262,8 +266,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 		}
 
-		double loopPointBeginPx = convertMsToPx(contentWidth, loopPointBegin, duration, true);
-		double loopPointEndPx = convertMsToPx(contentWidth, loopPointEnd, duration, true);
+		double loopPointBeginPx = convertMsToPx(contentWidth, loopPointBegin, duration);
+		double loopPointEndPx = convertMsToPx(contentWidth, loopPointEnd, duration);
 
 		// left handle and decorations
 		if (leftHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
@@ -294,9 +298,9 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 			unselectedZoneEnd.setHeight(screenHeight);
 
-			stackPane.setPrefSize(contentWidth, contentHeight);
-			stackPane.setMaxSize(contentWidth, contentHeight);
-			stackPane.setMinSize(contentWidth, contentHeight);
+			flowPane.setPrefSize(contentWidth, contentHeight);
+			flowPane.setMaxSize(contentWidth, contentHeight);
+			flowPane.setMinSize(contentWidth, contentHeight);
 
 			imageView.setFitHeight(screenHeight);
 			imageView.setFitWidth(screenWidth);
@@ -326,124 +330,120 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		}
 
-		double mediaTimePx = convertMsToPx(contentWidth, mediaTime, duration, true);
+		double mediaTimePx = convertMsToPx(contentWidth, mediaTime, duration);
 
 		currentTimeLine.setStartX(mediaTimePx);
 		currentTimeLine.setEndX(mediaTimePx);
 		currentTimeLine.setStartY(0);
 		currentTimeLine.setEndY(screenHeight);
 
-		if (invalidWidth) {
-			invalidWidth = false;
-			if (leftHandleDrag.getStartPx() == 0) {
-				leftHandle.setOnMousePressed(me -> {
-					double dragOffset = me.getSceneX() - leftHandle.getTranslateX();
-					leftHandleDrag.startDrag(me.getSceneX(), dragOffset);
-				});
-
-				leftHandle.setOnMouseDragged(me -> {
-					double newHandleX = me.getSceneX() - leftHandleDrag.getDragOffset();
-					if (newHandleX < 0) {
-						newHandleX = 0;
-					}
-					if (newHandleX + handleWidth + MIN_HANDLE_SPACING > rightHandle.getTranslateX()) {
-						newHandleX = rightHandle.getTranslateX() - handleWidth - MIN_HANDLE_SPACING;
-					}
-					leftHandle.setTranslateX(newHandleX);
-					layout();
-					me.consume();
-				});
-
-				leftHandle.setOnMouseReleased(me -> {
-					double newTimePx = leftHandle.getTranslateX() + handleWidth;
-					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					leftHandleDrag.endDrag();
-
-					setMediaTimeIfNeeded(player, contentWidth);
-
-					setLoopPointBegin(player, newTimeMs);
-					layout();
-					me.consume();
-				});
-			}
-
-			if (rightHandleDrag.getStartPx() == 0) {
-				rightHandle.setOnMousePressed(me -> {
-					double dragOffset = me.getSceneX() - rightHandle.getTranslateX();
-					rightHandleDrag.startDrag(me.getSceneX(), dragOffset);
-				});
-
-				rightHandle.setOnMouseDragged(me -> {
-					double newHandleX = me.getSceneX() - rightHandleDrag.getDragOffset();
-
-					if (newHandleX > screenRight) {
-						newHandleX = screenRight;
-					}
-
-					if (newHandleX - MIN_HANDLE_SPACING < leftHandle.getTranslateX() + handleWidth) {
-						newHandleX = MIN_HANDLE_SPACING + leftHandle.getTranslateX() + handleWidth;
-					}
-
-					rightHandle.setTranslateX(newHandleX);
-					layout();
-					me.consume();
-				});
-
-				rightHandle.setOnMouseReleased(me -> {
-					double newTimePx = rightHandle.getTranslateX();
-					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					rightHandleDrag.endDrag();
-
-					setMediaTimeIfNeeded(player, contentWidth);
-					setLoopPointEnd(player, newTimeMs);
-					layout();
-					me.consume();
-				});
-			}
-
-			if (loopBarDrag.getStartPx() == 0) {
-				loopBarForeground.setOnMousePressed(me -> {
-					double dragOffset = me.getSceneX() - loopBarForeground.getX();
-					loopBarDrag.startDrag(me.getSceneX(), dragOffset);
-				});
-
-				loopBarForeground.setOnMouseDragged(me -> {
-					double newHandleX = me.getSceneX() - loopBarDrag.getDragOffset();
-					double positionLeftHandle = newHandleX - handleWidth;
-					double positionRightHandle = newHandleX + loopBarForeground.getWidth();
-					if (positionLeftHandle <= 0) {
-						positionLeftHandle = 0;
-						positionRightHandle = loopBarForeground.getWidth() + handleWidth;
-					}
-
-					if (positionRightHandle >= screenRight) {
-						positionRightHandle = screenRight;
-						positionLeftHandle = screenRight - loopBarForeground.getWidth() - handleWidth;
-					}
-
-					leftHandle.setTranslateX(positionLeftHandle);
-					rightHandle.setTranslateX(positionRightHandle);
-
-					layout();
-					me.consume();
-				});
-
-				loopBarForeground.setOnMouseReleased(me -> {
-					double newTimeBeginPx = loopBarForeground.getX();
-					double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
-					double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
-					double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
-					loopBarDrag.endDrag();
-
-					setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
-					layout();
-					me.consume();
-				});
-			}
-
-		}
 		invalidWidth = false;
 		invalidHeight = false;
+	}
+
+	private void initDragEvents() {
+		if (leftHandleDrag.getStartPx() == 0) {
+			leftHandle.setOnMousePressed(me -> {
+				double dragOffset = me.getSceneX() - leftHandle.getTranslateX();
+				leftHandleDrag.startDrag(me.getSceneX(), dragOffset);
+			});
+
+			leftHandle.setOnMouseDragged(me -> {
+				double newHandleX = me.getSceneX() - leftHandleDrag.getDragOffset();
+				if (newHandleX < 0) {
+					newHandleX = 0;
+				}
+				if (newHandleX + handleWidth + MIN_HANDLE_SPACING > rightHandle.getTranslateX()) {
+					newHandleX = rightHandle.getTranslateX() - handleWidth - MIN_HANDLE_SPACING;
+				}
+				leftHandle.setTranslateX(newHandleX);
+				layout();
+				me.consume();
+			});
+
+			leftHandle.setOnMouseReleased(me -> {
+				double newTimePx = leftHandle.getTranslateX() + handleWidth;
+				double newTimeMs = convertPxToMs(contentWidth, newTimePx);
+				leftHandleDrag.endDrag();
+
+				setMediaTimeIfNeeded(player, contentWidth);
+
+				setLoopPointBegin(player, newTimeMs);
+				layout();
+				me.consume();
+			});
+
+			rightHandle.setOnMousePressed(me -> {
+				double dragOffset = me.getSceneX() - rightHandle.getTranslateX();
+				rightHandleDrag.startDrag(me.getSceneX(), dragOffset);
+			});
+
+			rightHandle.setOnMouseDragged(me -> {
+				double newHandleX = me.getSceneX() - rightHandleDrag.getDragOffset();
+
+				double screenRight = getScreenRight(contentWidth);
+				if (newHandleX > screenRight) {
+					newHandleX = screenRight;
+				}
+
+				if (newHandleX - MIN_HANDLE_SPACING < leftHandle.getTranslateX() + handleWidth) {
+					newHandleX = MIN_HANDLE_SPACING + leftHandle.getTranslateX() + handleWidth;
+				}
+
+				rightHandle.setTranslateX(newHandleX);
+				layout();
+				me.consume();
+			});
+
+			rightHandle.setOnMouseReleased(me -> {
+				double newTimePx = rightHandle.getTranslateX();
+				double newTimeMs = convertPxToMs(contentWidth, newTimePx);
+				rightHandleDrag.endDrag();
+
+				setMediaTimeIfNeeded(player, contentWidth);
+				setLoopPointEnd(player, newTimeMs);
+				layout();
+				me.consume();
+			});
+
+			loopBarForeground.setOnMousePressed(me -> {
+				double dragOffset = me.getSceneX() - loopBarForeground.getX();
+				loopBarDrag.startDrag(me.getSceneX(), dragOffset);
+			});
+
+			loopBarForeground.setOnMouseDragged(me -> {
+				double newHandleX = me.getSceneX() - loopBarDrag.getDragOffset();
+				double positionLeftHandle = newHandleX - handleWidth;
+				double positionRightHandle = newHandleX + loopBarForeground.getWidth();
+				if (positionLeftHandle <= 0) {
+					positionLeftHandle = 0;
+					positionRightHandle = loopBarForeground.getWidth() + handleWidth;
+				}
+				double screenRight = getScreenRight(contentWidth);
+				if (positionRightHandle >= screenRight) {
+					positionRightHandle = screenRight;
+					positionLeftHandle = screenRight - loopBarForeground.getWidth() - handleWidth;
+				}
+
+				leftHandle.setTranslateX(positionLeftHandle);
+				rightHandle.setTranslateX(positionRightHandle);
+
+				layout();
+				me.consume();
+			});
+
+			loopBarForeground.setOnMouseReleased(me -> {
+				double newTimeBeginPx = loopBarForeground.getX();
+				double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
+				double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
+				double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
+				loopBarDrag.endDrag();
+
+				setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
+				layout();
+				me.consume();
+			});
+		}
 	}
 
 	private void setLoopPointBegin(SoundLooperPlayer player, double newTimeBeginMs) {
@@ -506,15 +506,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		}
 	}
 
-	private double convertMsToPx(double contentWidth, int ms, int totalMs, boolean addMargin) {
+	private double convertMsToPx(double contentWidth, int ms, int totalMs) {
 		if (totalMs == 0) {
 			return 0;
 		}
-		double margin = 0;
-		if (addMargin) {
-			margin = handleWidth;
-		}
-		return margin + (getScreenWidth(contentWidth) * ms) / totalMs;
+		return handleWidth + (getScreenWidth(contentWidth) * ms) / totalMs;
 	}
 
 	private double convertPxToMs(double contentWidth, double px) {
