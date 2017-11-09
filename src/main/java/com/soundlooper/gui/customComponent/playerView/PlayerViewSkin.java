@@ -73,15 +73,9 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	private FlowPane stackPane = new FlowPane();
 
 	// -------- Events variable -----------//
-	private double dragStartLeftHandlePx;
-	private boolean leftHandleDrag = false;
-
-	private double dragStartRightHandlePx;
-	private boolean rightHandleDrag = false;
-
-	private double dragStartLoopBarForegroundPx;
-	private boolean loopBarForegroundDrag = false;
-	private double dragOffset;
+	private SoundLooperPlayerDragEvent leftHandleDrag = new SoundLooperPlayerDragEvent();
+	private SoundLooperPlayerDragEvent rightHandleDrag = new SoundLooperPlayerDragEvent();
+	private SoundLooperPlayerDragEvent loopBarDrag = new SoundLooperPlayerDragEvent();
 
 	// -------- Size change flags -----------//
 	private boolean invalidWidth = true;
@@ -272,11 +266,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		double loopPointEndPx = convertMsToPx(contentWidth, loopPointEnd, duration, true);
 
 		// left handle and decorations
-		if (!leftHandleDrag && !loopBarForegroundDrag) {
+		if (leftHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
 
 			leftHandle.setTranslateX(loopPointBeginPx - handleWidth);
 		}
-		if (!rightHandleDrag && !loopBarForegroundDrag) {
+		if (rightHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
 			rightHandle.setTranslateX(loopPointEndPx);
 		}
 		double screenRight = getScreenRight(contentWidth);
@@ -341,16 +335,14 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		if (invalidWidth) {
 			invalidWidth = false;
-			if (dragStartLeftHandlePx == 0) {
+			if (leftHandleDrag.getStartPx() == 0) {
 				leftHandle.setOnMousePressed(me -> {
-					leftHandleDrag = true;
-					dragOffset = me.getSceneX() - leftHandle.getTranslateX();
-					dragStartLeftHandlePx = me.getSceneX();
+					double dragOffset = me.getSceneX() - leftHandle.getTranslateX();
+					leftHandleDrag.startDrag(me.getSceneX(), dragOffset);
 				});
 
 				leftHandle.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartLeftHandlePx;
-					double newHandleX = dragStartLeftHandlePx + move - dragOffset;
+					double newHandleX = me.getSceneX() - leftHandleDrag.getDragOffset();
 					if (newHandleX < 0) {
 						newHandleX = 0;
 					}
@@ -365,8 +357,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				leftHandle.setOnMouseReleased(me -> {
 					double newTimePx = leftHandle.getTranslateX() + handleWidth;
 					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					leftHandleDrag = false;
-					dragStartLeftHandlePx = 0;
+					leftHandleDrag.endDrag();
 
 					setMediaTimeIfNeeded(player, contentWidth);
 
@@ -376,17 +367,14 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				});
 			}
 
-			if (dragStartRightHandlePx == 0) {
+			if (rightHandleDrag.getStartPx() == 0) {
 				rightHandle.setOnMousePressed(me -> {
-					rightHandleDrag = true;
-					dragOffset = me.getSceneX() - rightHandle.getTranslateX();
-					dragStartRightHandlePx = me.getSceneX();
+					double dragOffset = me.getSceneX() - rightHandle.getTranslateX();
+					rightHandleDrag.startDrag(me.getSceneX(), dragOffset);
 				});
 
 				rightHandle.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartRightHandlePx;
-
-					double newHandleX = dragStartRightHandlePx + move - dragOffset;
+					double newHandleX = me.getSceneX() - rightHandleDrag.getDragOffset();
 
 					if (newHandleX > screenRight) {
 						newHandleX = screenRight;
@@ -404,8 +392,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				rightHandle.setOnMouseReleased(me -> {
 					double newTimePx = rightHandle.getTranslateX();
 					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					dragStartRightHandlePx = 0;
-					rightHandleDrag = false;
+					rightHandleDrag.endDrag();
 
 					setMediaTimeIfNeeded(player, contentWidth);
 					setLoopPointEnd(player, newTimeMs);
@@ -414,16 +401,14 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				});
 			}
 
-			if (dragStartLoopBarForegroundPx == 0) {
+			if (loopBarDrag.getStartPx() == 0) {
 				loopBarForeground.setOnMousePressed(me -> {
-					loopBarForegroundDrag = true;
-					dragOffset = me.getSceneX() - loopBarForeground.getX();
-					dragStartLoopBarForegroundPx = me.getSceneX();
+					double dragOffset = me.getSceneX() - loopBarForeground.getX();
+					loopBarDrag.startDrag(me.getSceneX(), dragOffset);
 				});
 
 				loopBarForeground.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartLoopBarForegroundPx;
-					double newHandleX = dragStartLoopBarForegroundPx + move - dragOffset;
+					double newHandleX = me.getSceneX() - loopBarDrag.getDragOffset();
 					double positionLeftHandle = newHandleX - handleWidth;
 					double positionRightHandle = newHandleX + loopBarForeground.getWidth();
 					if (positionLeftHandle <= 0) {
@@ -448,8 +433,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 					double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
 					double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
 					double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
-					dragStartLoopBarForegroundPx = 0;
-					loopBarForegroundDrag = false;
+					loopBarDrag.endDrag();
 
 					setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
 					layout();
