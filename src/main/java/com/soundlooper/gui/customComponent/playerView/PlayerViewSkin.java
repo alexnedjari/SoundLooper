@@ -233,8 +233,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 	}
 
-	private double getScreenRight(double contentWidth) {
-		return contentWidth - handleWidth - BORDER_PADDING * 2;
+	private double getScreenRight() {
+		return this.contentWidth - handleWidth - BORDER_PADDING * 2;
 	}
 
 	private double getScreenLeft() {
@@ -266,21 +266,20 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 		}
 
-		double loopPointBeginPx = convertMsToPx(contentWidth, loopPointBegin, duration);
-		double loopPointEndPx = convertMsToPx(contentWidth, loopPointEnd, duration);
+		double loopPointBeginPx = convertMsToPx(loopPointBegin, duration);
+		double loopPointEndPx = convertMsToPx(loopPointEnd, duration);
 
 		// left handle and decorations
 		if (leftHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
-
 			leftHandle.setTranslateX(loopPointBeginPx - handleWidth);
 		}
 		if (rightHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
 			rightHandle.setTranslateX(loopPointEndPx);
 		}
-		double screenRight = getScreenRight(contentWidth);
+		double screenRight = getScreenRight();
 
 		double screenHeight = getScreenHeight(contentHeight);
-		double screenWidth = getScreenWidth(contentWidth);
+		double screenWidth = getScreenWidth();
 
 		unselectedZoneEnd.setWidth(screenRight - rightHandle.getTranslateX());
 
@@ -292,22 +291,16 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		loopBarForeground.setWidth(rightHandle.getTranslateX() - loopBarLeft);
 
 		if (invalidWidth || invalidHeight) {
-
-			// loopBarBackground.setWidth(getScreenWidth(contentWidth));
 			unselectedZoneBegin.setHeight(screenHeight);
 
 			unselectedZoneEnd.setHeight(screenHeight);
-
-			flowPane.setPrefSize(contentWidth, contentHeight);
-			flowPane.setMaxSize(contentWidth, contentHeight);
-			flowPane.setMinSize(contentWidth, contentHeight);
 
 			imageView.setFitHeight(screenHeight);
 			imageView.setFitWidth(screenWidth);
 			imageView.setX(handleWidth);
 			imageView.setY(0);
 			imageView.setOnMouseClicked(me -> {
-				double newTimeMs = convertPxToMs(PlayerViewSkin.this.getSkinnable().getWidth(), me.getX());
+				double newTimeMs = convertPxToMs(me.getX());
 				setMediaTime(player, Double.valueOf(newTimeMs).intValue());
 				layout();
 				me.consume();
@@ -330,7 +323,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		}
 
-		double mediaTimePx = convertMsToPx(contentWidth, mediaTime, duration);
+		double mediaTimePx = convertMsToPx(mediaTime, duration);
 
 		currentTimeLine.setStartX(mediaTimePx);
 		currentTimeLine.setEndX(mediaTimePx);
@@ -363,10 +356,10 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 			leftHandle.setOnMouseReleased(me -> {
 				double newTimePx = leftHandle.getTranslateX() + handleWidth;
-				double newTimeMs = convertPxToMs(contentWidth, newTimePx);
+				double newTimeMs = convertPxToMs(newTimePx);
 				leftHandleDrag.endDrag();
 
-				setMediaTimeIfNeeded(player, contentWidth);
+				setMediaTimeIfNeeded(player);
 
 				setLoopPointBegin(player, newTimeMs);
 				layout();
@@ -381,7 +374,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			rightHandle.setOnMouseDragged(me -> {
 				double newHandleX = me.getSceneX() - rightHandleDrag.getDragOffset();
 
-				double screenRight = getScreenRight(contentWidth);
+				double screenRight = getScreenRight();
 				if (newHandleX > screenRight) {
 					newHandleX = screenRight;
 				}
@@ -397,10 +390,10 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 			rightHandle.setOnMouseReleased(me -> {
 				double newTimePx = rightHandle.getTranslateX();
-				double newTimeMs = convertPxToMs(contentWidth, newTimePx);
+				double newTimeMs = convertPxToMs(newTimePx);
 				rightHandleDrag.endDrag();
 
-				setMediaTimeIfNeeded(player, contentWidth);
+				setMediaTimeIfNeeded(player);
 				setLoopPointEnd(player, newTimeMs);
 				layout();
 				me.consume();
@@ -419,7 +412,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 					positionLeftHandle = 0;
 					positionRightHandle = loopBarForeground.getWidth() + handleWidth;
 				}
-				double screenRight = getScreenRight(contentWidth);
+				double screenRight = getScreenRight();
 				if (positionRightHandle >= screenRight) {
 					positionRightHandle = screenRight;
 					positionLeftHandle = screenRight - loopBarForeground.getWidth() - handleWidth;
@@ -435,8 +428,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			loopBarForeground.setOnMouseReleased(me -> {
 				double newTimeBeginPx = loopBarForeground.getX();
 				double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
-				double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
-				double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
+				double newTimeBeginMs = convertPxToMs(newTimeBeginPx);
+				double newTimeEndMs = convertPxToMs(newTimeEndPx);
 				loopBarDrag.endDrag();
 
 				setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
@@ -477,10 +470,10 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		}
 	}
 
-	private void setMediaTimeIfNeeded(Player player, double contentWidth) {
+	private void setMediaTimeIfNeeded(Player player) {
 		double startX = unselectedZoneBegin.getX() + unselectedZoneBegin.getWidth();
 		if (currentTimeLine.getStartX() > unselectedZoneEnd.getX() || currentTimeLine.getStartX() < startX) {
-			double newTime = convertPxToMs(contentWidth, startX);
+			double newTime = convertPxToMs(startX);
 			setMediaTime(player, newTime);
 		}
 	}
@@ -506,18 +499,18 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		}
 	}
 
-	private double convertMsToPx(double contentWidth, int ms, int totalMs) {
+	private double convertMsToPx(int ms, int totalMs) {
 		if (totalMs == 0) {
 			return 0;
 		}
-		return handleWidth + (getScreenWidth(contentWidth) * ms) / totalMs;
+		return handleWidth + (getScreenWidth() * ms) / totalMs;
 	}
 
-	private double convertPxToMs(double contentWidth, double px) {
+	private double convertPxToMs(double px) {
 		double pxInScreen = px - handleWidth;
 
 		int duration = getDuration();
-		double screenWidth = getScreenWidth(contentWidth);
+		double screenWidth = getScreenWidth();
 
 		double msPerPx = duration / screenWidth;
 		return msPerPx * pxInScreen;
@@ -534,8 +527,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		return DEFAULT_DURATION;
 	}
 
-	private double getScreenWidth(double contentWidth) {
-		return getScreenRight(contentWidth) - getScreenLeft();
+	private double getScreenWidth() {
+		return getScreenRight() - getScreenLeft();
 	}
 
 	private double getScreenHeight(double contentHeight) {
