@@ -1,5 +1,12 @@
 package com.soundlooper.gui.customComponent.timeselection;
 
+import com.soundlooper.CssColor;
+import com.soundlooper.exception.PlayerException;
+import com.soundlooper.gui.customComponent.util.ArrowFactory;
+import com.soundlooper.model.SoundLooperPlayer;
+import com.soundlooper.model.mark.Mark;
+import com.soundlooper.system.util.MessagingUtil;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -8,13 +15,6 @@ import javafx.scene.control.SkinBase;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-
-import com.soundlooper.exception.PlayerException;
-import com.soundlooper.gui.customComponent.util.ArrowFactory;
-import com.soundlooper.model.SoundLooperPlayer;
-import com.soundlooper.model.mark.Mark;
-import com.soundlooper.system.SoundLooperColor;
-import com.soundlooper.system.util.MessagingUtil;
 
 public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 
@@ -85,7 +85,7 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 		BorderPane borderPaneLeft = new BorderPane();
 		borderPaneLeft.setCenter(timeTextFieldBegin);
 		Polygon arrow = ArrowFactory.getArrow(0.3);
-		arrow.setFill(SoundLooperColor.getBlue());
+		arrow.setFill(CssColor.BLUE.getColor());
 		borderPaneLeft.setLeft(arrow);
 		BorderPane.setAlignment(arrow, Pos.CENTER);
 
@@ -101,7 +101,7 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 		borderPaneRight.setCenter(timeTextFieldEnd);
 		Polygon arrow = ArrowFactory.getArrow(0.3);
 		arrow.setScaleX(-1);
-		arrow.setFill(SoundLooperColor.getBlue());
+		arrow.setFill(CssColor.BLUE.getColor());
 		borderPaneRight.setRight(arrow);
 		BorderPane.setAlignment(arrow, Pos.CENTER);
 
@@ -114,7 +114,7 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 
 	private Line getUnderscore() {
 		Line line = new Line(0, 0, 85, 0);
-		line.setStroke(SoundLooperColor.getBlue());
+		line.setStroke(CssColor.BLUE.getColor());
 		line.setStrokeWidth(0.5);
 
 		return line;

@@ -1,12 +1,12 @@
 package com.soundlooper.gui.customComponent.timeselection;
 
+import com.soundlooper.CssColor;
+
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
-
-import com.soundlooper.system.SoundLooperColor;
 
 public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
@@ -22,7 +22,7 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 		label.resize(TimeTextFieldViewSkin.DIGIT_WIDTH, 20);
 		getChildren().add(label);
 		label.textProperty().bind(control.digitProperty().asString());
-		label.setTextFill(SoundLooperColor.getBlue());
+		label.setTextFill(CssColor.BLUE.getColor());
 
 		rectangle = new Rectangle();
 
@@ -47,14 +47,14 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 			// Insets.EMPTY)));
 			// label.getStyleClass().remove(".lightGray");
 			// label.getStyleClass().add(".veryLightGray");
-			label.getStyleClass().removeAll("white", "gray10");
-			label.getStyleClass().add("gray10");
+			label.getStyleClass().removeAll("white", "lightgray");
+			label.getStyleClass().add("lightgray");
 		} else {
 			// label.setBackground(new Background(new
 			// BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
 			// Insets.EMPTY)));
 			// label.getStyleClass().remove(".veryLightGray");
-			label.getStyleClass().removeAll("white", "gray10");
+			label.getStyleClass().removeAll("white", "lightgray");
 			label.getStyleClass().add("white");
 			// label.setStyle("-fx-background-color: #242424");
 		}

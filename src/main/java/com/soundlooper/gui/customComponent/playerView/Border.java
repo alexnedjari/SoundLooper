@@ -1,11 +1,11 @@
 package com.soundlooper.gui.customComponent.playerView;
 
+import com.soundlooper.CssColor;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Line;
-
-import com.soundlooper.system.SoundLooperColor;
 
 public class Border extends FlowPane {
 	Line line1 = new Line(0, 0, this.getWidth(), 0);
@@ -15,14 +15,14 @@ public class Border extends FlowPane {
 	public Border(double leftPaddin) {
 		this.setOrientation(Orientation.HORIZONTAL);
 
-		line1.setStroke(SoundLooperColor.getSeparatorColor());
+		line1.setStroke(CssColor.GRAY.getColor());
 		this.getChildren().add(line1);
 
-		line2.setStroke(SoundLooperColor.getWhite());
+		line2.setStroke(CssColor.WHITE.getColor());
 		line2.setStrokeWidth(2);
 		this.getChildren().add(line2);
 
-		line3.setStroke(SoundLooperColor.getSeparatorColor());
+		line3.setStroke(CssColor.GRAY.getColor());
 		this.getChildren().add(line3);
 
 		this.setPadding(new Insets(0, 0, 0, leftPaddin));

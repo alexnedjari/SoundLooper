@@ -2,18 +2,18 @@
 .toolbar-button {
 	-fx-border-width: 1.0px ;
 	-fx-background-color:transparent;
+	-fx-border-color:transparent;
 }
 .toolbar-button:disabled {
 	/*-fx-border-width: 0.0mm ;
 	-fx-background-color:#999999;*/
 }
-.toolbar-button:hover {
-	/*-fx-background-color:#990000;*/
-	-fx-border-width: 1px ;
-	-fx-border-color:#232322 ;
-	-fx-background-radius: 0px;
+ .toolbar-button:hover {
+	-fx-border-width: 1.0px;
+	-fx-border-color:#232322;
+	/*-fx-background-radius: 0px;*/
 	-fx-background-color: #5cb9c6;
-	-fx-border-radius: 0px;
+	/*-fx-border-radius: 0px;*/
 }
 
 .openFileButton {-fx-graphic: url('drawable/open_32.png');}
@@ -59,7 +59,7 @@
 .deleteTagButton {-fx-graphic: url('icon/delete_16.png');}
 
 /* BOUTONS DIVERS */
-.validateButton {-fx-graphic: url('icon/validate_32.png');}
+.validateButton {-fx-graphic: url('drawable/validate_16.png');}
 .deleteButton {-fx-graphic: url('icon/delete_16.png');}
 .deleteButton:hover {-fx-graphic: url('icon/delete_16.png');}
 
@@ -80,13 +80,8 @@
 
 .white {-fx-background-color: rgb(242, 243, 243)}
 .blue {-fx-background-color: rgb(46, 167, 195)}
-
-.gray5 {-fx-background-color: #F3F3F3}
-.gray10 {-fx-background-color: #E7E7E7}
-.gray25 {-fx-background-color: #BFBFBF}
-.gray50 {-fx-background-color: #7F7F7F}
-.darkGray {-fx-background-color: #373737}
-.lightGray {-fx-background-color: #434343}
+.gray {-fx-background-color: rgb(56, 110, 117)}
+.lightgray {-fx-background-color: rgb(205, 219, 221)}
 
 .timestrechButton .arrow, .timestrechButton .arrow-button {
 	-fx-background-color: transparent;

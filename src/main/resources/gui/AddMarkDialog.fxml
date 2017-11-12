@@ -1,28 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.*?>
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import java.lang.Double?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.collections.FXCollections ?>
 
-<BorderPane prefHeight="91.0" prefWidth="327.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.AddMarkController">
-   <center>
-      <ComboBox fx:id="comboBoxName" editable="true" prefWidth="300.0" BorderPane.alignment="CENTER">
-      	  
-      </ComboBox>
-   </center>
-   <bottom>
-      <AnchorPane prefHeight="34.0" prefWidth="327.0" BorderPane.alignment="CENTER">
+
+<VBox prefWidth="327.0"  xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soundlooper.system.AddMarkController">
+   <children>
+      <AnchorPane prefHeight="26.0" minHeight="26" maxHeight="26" >
          <children>
-            <Label fx:id="labelResultat" focusTraversable="false" layoutX="7.0" layoutY="3.0" prefHeight="21.0" prefWidth="228.0" text="Label" />
-            <Button focusTraversable="false" layoutX="259.0" layoutY="-2.0" mnemonicParsing="false" onAction="#validate" prefHeight="31.0" prefWidth="55.0" AnchorPane.rightAnchor="13.0">
-               <styleClass>
-                  <String fx:value="toolbar-button" />
-                  <String fx:value="validateButton" />
-               </styleClass></Button>
+            <ComboBox fx:id="comboBoxName" editable="true" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+	        </ComboBox>
          </children>
       </AnchorPane>
-   </bottom>
-</BorderPane>
+   </children>
+   <children>
+      <AnchorPane prefHeight="26.0" minHeight="26" maxHeight="26">
+         <children>
+         	<BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         		<center>
+            		<Label fx:id="labelResultat" maxWidth="Infinity" maxHeight="Infinity"  focusTraversable="false" text="Label" style="-fx-alignment: CENTER_RIGHT">
+            		   <styleClass>
+		                  <String fx:value="bluetext" />
+		               </styleClass>
+		               <padding>
+		               	  <Insets bottom="0" left=".0" right="10.0" top="0"/>
+		               </padding>
+		            </Label>
+            	</center>
+            	<right>
+	            	<Button focusTraversable="false" maxHeight="Infinity" mnemonicParsing="false" onAction="#validate">
+		               <styleClass>
+		                  <String fx:value="validateButton" />
+		               </styleClass>
+		            </Button>
+	            </right>
+             </BorderPane>
+         </children>
+      </AnchorPane>
+   </children>
+   
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+  
+</VBox>

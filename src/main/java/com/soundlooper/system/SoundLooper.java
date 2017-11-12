@@ -4,16 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +18,16 @@ import com.soundlooper.system.preferences.Preferences;
 import com.soundlooper.system.util.IssueSender;
 import com.soundlooper.system.util.Lock;
 import com.soundlooper.system.util.MessagingUtil;
+
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 public class SoundLooper extends Application {
 
@@ -90,8 +90,8 @@ public class SoundLooper extends Application {
 			logger.info("User want to create a github issue");
 			GHIssue issue = IssueSender.sendIssue(e);
 			logger.info("Issue " + issue.getNumber() + " created");
-			Alert issueConfirmationAlert = new Alert(AlertType.INFORMATION, "Le ticket de bug numéro '"
-					+ issue.getNumber() + "' a bien été créé");
+			Alert issueConfirmationAlert = new Alert(AlertType.INFORMATION,
+					"Le ticket de bug numéro '" + issue.getNumber() + "' a bien été créé");
 			issueConfirmationAlert.setTitle("Création du rapport d'erreur");
 			issueConfirmationAlert.setHeaderText("Le rapport d'erreur a été envoyé avec succès");
 			issueConfirmationAlert.initOwner(primaryStage);
@@ -140,11 +140,6 @@ public class SoundLooper extends Application {
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
 			scene.getStylesheets().add("/style/application.css");
-
-			// Light light = new Light.Point(, 40, 300, Color.WHITE);
-			// Lighting lighting = new Lighting();
-			// lighting.setLight(light);
-			// scene.getRoot().setEffect(lighting);
 
 			primaryStage.setScene(scene);
 			primaryStage.setAlwaysOnTop(Preferences.getInstance().getAlwaysOnTop());

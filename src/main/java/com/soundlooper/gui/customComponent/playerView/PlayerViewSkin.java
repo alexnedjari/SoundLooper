@@ -9,6 +9,7 @@ import java.util.TimerTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.soundlooper.CssColor;
 import com.soundlooper.audio.player.Player;
 import com.soundlooper.audio.player.Player.PlayerState;
 import com.soundlooper.exception.PlayerException;
@@ -17,7 +18,6 @@ import com.soundlooper.gui.customComponent.util.ArrowFactory;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.system.ImageGetter;
-import com.soundlooper.system.SoundLooperColor;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -121,7 +121,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		// Handle definitions
 		leftHandle = ArrowFactory.getArrow(0.7);
-		leftHandle.setFill(SoundLooperColor.getBlue());
+		leftHandle.setFill(CssColor.BLUE.getColor());
 
 		handleWidth = leftHandle.getBoundsInParent().getWidth();
 		handleHeight = leftHandle.getBoundsInParent().getHeight();
@@ -129,7 +129,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		rightHandle = ArrowFactory.getArrow(0.7);
 		rightHandle.setScaleX(-1);
-		rightHandle.setFill(SoundLooperColor.getBlue());
+		rightHandle.setFill(CssColor.BLUE.getColor());
 
 		loopBarForeground = new Rectangle(screenLeft, 0, 0, TOP_MARGIN);
 		loopBarForeground.setFill(Color.TRANSPARENT);
@@ -152,13 +152,13 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		imageView.setSmooth(true);
 
 		unselectedZoneBegin = new Rectangle(screenLeft, 0, 0, 0);
-		unselectedZoneBegin.setFill(SoundLooperColor.getWhite(0.6));
+		unselectedZoneBegin.setFill(CssColor.WHITE.getColor(0.6));
 
 		unselectedZoneEnd = new Rectangle(0, 0, 0, 0);
-		unselectedZoneEnd.setFill(SoundLooperColor.getWhite(0.6));
+		unselectedZoneEnd.setFill(CssColor.WHITE.getColor(0.6));
 
 		currentTimeLine = new Line(0, 0, 100, 100);
-		currentTimeLine.setStroke(SoundLooperColor.getSeparatorColor());
+		currentTimeLine.setStroke(CssColor.GRAY.getColor());
 
 		Pane imagePane = new Pane();
 		imagePane.getChildren().add(imageView);

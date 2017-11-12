@@ -29,9 +29,9 @@ import org.jouvieje.fmodex.structures.FMOD_CREATESOUNDEXINFO;
 import org.jouvieje.fmodex.utils.BufferUtils;
 import org.jouvieje.fmodex.utils.SizeOfPrimitive;
 
+import com.soundlooper.CssColor;
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.model.SoundLooperPlayer;
-import com.soundlooper.system.SoundLooperColor;
 
 /**
  * ----------------------------------------------------------------------------
@@ -250,9 +250,9 @@ public class SoundFile {
 		BufferedImage off_Image = new BufferedImage(largeurImage, hauteurImage, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = off_Image.createGraphics();
 
-		g2.setColor(SoundLooperColor.getAwtWhite());
+		g2.setColor(CssColor.WHITE.getAwtColor());
 		g2.fillRect(0, 0, largeurImage, hauteurImage);
-		g2.setColor(SoundLooperColor.getAwtBlue());
+		g2.setColor(CssColor.BLUE.getAwtColor());
 
 		int pixelX = 0;
 		FMOD_RESULT resultat;
