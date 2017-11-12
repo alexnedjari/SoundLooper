@@ -12,29 +12,20 @@ import org.apache.logging.log4j.Logger;
 import com.soundlooper.audio.player.Player;
 import com.soundlooper.audio.player.Player.PlayerState;
 import com.soundlooper.exception.PlayerException;
-import com.soundlooper.exception.PlayerNotInitializedException;
+import com.soundlooper.gui.PlayerExecutor;
 import com.soundlooper.gui.customComponent.util.ArrowFactory;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.system.ImageGetter;
 import com.soundlooper.system.SoundLooperColor;
-import com.soundlooper.system.util.MessagingUtil;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -50,27 +41,25 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	private final static int TOP_MARGIN = 35;
 	private final static int BORDER_PADDING = 20;
 	private final static int MIN_HANDLE_SPACING = 2;
-	private final static int DEFAULT_DURATION = 1000;
 
 	private double handleWidth;
 	private double handleHeight;
 
 	// -------- Graphicals elements -----------//
-	private Rectangle loopBarForeground;
-
-	private Rectangle unselectedZoneBegin;
-	private Rectangle unselectedZoneEnd;
-
-	private Line currentTimeLine;
-	private ImageView imageView;
+	private FlowPane flowPane = new FlowPane();
 
 	private Polygon leftHandle;
 	private Polygon rightHandle;
+	private Rectangle loopBarForeground;
 
 	private Border borderTop;
-	private Border borderBottom;
 
-	private FlowPane flowPane = new FlowPane();
+	private Rectangle unselectedZoneBegin;
+	private Rectangle unselectedZoneEnd;
+	private Line currentTimeLine;
+	private ImageView imageView;
+
+	private Border borderBottom;
 
 	// -------- Events variable -----------//
 	private SoundLooperPlayerDragEvent leftHandleDrag = new SoundLooperPlayerDragEvent();
@@ -82,6 +71,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	private boolean invalidHeight = true;
 	private double contentWidth = 0;
 
+	// -------- Others -----------//
 	PlayerView playerView = getSkinnable();
 	SoundLooperPlayer player = getSkinnable().getSoundLooperPlayer();
 
@@ -95,86 +85,71 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 	protected PlayerViewSkin(PlayerView control) {
 		super(control);
 
-		control.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				control.requestFocus();
-			}
+		// --------------LISTENER DEFINITION----------------//
+		// Control listener definition
+		control.setOnMousePressed(e -> control.requestFocus());
+		control.widthProperty().addListener(l -> {
+			invalidWidth = true;
+		});
+		control.heightProperty().addListener(l -> {
+			invalidHeight = true;
 		});
 
-		control.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue,
-					Boolean newPropertyValue) {
-				if (!newPropertyValue) {
-					// must refresh on focus lost, to set control to "unfocused"
-					// aspect
-					layout();
+		// Player listener definition
+		player.markProperty().addListener((observable, oldValue, newValue) -> {
+			layout();
+			updateMarkTimeListener(oldValue, newValue);
+		});
+		updateMarkTimeListener(null, player.getCurrentMark());
+
+		player.currentSongImageProperty().addListener(observable -> {
+			Platform.runLater(() -> {
+				logger.info("The image is changing in the player view " + new Date().getTime());
+				File file = player.currentSongImageProperty().get();
+				try {
+					imageView.setImage(new Image(file.toURI().toURL().toExternalForm()));
+				} catch (MalformedURLException e) {
+					// This exception will normally never be throwed
+					logger.error("Unable to get new Image", e);
 				}
-			}
+			});
 		});
 
-		SoundLooperPlayer soundLooperPlayer = this.getSkinnable().getSoundLooperPlayer();
+		// -------------------UI DEFINITION----------------//
+		getChildren().add(flowPane);
+		flowPane.setPadding(new Insets(0, BORDER_PADDING, 0, BORDER_PADDING));
 
-		soundLooperPlayer.markProperty().addListener(new ChangeListener<Mark>() {
-			@Override
-			public void changed(ObservableValue<? extends Mark> observable, Mark oldValue, Mark newValue) {
-				layout();
-				updateMarkTimeListener(oldValue, newValue);
-			};
-		});
-		updateMarkTimeListener(null, soundLooperPlayer.getCurrentMark());
-
-		soundLooperPlayer.currentSongImageProperty().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable observable) {
-				Platform.runLater(new Runnable() {
-
-					@Override
-					public void run() {
-						logger.info("The image is changing in the player view " + new Date().getTime());
-						File file = soundLooperPlayer.currentSongImageProperty().get();
-						try {
-							imageView.setImage(new Image(file.toURI().toURL().toExternalForm()));
-						} catch (MalformedURLException e) {
-							// This exception will normally never be throwed
-							logger.error("Unable to get new Image", e);
-						}
-					}
-				});
-			}
-		});
-
-		control.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if (newValue) {
-					layout();
-				}
-			}
-		});
-
-		imageView = new ImageView(ImageGetter.getDrawableURL("loading_32.png"));
-		imageView.setFitWidth(1);
-		imageView.setPreserveRatio(false);
-		imageView.setSmooth(true);
-
+		// Handle definitions
 		leftHandle = ArrowFactory.getArrow(0.7);
 		leftHandle.setFill(SoundLooperColor.getBlue());
+
+		handleWidth = leftHandle.getBoundsInParent().getWidth();
+		handleHeight = leftHandle.getBoundsInParent().getHeight();
+		double screenLeft = getScreenLeft();
 
 		rightHandle = ArrowFactory.getArrow(0.7);
 		rightHandle.setScaleX(-1);
 		rightHandle.setFill(SoundLooperColor.getBlue());
 
-		handleWidth = leftHandle.getBoundsInParent().getWidth();
-		handleHeight = leftHandle.getBoundsInParent().getHeight();
-
-		double screenLeft = getScreenLeft();
-		borderTop = new Border(screenLeft);
-		borderBottom = new Border(screenLeft);
-
 		loopBarForeground = new Rectangle(screenLeft, 0, 0, TOP_MARGIN);
 		loopBarForeground.setFill(Color.TRANSPARENT);
+
+		Pane handlePanel = new Pane();
+		handlePanel.getChildren().add(leftHandle);
+		handlePanel.getChildren().add(rightHandle);
+		handlePanel.getChildren().add(loopBarForeground);
+
+		flowPane.getChildren().add(handlePanel);
+
+		// Border top definition
+		borderTop = new Border(screenLeft);
+		flowPane.getChildren().add(borderTop);
+
+		// Screen definition
+		imageView = new ImageView(ImageGetter.getDrawableURL("loading_32.png"));
+		imageView.setFitWidth(1);
+		imageView.setPreserveRatio(false);
+		imageView.setSmooth(true);
 
 		unselectedZoneBegin = new Rectangle(screenLeft, 0, 0, 0);
 		unselectedZoneBegin.setFill(SoundLooperColor.getWhite(0.6));
@@ -185,22 +160,6 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		currentTimeLine = new Line(0, 0, 100, 100);
 		currentTimeLine.setStroke(SoundLooperColor.getSeparatorColor());
 
-		getChildren().add(flowPane);
-		flowPane.setPadding(new Insets(0, BORDER_PADDING, 0, BORDER_PADDING));
-
-		Label e2 = new Label("Pane1");
-		e2.setBackground(
-				new Background(new BackgroundFill(javafx.scene.paint.Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-
-		Pane handlePanel = new Pane();
-		handlePanel.getChildren().add(leftHandle);
-		handlePanel.getChildren().add(rightHandle);
-		handlePanel.getChildren().add(loopBarForeground);
-
-		flowPane.getChildren().add(handlePanel);
-
-		flowPane.getChildren().add(borderTop);
-
 		Pane imagePane = new Pane();
 		imagePane.getChildren().add(imageView);
 		imagePane.getChildren().add(unselectedZoneBegin);
@@ -208,54 +167,24 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		imagePane.getChildren().add(currentTimeLine);
 		flowPane.getChildren().add(imagePane);
 
+		// Border bottom definition
+		borderBottom = new Border(screenLeft);
 		flowPane.getChildren().add(borderBottom);
 
-		control.widthProperty().addListener(l -> {
-			invalidWidth = true;
-		});
-		control.heightProperty().addListener(l -> {
-			invalidHeight = true;
-		});
 		initDragEvents();
 		startTimer();
-	}
-
-	protected void updateMarkTimeListener(Mark oldValue, Mark newValue) {
-
-		if (oldValue != null) {
-			oldValue.beginMillisecondProperty().removeListener(markTimeListener);
-			oldValue.endMillisecondProperty().removeListener(markTimeListener);
-		}
-		if (newValue != null) {
-			newValue.beginMillisecondProperty().addListener(markTimeListener);
-			newValue.endMillisecondProperty().addListener(markTimeListener);
-		}
-
-	}
-
-	private double getScreenRight() {
-		return this.contentWidth - handleWidth - BORDER_PADDING * 2;
-	}
-
-	private double getScreenLeft() {
-		return handleWidth;
 	}
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
 		this.contentWidth = contentWidth;
 
-		int mediaTime;
-		int loopPointBegin;
-		int loopPointEnd;
-		int duration = 0;
-		if (!player.isSoundInitialized()) {
-			// there is no sound loaded, display en empty player
-			mediaTime = 0;
-			loopPointBegin = 0;
-			loopPointEnd = DEFAULT_DURATION;
-			duration = DEFAULT_DURATION;
-		} else {
+		// default values if there is no sound loaded, display en empty player
+		int mediaTime = 0;
+		int loopPointBegin = 0;
+		int loopPointEnd = PlayerExecutor.DEFAULT_DURATION;
+		int duration = PlayerExecutor.DEFAULT_DURATION;
+		if (player.isSoundInitialized()) {
 			mediaTime = player.getMediaTime();
 			loopPointBegin = player.getLoopPointBeginMillisecond();
 			loopPointEnd = player.getLoopPointEndMillisecond();
@@ -269,6 +198,10 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		double loopPointBeginPx = convertMsToPx(loopPointBegin, duration);
 		double loopPointEndPx = convertMsToPx(loopPointEnd, duration);
 
+		double screenRight = getScreenRight();
+		double screenHeight = getScreenHeight(contentHeight);
+		double screenWidth = getScreenWidth();
+
 		// left handle and decorations
 		if (leftHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
 			leftHandle.setTranslateX(loopPointBeginPx - handleWidth);
@@ -276,13 +209,8 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 		if (rightHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
 			rightHandle.setTranslateX(loopPointEndPx);
 		}
-		double screenRight = getScreenRight();
-
-		double screenHeight = getScreenHeight(contentHeight);
-		double screenWidth = getScreenWidth();
 
 		unselectedZoneEnd.setWidth(screenRight - rightHandle.getTranslateX());
-
 		unselectedZoneBegin.setWidth(leftHandle.getTranslateX());
 		unselectedZoneEnd.setX(rightHandle.getTranslateX());
 
@@ -292,7 +220,6 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		if (invalidWidth || invalidHeight) {
 			unselectedZoneBegin.setHeight(screenHeight);
-
 			unselectedZoneEnd.setHeight(screenHeight);
 
 			imageView.setFitHeight(screenHeight);
@@ -301,26 +228,24 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			imageView.setY(0);
 			imageView.setOnMouseClicked(me -> {
 				double newTimeMs = convertPxToMs(me.getX());
-				setMediaTime(player, Double.valueOf(newTimeMs).intValue());
+				PlayerExecutor.setMediaTime(player, Double.valueOf(newTimeMs).intValue());
 				layout();
 				me.consume();
-
 			});
 
 			unselectedZoneBegin.setOnMouseClicked(me -> {
-				setMediaTimeBegin(player);
+				PlayerExecutor.setMediaTimeBegin(player);
 				layout();
 				me.consume();
 			});
 			unselectedZoneEnd.setOnMouseClicked(me -> {
-				setMediaTimeBegin(player);
+				PlayerExecutor.setMediaTimeBegin(player);
 				layout();
 				me.consume();
 			});
 
 			borderTop.setLineWidth(screenWidth);
 			borderBottom.setLineWidth(screenWidth);
-
 		}
 
 		double mediaTimePx = convertMsToPx(mediaTime, duration);
@@ -332,6 +257,76 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 		invalidWidth = false;
 		invalidHeight = false;
+	}
+
+	private double getScreenRight() {
+		return this.contentWidth - handleWidth - BORDER_PADDING * 2;
+	}
+
+	private double getScreenLeft() {
+		return handleWidth;
+	}
+
+	private double getScreenWidth() {
+		return getScreenRight() - getScreenLeft();
+	}
+
+	private double getScreenHeight(double contentHeight) {
+		return contentHeight - handleHeight - borderBottom.getHeight() - borderTop.getHeight();
+	}
+
+	protected void updateMarkTimeListener(Mark oldValue, Mark newValue) {
+		if (oldValue != null) {
+			oldValue.beginMillisecondProperty().removeListener(markTimeListener);
+			oldValue.endMillisecondProperty().removeListener(markTimeListener);
+		}
+		if (newValue != null) {
+			newValue.beginMillisecondProperty().addListener(markTimeListener);
+			newValue.endMillisecondProperty().addListener(markTimeListener);
+		}
+	}
+
+	private void setMediaTimeIfNeeded(Player player) {
+		double startX = unselectedZoneBegin.getX() + unselectedZoneBegin.getWidth();
+		if (currentTimeLine.getStartX() > unselectedZoneEnd.getX() || currentTimeLine.getStartX() < startX) {
+			double newTime = convertPxToMs(startX);
+			PlayerExecutor.setMediaTime(player, newTime);
+		}
+	}
+
+	private double convertMsToPx(int ms, int totalMs) {
+		if (totalMs == 0) {
+			return 0;
+		}
+		return handleWidth + (getScreenWidth() * ms) / totalMs;
+	}
+
+	private double convertPxToMs(double px) {
+		double pxInScreen = px - handleWidth;
+
+		int duration = PlayerExecutor.getDuration();
+		double screenWidth = getScreenWidth();
+
+		double msPerPx = duration / screenWidth;
+		return msPerPx * pxInScreen;
+	}
+
+	public void startTimer() {
+		Timer timerSlide = new Timer();
+		timerSlide.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				SoundLooperPlayer soundLooperPlayer = SoundLooperPlayer.getInstance();
+				if (soundLooperPlayer.getState() == PlayerState.STATE_PLAYING) {
+					layout();
+				}
+			}
+
+		}, new Date(), 100);
+	}
+
+	protected void layout() {
+		Platform.runLater(() -> PlayerViewSkin.this.getSkinnable().forceLayout());
 	}
 
 	private void initDragEvents() {
@@ -361,7 +356,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 
 				setMediaTimeIfNeeded(player);
 
-				setLoopPointBegin(player, newTimeMs);
+				PlayerExecutor.setLoopPointBegin(player, newTimeMs);
 				layout();
 				me.consume();
 			});
@@ -394,7 +389,7 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				rightHandleDrag.endDrag();
 
 				setMediaTimeIfNeeded(player);
-				setLoopPointEnd(player, newTimeMs);
+				PlayerExecutor.setLoopPointEnd(player, newTimeMs);
 				layout();
 				me.consume();
 			});
@@ -432,132 +427,11 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 				double newTimeEndMs = convertPxToMs(newTimeEndPx);
 				loopBarDrag.endDrag();
 
-				setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
+				PlayerExecutor.setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
 				layout();
 				me.consume();
 			});
 		}
-	}
-
-	private void setLoopPointBegin(SoundLooperPlayer player, double newTimeBeginMs) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setLoopPointBegin(Double.valueOf(newTimeBeginMs).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position de début", e);
-		}
-	}
-
-	private void setLoopPoints(SoundLooperPlayer player, double newTimeBeginMs, double newTimeEndMs) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setLoopPoints(Double.valueOf(newTimeBeginMs).intValue(),
-						Double.valueOf(newTimeEndMs).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier les positions", e);
-		}
-	}
-
-	private void setLoopPointEnd(SoundLooperPlayer player, double newTimeEndMs) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setLoopPointEnd(Double.valueOf(newTimeEndMs).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position de fin", e);
-		}
-	}
-
-	private void setMediaTimeIfNeeded(Player player) {
-		double startX = unselectedZoneBegin.getX() + unselectedZoneBegin.getWidth();
-		if (currentTimeLine.getStartX() > unselectedZoneEnd.getX() || currentTimeLine.getStartX() < startX) {
-			double newTime = convertPxToMs(startX);
-			setMediaTime(player, newTime);
-		}
-	}
-
-	private void setMediaTime(Player player, double newTime) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setMediaTime(Double.valueOf(newTime).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position actuelle", e);
-		}
-	}
-
-	private void setMediaTimeBegin(SoundLooperPlayer player) {
-		try {
-			if (player.isSoundInitialized()) {
-				int loopPointBenginMs = player.getLoopPointBeginMillisecond();
-				player.setMediaTime(loopPointBenginMs);
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position actuelle", e);
-		}
-	}
-
-	private double convertMsToPx(int ms, int totalMs) {
-		if (totalMs == 0) {
-			return 0;
-		}
-		return handleWidth + (getScreenWidth() * ms) / totalMs;
-	}
-
-	private double convertPxToMs(double px) {
-		double pxInScreen = px - handleWidth;
-
-		int duration = getDuration();
-		double screenWidth = getScreenWidth();
-
-		double msPerPx = duration / screenWidth;
-		return msPerPx * pxInScreen;
-	}
-
-	private int getDuration() {
-		if (SoundLooperPlayer.getInstance().isSoundInitialized()) {
-			try {
-				return SoundLooperPlayer.getInstance().getCurrentSound().getDuration();
-			} catch (PlayerNotInitializedException e) {
-				MessagingUtil.displayError("Impossible de récupérer la durée", e);
-			}
-		}
-		return DEFAULT_DURATION;
-	}
-
-	private double getScreenWidth() {
-		return getScreenRight() - getScreenLeft();
-	}
-
-	private double getScreenHeight(double contentHeight) {
-		return contentHeight - handleHeight - borderBottom.getHeight() - borderTop.getHeight();
-	}
-
-	public void startTimer() {
-		Timer timerSlide = new Timer();
-		timerSlide.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				SoundLooperPlayer soundLooperPlayer = SoundLooperPlayer.getInstance();
-				if (soundLooperPlayer.getState() == PlayerState.STATE_PLAYING) {
-					layout();
-				}
-			}
-
-		}, new Date(), 100);
-	}
-
-	protected void layout() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				// PlayerViewSkin.this.getSkinnable().requestLayout();
-				// PlayerViewSkin.this.getSkinnable().layout();
-				PlayerViewSkin.this.getSkinnable().forceLayout();
-			}
-		});
 	}
 
 	@Override
