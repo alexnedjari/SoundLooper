@@ -125,12 +125,6 @@ public class SystemController {
 	public void init() {
 		initInterfaceState();
 
-		// backgroundImage.fitWidthProperty().bind(SoundLooper.getInstance().getPrimaryStage().widthProperty());
-		// backgroundImage.fitHeightProperty().bind(
-		// SoundLooper.getInstance().getPrimaryStage().heightProperty().subtract(200));
-		// backgroundImage.setPreserveRatio(true);
-		// --------------------------------------------------
-
 		timestretchPotentiometer.setMin(50);
 		timestretchPotentiometer.setMax(200);
 		timestretchPotentiometer.setValue(100);
@@ -138,8 +132,6 @@ public class SystemController {
 				.bindBidirectional(SoundLooperPlayer.getInstance().timeStretchProperty());
 
 		MenuButton timestrechButton = new MenuButton();
-
-		// timestrechButton.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
 
 		timestrechButton.getItems().add(createTimestrechMenuItem(50));
 		timestrechButton.getItems().add(createTimestrechMenuItem(90));
@@ -164,7 +156,6 @@ public class SystemController {
 		timestrechButton.getStyleClass().add("timestrechButton");
 		timestrechButton.getStyleClass().add("player-button");
 
-		// timestrechButton.getStyleClass().add("toggleMuteButton");
 		timestretchPotentiometer.setBottomLeftControl(timestrechButton);
 		Label timestretchLabel = new Label();
 
@@ -211,8 +202,6 @@ public class SystemController {
 			public void changed(ObservableValue<? extends Song> observable, Song oldSong, Song newSong) {
 
 				if (oldSong != null) {
-					// oldSong.isFavoriteProperty().unbindBidirectional(
-					// favoriteButton.selectedProperty());
 					favoriteButton.selectedProperty().unbindBidirectional(oldSong.isFavoriteProperty());
 				}
 				favoriteButton.selectedProperty().bindBidirectional(newSong.isFavoriteProperty());
@@ -788,8 +777,7 @@ public class SystemController {
 			SoundLooperPlayer.getInstance().saveCurrentMark();
 
 			// The begin or end of a mark was changed, we need to refresh list
-			// to update
-			// list entries time
+			// to update list entries time
 			updateMarkList();
 		} catch (SoundLooperException e) {
 			MessagingUtil.displayError("Impossible de sauvegarder le marqueur", e);

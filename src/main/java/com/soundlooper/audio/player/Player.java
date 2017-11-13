@@ -7,13 +7,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jouvieje.fmodex.FmodEx;
@@ -24,6 +17,13 @@ import com.soundlooper.exception.PlayerException;
 import com.soundlooper.exception.PlayerNotInitializedException;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.system.util.MessagingUtil;
+
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 /**
  * AudioEngine is an audio engine based on FMOD Copyright (C) 2014 Alexandre
@@ -373,11 +373,6 @@ public class Player {
 		public static final int STATE_LOADING_SONG = 3;
 
 		/**
-		 * State when the song is loaded
-		 */
-		// public static final int STATE_SONG_LOADED = 4;
-
-		/**
 		 * State when preparing play
 		 */
 		public static final int STATE_PREPARING_PLAY = 5;
@@ -420,7 +415,7 @@ public class Player {
 		/**
 		 * The label map for states
 		 */
-		private HashMap<Integer, String> stateLabel = new HashMap<Integer, String>();
+		private HashMap<Integer, String> stateLabel = new HashMap<>();
 
 		/**
 		 * Constructor
@@ -431,8 +426,6 @@ public class Player {
 			this.stateLabel.put(Integer.valueOf(PlayerState.STATE_PLAYER_INITIALIZING), "STATE_PLAYER_INITIALIZING");
 			this.stateLabel.put(Integer.valueOf(PlayerState.STATE_PLAYER_INITIALIZED), "STATE_PLAYER_INITIALIZED");
 			this.stateLabel.put(Integer.valueOf(PlayerState.STATE_LOADING_SONG), "STATE_LOADING_SONG");
-			// this.stateLabel.put(Integer.valueOf(PlayerState.STATE_SONG_LOADED),
-			// "STATE_SONG_LOADED");
 			this.stateLabel.put(Integer.valueOf(PlayerState.STATE_PREPARING_PLAY), "STATE_PREPARING_PLAY");
 			this.stateLabel.put(Integer.valueOf(PlayerState.STATE_PLAYING), "STATE_PLAYING");
 			this.stateLabel.put(Integer.valueOf(PlayerState.STATE_PREPARING_PAUSE), "STATE_PREPARING_PAUSE");
@@ -540,7 +533,6 @@ public class Player {
 		LOGGER.info("Set the volume percent : " + percent);
 		if (this.isSoundInitialized()) {
 			this.sound.setVolume(new Float(percent / 100.0).floatValue());
-			// volume.set(percent);
 		}
 
 	}

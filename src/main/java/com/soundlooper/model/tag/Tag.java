@@ -6,9 +6,9 @@ package com.soundlooper.model.tag;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.property.SimpleObjectProperty;
-
 import com.soundlooper.model.SoundLooperObject;
+
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  * ==================================================================== Sound
@@ -63,7 +63,7 @@ public class Tag extends SoundLooperObject {
 	/**
 	 * List of the child tags
 	 */
-	private List<Tag> listChildren = new ArrayList<Tag>();
+	private List<Tag> listChildren = new ArrayList<>();
 
 	public Tag() {
 		super();
@@ -89,12 +89,10 @@ public class Tag extends SoundLooperObject {
 
 	public void addChildren(Tag child) {
 		this.listChildren.add(child);
-		// child.setParent(this);
 	}
 
 	public void removeChildren(Tag child) {
 		this.listChildren.remove(child);
-		// child.setParent(null);
 	}
 
 	public Tag getParent() {
@@ -121,7 +119,7 @@ public class Tag extends SoundLooperObject {
 	}
 
 	public List<Tag> getListChildrenCopy() {
-		return new ArrayList<Tag>(this.listChildren);
+		return new ArrayList<>(this.listChildren);
 	}
 
 	@Override

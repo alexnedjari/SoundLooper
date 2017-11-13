@@ -15,10 +15,6 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 
 	protected TimeDigitViewSkin(TimeDigitView control) {
 		super(control);
-		// BorderPane borderPane = new BorderPane();
-		// borderPane.setBackground(new Background(new BackgroundFill(Color.RED,
-		// arg1, arg2)));
-		// getChildren().add(borderPane);
 		label.resize(TimeTextFieldViewSkin.DIGIT_WIDTH, 20);
 		getChildren().add(label);
 		label.textProperty().bind(control.digitProperty().asString());
@@ -42,21 +38,11 @@ public class TimeDigitViewSkin extends SkinBase<TimeDigitView> {
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
 		if (getSkinnable().isSelected()) {
-			// label.setBackground(new Background(new
-			// BackgroundFill(Color.LIGHTBLUE, CornerRadii.EMPTY,
-			// Insets.EMPTY)));
-			// label.getStyleClass().remove(".lightGray");
-			// label.getStyleClass().add(".veryLightGray");
 			label.getStyleClass().removeAll("white", "lightgray");
 			label.getStyleClass().add("lightgray");
 		} else {
-			// label.setBackground(new Background(new
-			// BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY,
-			// Insets.EMPTY)));
-			// label.getStyleClass().remove(".veryLightGray");
 			label.getStyleClass().removeAll("white", "lightgray");
 			label.getStyleClass().add("white");
-			// label.setStyle("-fx-background-color: #242424");
 		}
 	}
 

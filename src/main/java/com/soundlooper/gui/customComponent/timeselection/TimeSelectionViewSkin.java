@@ -53,9 +53,6 @@ public class TimeSelectionViewSkin extends SkinBase<TimeSelectionView> {
 			}
 		};
 
-		// borderPane.setBackground(new Background(new BackgroundFill(Color.RED,
-		// CornerRadii.EMPTY, Insets.EMPTY)));
-
 		BorderPane borderPaneLeft = getLeftPane();
 		BorderPane borderPaneRight = getRightPane();
 

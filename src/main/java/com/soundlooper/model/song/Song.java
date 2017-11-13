@@ -8,6 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
+import com.soundlooper.model.SoundLooperObject;
+import com.soundlooper.model.mark.Mark;
+import com.soundlooper.model.tag.Tag;
+import com.soundlooper.service.entite.song.SongService;
+import com.soundlooper.service.entite.tag.TagService;
+import com.soundlooper.system.search.Searchable;
+
 import javafx.beans.property.MapProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -16,14 +24,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
-import com.soundlooper.exception.SoundLooperObjectAlreadyExistsException;
-import com.soundlooper.model.SoundLooperObject;
-import com.soundlooper.model.mark.Mark;
-import com.soundlooper.model.tag.Tag;
-import com.soundlooper.service.entite.song.SongService;
-import com.soundlooper.service.entite.tag.TagService;
-import com.soundlooper.system.search.Searchable;
 
 /**
  * ==================================================================== Sound
@@ -52,16 +52,12 @@ import com.soundlooper.system.search.Searchable;
  */
 public class Song extends SoundLooperObject implements Searchable {
 
-	private static SimpleListProperty<Song> favoriteList = new SimpleListProperty<>(FXCollections.observableArrayList());
+	private static SimpleListProperty<Song> favoriteList = new SimpleListProperty<>(
+			FXCollections.observableArrayList());
 
 	static {
 		favoriteList.addAll(SongService.getInstance().getFavoriteSongList());
 	}
-
-	/**
-	 * List of marks for this song
-	 */
-	// private HashMap<String, Mark> marks = new HashMap<String, Mark>();
 
 	private SimpleMapProperty<String, Mark> marks = new SimpleMapProperty<>(FXCollections.observableHashMap());
 
