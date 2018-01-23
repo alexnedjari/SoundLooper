@@ -70,9 +70,9 @@ public class ThreadImageGenerator extends Thread {
 			if (this.isInterrupted()) {
 				return;
 			}
-			File tempFile = FileUtil.getTempFile("SLImage_", ".jpg");
+			File tempFile = FileUtil.getTempFile("SLImage_", ".png");
 			BufferedOutputStream baos = new BufferedOutputStream(new FileOutputStream(tempFile));
-			ImageIO.write(image, "jpg", baos);
+			ImageIO.write(image, "PNG", baos);
 			baos.flush();
 			baos.close();
 

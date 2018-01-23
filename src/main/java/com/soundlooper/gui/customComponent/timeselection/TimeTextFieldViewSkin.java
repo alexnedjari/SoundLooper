@@ -3,21 +3,15 @@ package com.soundlooper.gui.customComponent.timeselection;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.soundlooper.CssColor;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.SkinBase;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
 public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
@@ -67,25 +61,15 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		listDigit.add(digitMillisecondUnit);
 
 		Label labelSeparator1 = new Label(" :");
-		// labelSeparator1.setBackground(new Background(new
-		// BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY)));
+		labelSeparator1.setTextFill(CssColor.BLUE.getColor());
 		labelSeparator1.setTextAlignment(TextAlignment.CENTER);
 		labelSeparator1.resize(DIGIT_WIDTH, 20);
 
 		Label labelSeparator2 = new Label(" :");
 		labelSeparator2.resize(DIGIT_WIDTH, 20);
+		labelSeparator2.setTextFill(CssColor.BLUE.getColor());
 
-		// flowPane.setBackground(new Background(new BackgroundFill(Color.BLUE,
-		// CornerRadii.EMPTY, Insets.EMPTY)));
 		gridPane.resize(WIDTH, HEIGHT);
-
-		// gridPane.setPadding(new Insets(0, 5, 0, 5));
-		gridPane.setBorder(new Border(new BorderStroke(Color.GRAY, BorderStrokeStyle.SOLID, new CornerRadii(0),
-				new BorderWidths(1), new Insets(0))));
-		// gridPane.setBackground(new Background(new
-		// BackgroundFill(Color.TRANSPARENT, new CornerRadii(0), new
-		// Insets(0))));
-		gridPane.getStyleClass().add("white");
 
 		gridPane.getChildren().add(digitMinutDecade);
 		digitMinutDecade.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 0, 1);
@@ -114,21 +98,6 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 		gridPane.getChildren().add(digitMillisecondUnit);
 		digitMillisecondUnit.relocate(DIGIT_OFFSET + DIGIT_WIDTH * 8, 1);
 
-		InnerShadow shadow = new InnerShadow();
-		shadow.setRadius(5);
-		gridPane.setEffect(shadow);
-
-		// GridPane.setConstraints(digitMinutDecade, 0, 0);
-		// GridPane.setConstraints(digitMinutUnit, 1, 0);
-		// GridPane.setConstraints(labelSeparator1, 2, 0);
-		//
-		// GridPane.setConstraints(digitSecondDecade, 3, 0);
-		// GridPane.setConstraints(digitSecondUnit, 4, 0);
-		// GridPane.setConstraints(labelSeparator2, 5, 0);
-		//
-		// GridPane.setConstraints(digitMillisecondHundred, 6, 0);
-		// GridPane.setConstraints(digitMillisecondDecade, 7, 0);
-		// GridPane.setConstraints(digitMillisecondUnit, 8, 0);
 		getChildren().add(gridPane);
 
 		getSkinnable().timeProperty().addListener(new ChangeListener<Number>() {
@@ -283,13 +252,6 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		// if (getSkinnable().isFocused()) {
-		// gridPane.setBackground(new Background(new BackgroundFill(Color.WHITE,
-		// CornerRadii.EMPTY, Insets.EMPTY)));
-		// } else {
-		// gridPane.setBackground(new Background(new
-		// BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-		// }
 		applyTime();
 	}
 

@@ -77,19 +77,6 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 	@Override
 	protected void insert(Tag tag) {
 		try {
-			// Check that there is no tag with this name
-			// PreparedStatement statementCheckPath = ConnectionFactory
-			// .getNewPreparedStatement("SELECT id FROM tag WHERE name=?");
-			// statementCheckPath.setString(1, tag.getName());
-			// ResultSet checkQuery = statementCheckPath.executeQuery();
-			// if (checkQuery.next()) {
-			// // there is already a song for this path
-			// throw new SoundLooperDatabaseException(
-			// "Un tag avec le nom : '" + tag.getName()
-			// + "' existe déjà",
-			// SoundLooperDatabaseException.ERROR_CODE_TAG_NAME_ALREADY_EXISTS_IN_DATABASE);
-			// }
-
 			// crée un nouveau tag dans la base de données, et rempli le
 			// champ ID
 			PreparedStatement updateStatement = ConnectionFactory
@@ -121,27 +108,13 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 	protected void update(Tag tag) {
 		try {
 			// check that the tag with this ID exists
-			ResultSet checkQueryID = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT id FROM tag WHERE id = '" + tag.getId() + "'");
+			ResultSet checkQueryID = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT id FROM tag WHERE id = '" + tag.getId() + "'");
 			if (!checkQueryID.next()) {
 				// there is no tag with this ID
 				throw new SoundLooperDatabaseException("Tag with this ID is not persisted : " + tag.getName(),
 						SoundLooperDatabaseException.ERROR_CODE_SONG_ID_DOES_NOT_EXISTS_IN_DATABASE);
 			}
-
-			// check that the path of the updated tag is not already used
-			// PreparedStatement statementCheckPath = ConnectionFactory
-			// .getNewPreparedStatement("SELECT id FROM tag WHERE id != ? AND name=?");
-			// statementCheckPath.setLong(1, tag.getId());
-			// statementCheckPath.setString(2, tag.getName());
-			// ResultSet checkQueryPath = statementCheckPath.executeQuery();
-			// if (checkQueryPath.next()) {
-			// // There is a tag that have already the new name
-			// throw new SoundLooperDatabaseException(
-			// "Tag with this name already exists in database : "
-			// + tag.getName(),
-			// SoundLooperDatabaseException.ERROR_CODE_TAG_NAME_ALREADY_EXISTS_IN_DATABASE);
-			// }
 
 			// modifie les attributs d'une chanson en fonction de son ID
 			PreparedStatement updateStatement = ConnectionFactory
@@ -176,8 +149,8 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 			}
 
 			// check that the tag with this ID exists
-			ResultSet checkQueryID = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT ID FROM TAG WHERE ID = '" + tag.getId() + "'");
+			ResultSet checkQueryID = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT ID FROM TAG WHERE ID = '" + tag.getId() + "'");
 			if (!checkQueryID.next()) {
 				// there is no tag with this ID
 				throw new SoundLooperDatabaseException("Tag with this ID is not persisted : " + tag.getDescription(),
@@ -221,7 +194,7 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 	}
 
 	public ArrayList<Tag> getChildrenList(Tag parent) {
-		ArrayList<Tag> tagList = new ArrayList<Tag>();
+		ArrayList<Tag> tagList = new ArrayList<>();
 		try {
 			// get all tags list
 			PreparedStatement statement = ConnectionFactory
@@ -253,8 +226,8 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 		Tag root = new Tag();
 		try {
 			// get all tags list
-			ResultSet songsQuery = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT id, name, id_parent FROM tag");
+			ResultSet songsQuery = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT id, name, id_parent FROM tag");
 			Map<Long, Tag> mapTagById = new HashMap<>();
 			Map<Long, Long> mapIdParentById = new HashMap<>();
 
@@ -336,8 +309,8 @@ public class TagDAO extends SoundLooperDAO<Tag> {
 	public List<Tag> getSongTagList(Song song) {
 		List<Tag> tagList = new ArrayList<>();
 		try {
-			PreparedStatement statement = ConnectionFactory
-					.getNewPreparedStatement("SELECT tag1.id, tag1.name FROM tag_song link, tag tag1 WHERE link.id_tag = tag1.id AND link.id_song=?");
+			PreparedStatement statement = ConnectionFactory.getNewPreparedStatement(
+					"SELECT tag1.id, tag1.name FROM tag_song link, tag tag1 WHERE link.id_tag = tag1.id AND link.id_song=?");
 			statement.setLong(1, song.getId());
 			ResultSet result = statement.executeQuery();
 			while (result.next()) {

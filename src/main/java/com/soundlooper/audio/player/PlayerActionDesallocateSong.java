@@ -56,7 +56,6 @@ public class PlayerActionDesallocateSong extends PlayerAction {
 		this.getPlayer().setState(PlayerState.STATE_UNLOAD_SONG);
 
 		if (this.getPlayer().isSoundInitialized()) {
-			// new PlayerActionStop(this.player).run();
 			this.getPlayer().getCurrentSound().deallocate();
 		}
 		this.getPlayer().setState(PlayerState.STATE_PLAYER_INITIALIZED);

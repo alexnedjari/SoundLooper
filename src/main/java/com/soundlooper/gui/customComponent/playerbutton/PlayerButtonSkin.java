@@ -4,17 +4,12 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.SkinBase;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Ellipse;
 
-import com.soundlooper.system.SoundLooperColor;
 import com.soundlooper.system.SoundLooperLigthing;
 
 public class PlayerButtonSkin extends SkinBase<PlayerButton> {
 
-	private Ellipse ellipse;
 	private boolean keyDown;
 
 	private static final int RADIUS = 16;
@@ -24,37 +19,25 @@ public class PlayerButtonSkin extends SkinBase<PlayerButton> {
 
 		control.setPadding(Insets.EMPTY);
 
-		ellipse = new Ellipse(RADIUS, RADIUS);
-		ellipse.setFill(SoundLooperColor.DARK_GRAY);
-		getChildren().add(ellipse);
-
-		DropShadow shadow = new DropShadow();
-		shadow.setRadius(2);
-		ellipse.setEffect(shadow);
-
-		control.setEffect(SoundLooperLigthing.getPotentiometerLighting());
-
 		if (control.getGraphic() instanceof ImageView) {
 			ImageView graphic = (ImageView) control.getGraphic();
 			getChildren().add(graphic);
-			InnerShadow innerShadow = new InnerShadow();
-			innerShadow.setRadius(1);
-			graphic.setEffect(innerShadow);
+
 			graphic.setMouseTransparent(true);
 		}
 
-		ellipse.setOnMouseEntered(e -> {
+		this.getSkinnable().setOnMouseEntered(e -> {
 			control.setEffect(SoundLooperLigthing.getPotentiometerLightingOver());
 		});
-		ellipse.setOnMouseExited(e -> {
-			control.setEffect(SoundLooperLigthing.getPotentiometerLighting());
+		this.getSkinnable().setOnMouseExited(e -> {
+			control.setEffect(null);
 		});
 
-		ellipse.setOnMouseClicked(e -> {
+		this.getSkinnable().setOnMouseClicked(e -> {
 			keyReleased();
 		});
 
-		ellipse.setOnMousePressed(e -> {
+		this.getSkinnable().setOnMousePressed(e -> {
 			keyPressed();
 		});
 	}
@@ -84,8 +67,6 @@ public class PlayerButtonSkin extends SkinBase<PlayerButton> {
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		ellipse.resize(contentWidth, contentHeight);
-		ellipse.relocate(contentX, contentY);
 	}
 
 	@Override

@@ -1,15 +1,16 @@
 package com.soundlooper.system;
 
+import com.soundlooper.model.SoundLooperPlayer;
+
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-
-import com.soundlooper.model.SoundLooperPlayer;
 
 public class AddMarkController {
 
@@ -25,6 +26,7 @@ public class AddMarkController {
 
 	public void init(Stage stage) {
 		this.stage = stage;
+
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.intro"));
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.verse"));
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.refrain"));
@@ -32,6 +34,8 @@ public class AddMarkController {
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.bridge"));
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.break"));
 		comboBoxName.getItems().add(MessageReader.getInstance().getMessage("mark.defaultName.outro"));
+
+		labelResultat.setAlignment(Pos.CENTER_RIGHT);
 
 		stage.getScene().addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
@@ -56,8 +60,8 @@ public class AddMarkController {
 						if (object == null) {
 							return "";
 						}
-						return SoundLooperPlayer.getInstance().getValidNameForMark(
-								SoundLooperPlayer.getInstance().getSong(), object);
+						return SoundLooperPlayer.getInstance()
+								.getValidNameForMark(SoundLooperPlayer.getInstance().getSong(), object);
 					}
 				});
 	}

@@ -1,36 +1,48 @@
 /* BOUTONS DE LA BARRE OUTIL */
 .toolbar-button {
-	-fx-border-width: 0.0mm ;
+	-fx-border-width: 1.0px ;
 	-fx-background-color:transparent;
+	-fx-border-color:transparent;
 }
 .toolbar-button:disabled {
 	/*-fx-border-width: 0.0mm ;
 	-fx-background-color:#999999;*/
 }
-.toolbar-button:hover {
-	/*-fx-background-color:#990000;*/
-	-fx-border-width: 1px ;
-	-fx-border-color:#2222BB ;
-	-fx-background-radius: 3px;
-	-fx-border-radius: 3px;
+ .toolbar-button:hover {
+	-fx-border-width: 1.0px;
+	-fx-border-color:#232322;
+	/*-fx-background-radius: 0px;*/
+	-fx-background-color: #5cb9c6;
+	/*-fx-border-radius: 0px;*/
 }
 
-.openFileButton {-fx-graphic: url('icon/open_32.png');}
+.openFileButton {-fx-graphic: url('drawable/open_32.png');}
 
-.beginAlignmentButton {-fx-graphic: url('icon/beginAlignment_32.png');}
-.endAlignmentButton {-fx-graphic: url('icon/endAlignment_32.png');}
+.beginAlignmentButton {-fx-graphic: url('drawable/beginAlignment_32.png');}
+.endAlignmentButton {-fx-graphic: url('drawable/endAlignment_32.png');}
 
-.toggleAlwaysOntopButton {-fx-graphic: url('icon/alwaisOnTopDisabled_32.gif');}
-.toggleAlwaysOntopButton:selected {-fx-graphic: url('icon/alwaisOnTopEnabled_32.png');}
+.toggleAlwaysOntopButton {-fx-graphic: url('drawable/alwaisOnTopDisabled_32.png');}
+.toggleAlwaysOntopButton:selected {-fx-graphic: url('drawable/alwaisOnTopEnabled_32.png');}
 
-.toggleFavoriteButton {-fx-graphic: url('icon/favoriteDisabled_32.png');}
-.toggleFavoriteButton:selected {-fx-graphic: url('icon/favoriteEnabled_32.png');}
+.toggleFavoriteButton {-fx-graphic: url('drawable/favoriteDisabled_32.png');}
+.toggleFavoriteButton:selected {-fx-graphic: url('drawable/favoriteEnabled_32.png');}
 
-.toggleMuteButton {-fx-graphic: url('icon/muteDisabled_16.png');}
-.toggleMuteButton:selected {-fx-graphic: url('icon/muteEnabled_16.png');}
+.bluetext {
+    -fx-text-fill: #396e75;
+    -fx-font-weight: bold
+}
 
-.saveMarkButton {-fx-graphic: url('icon/saveMark_32.png');}
-.addMarkButton {-fx-graphic: url('icon/addMark_32.png');}
+.timestrechButton {-fx-graphic: url('drawable/indic-tempo_00.png');-fx-border-radius: 0 0 0 0;
+  -fx-background-radius: 0 0 0 0;-fx-mark-color: transparent;}
+
+
+.toggleMuteButton {-fx-graphic: url('drawable/indic-volume_01.png');}
+.toggleMuteButton:selected {-fx-graphic: url('drawable/indic-mute_01.png'); -fx-border-radius: 0 0 0 0;
+  -fx-background-radius: 0 0 0 0;}
+
+.saveMarkButton {-fx-graphic: url('drawable/saveMark_32.png');}
+.addMarkButton {-fx-graphic: url('drawable/addMark_32.png');}
+.markMenuButton {-fx-graphic: url('drawable/listMark_32.png'); -fx-padding: 0 0 0 8; }
 
 /* BOUTONS DU LECTEUR */
 .player-button {
@@ -38,16 +50,16 @@
 	-fx-background-color:transparent;
 }
 
-.playButton {-fx-graphic: url('icon/play_32.png');}
+.playButton {-fx-graphic: url('drawable/button-play-full_00.png');}
 
-.pauseButton {-fx-graphic: url('icon/pause_32.png');}
+.pauseButton {-fx-graphic: url('drawable/button-pause-full_00.png');}
 
 /* FAVORITE MANAGEMENT BUTTONS */
 .addTagButton {-fx-graphic: url('icon/add_16.png');}
 .deleteTagButton {-fx-graphic: url('icon/delete_16.png');}
 
 /* BOUTONS DIVERS */
-.validateButton {-fx-graphic: url('icon/validate_32.png');}
+.validateButton {-fx-graphic: url('drawable/validate_16.png');}
 .deleteButton {-fx-graphic: url('icon/delete_16.png');}
 .deleteButton:hover {-fx-graphic: url('icon/delete_16.png');}
 
@@ -57,19 +69,41 @@
 #volumePotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: false;}
 #timestretchPotentiometer {-fx-potentiometer-sensibility:1;-fx-potentiometer-size: medium;-fx-potentiometer-display-value: true;}
 
-.label {-fx-text-fill: black; -fx-alignment: center;}
+.label {-fx-alignment: center;}
 .labelInformation {-fx-text-fill: blue; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 .labelError {-fx-text-fill: red; -fx-alignment: center-left; -fx-font-size: 14px; -fx-opacity: 1}
 
-.white {-fx-background-color: #FFFFFF}
-.gray5 {-fx-background-color: #F3F3F3}
-.gray10 {-fx-background-color: #E7E7E7}
-.gray25 {-fx-background-color: #BFBFBF}
-.gray50 {-fx-background-color: #7F7F7F}
-.darkGray {-fx-background-color: #373737}
-.lightGray {-fx-background-color: #434343}
+.windowsBackground {
+	/*-fx-background-color: linear-gradient(from 100% 0px to 100% 134px, rgb(225, 225, 226), rgb(242, 243, 243));*/
+	-fx-background-color: transparent;
+}
+
+.white {-fx-background-color: rgb(242, 243, 243)}
+.blue {-fx-background-color: rgb(46, 167, 195)}
+.gray {-fx-background-color: rgb(56, 110, 117)}
+.lightgray {-fx-background-color: rgb(205, 219, 221)}
 
 .timestrechButton .arrow, .timestrechButton .arrow-button {
 	-fx-background-color: transparent;
 	-fx-pref-width: 0;
+}
+.timestrechButton > .arrow-button {
+    -fx-padding: 0;
+}
+
+
+.markMenuButton .arrow, .timestrechButton .arrow-button {
+	-fx-background-color: transparent;
+	-fx-pref-width: 0;
+}
+.markMenuButton > .arrow-button > .arrow {
+    -fx-padding: 0;
+}
+
+#toolbar {
+	-fx-padding: 0 0 0 16;
+}
+
+#backgroundImage {
+	-fx-graphic: url("drawable/soundLooper.png");
 }
