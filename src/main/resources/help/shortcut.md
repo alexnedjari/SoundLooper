@@ -13,7 +13,9 @@
 * Diminuer la vitesse de lecture de 10% : **CTRL + MAJ + Bas**  
 * Monter le volume : **+**  
 * Baisser le volume : **-**  
-* Placer la lecture sur le curseur de début : **Origine**  
+* Placer la lecture sur le curseur de début : **Origine** 
+* Reculer de 3s dans la lecture courante : **"Flèche gauche"**
+* Avancer de 3s dans la lecture courante : **"Flèche droite"** 
 
 ### Recherches :
 
