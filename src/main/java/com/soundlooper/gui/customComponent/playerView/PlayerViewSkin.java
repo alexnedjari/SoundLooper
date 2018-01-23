@@ -6,245 +6,185 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
-import javafx.scene.control.SkinBase;
-import javafx.scene.control.TextArea;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.soundlooper.CssColor;
 import com.soundlooper.audio.player.Player;
 import com.soundlooper.audio.player.Player.PlayerState;
 import com.soundlooper.exception.PlayerException;
-import com.soundlooper.exception.PlayerNotInitializedException;
+import com.soundlooper.gui.PlayerExecutor;
+import com.soundlooper.gui.customComponent.util.ArrowFactory;
 import com.soundlooper.model.SoundLooperPlayer;
 import com.soundlooper.model.mark.Mark;
 import com.soundlooper.system.ImageGetter;
-import com.soundlooper.system.SoundLooperColor;
-import com.soundlooper.system.SoundLooperLigthing;
-import com.soundlooper.system.util.MessagingUtil;
+
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.scene.control.SkinBase;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 
 public class PlayerViewSkin extends SkinBase<PlayerView> {
-	private final static int LEFT_MARGIN = 30;
-	private final static int HANDLE_WIDTH = LEFT_MARGIN;
-	private final static int RIGTH_MARGIN = 30;
-	private final static int TOP_MARGIN = 30;
-	private final static int MIN_HANDLE_SPACING = 2;
-	private final static int DEFAULT_DURATION = 1000;
 
 	private Logger logger = LogManager.getLogger(this.getClass());
 
-	ChangeListener<Number> markTimeListener = new ChangeListener<Number>() {
-		@Override
-		public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
-			getSkinnable().forceLayout();
-		}
-	};
+	// -------- CONSTANTS and "statics" dimensions -----------//
+	private final static int TOP_MARGIN = 35;
+	private final static int BORDER_PADDING = 20;
+	private final static int MIN_HANDLE_SPACING = 2;
 
-	private Rectangle loopBarBackground;
+	private double handleWidth;
+	private double handleHeight;
+
+	// -------- Graphicals elements -----------//
+	private FlowPane flowPane = new FlowPane();
+
+	private Polygon leftHandle;
+	private Polygon rightHandle;
 	private Rectangle loopBarForeground;
+
+	private Border borderTop;
 
 	private Rectangle unselectedZoneBegin;
 	private Rectangle unselectedZoneEnd;
-
 	private Line currentTimeLine;
-	private Line loopPointBeginLine;
-	private Line loopPointEndLine;
-	TextArea label = new TextArea("texte");
-	ImageView imageView;
+	private ImageView imageView;
 
-	ImageView leftHandleImage;
-	ImageView rightHandleImage;
+	private Border borderBottom;
 
-	private double dragStartLeftHandlePx;
-	private boolean leftHandleDrag = false;
+	// -------- Events variable -----------//
+	private SoundLooperPlayerDragEvent leftHandleDrag = new SoundLooperPlayerDragEvent();
+	private SoundLooperPlayerDragEvent rightHandleDrag = new SoundLooperPlayerDragEvent();
+	private SoundLooperPlayerDragEvent loopBarDrag = new SoundLooperPlayerDragEvent();
 
-	private double dragStartRightHandlePx;
-	private boolean rightHandleDrag = false;
-
-	private double dragStartLoopBarForegroundPx;
-	private boolean loopBarForegroundDrag = false;
-
-	private double dragOffset;
-
+	// -------- Size values and change flags -----------//
 	private boolean invalidWidth = true;
 	private boolean invalidHeight = true;
+	private double contentWidth = 0;
 
-	Pane pane = new Pane();
+	// -------- Others -----------//
+	PlayerView playerView = getSkinnable();
+	SoundLooperPlayer player = getSkinnable().getSoundLooperPlayer();
+
+	private ChangeListener<Number> markTimeListener = new ChangeListener<Number>() {
+		@Override
+		public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+			layout();
+		}
+	};
 
 	protected PlayerViewSkin(PlayerView control) {
 		super(control);
 
-		control.setOnMousePressed(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				control.requestFocus();
-			}
-		});
-
-		control.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean oldPropertyValue,
-					Boolean newPropertyValue) {
-				if (!newPropertyValue) {
-					// must refresh on focus lost, to set control to "unfocused"
-					// aspect
-					control.requestLayout();
-				}
-			}
-		});
-
-		SoundLooperPlayer soundLooperPlayer = this.getSkinnable().getSoundLooperPlayer();
-
-		soundLooperPlayer.markProperty().addListener(new ChangeListener<Mark>() {
-			@Override
-			public void changed(ObservableValue<? extends Mark> observable, Mark oldValue, Mark newValue) {
-				PlayerViewSkin.this.getSkinnable().forceLayout();
-				updateMarkTimeListener(oldValue, newValue);
-			};
-		});
-		updateMarkTimeListener(null, soundLooperPlayer.getCurrentMark());
-
-		soundLooperPlayer.currentSongImageProperty().addListener(new InvalidationListener() {
-			@Override
-			public void invalidated(Observable observable) {
-				logger.info("The image is changing in the player view");
-				File file = soundLooperPlayer.currentSongImageProperty().get();
-				try {
-					imageView.setImage(new Image(file.toURI().toURL().toExternalForm()));
-					imageView.setPreserveRatio(false);
-					PlayerViewSkin.this.getSkinnable().forceLayout();
-				} catch (MalformedURLException e) {
-					// This exception will normally never be throwed
-					logger.error("Unable to get new Image", e);
-				}
-			}
-		});
-
-		control.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if (newValue) {
-					control.forceLayout();
-				}
-			}
-		});
-
-		imageView = new ImageView(ImageGetter.getIconURL("loading_32.png"));
-		imageView.setPreserveRatio(false);
-		imageView.setEffect(new InnerShadow());
-
-		rightHandleImage = ImageGetter.getIcon("rightHandle.png");
-		rightHandleImage.setEffect(new DropShadow());
-
-		leftHandleImage = ImageGetter.getIcon("leftHandle.png");
-		leftHandleImage.setEffect(new DropShadow());
-
-		loopPointBeginLine = new Line(0, TOP_MARGIN, 0, 0);
-		loopPointEndLine = new Line(0, TOP_MARGIN, 0, 0);
-
-		loopBarBackground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		InnerShadow shadowLoopbarBackground = new InnerShadow();
-		shadowLoopbarBackground.setInput(SoundLooperLigthing.getBarLighting());
-		loopBarBackground.setEffect(shadowLoopbarBackground);
-		loopBarBackground.setFill(SoundLooperColor.WHITE);
-
-		loopBarForeground = new Rectangle(LEFT_MARGIN, 0, 0, TOP_MARGIN);
-		DropShadow shadowLoopbarForeground = new DropShadow();
-		shadowLoopbarForeground.setInput(SoundLooperLigthing.getBarLighting());
-		loopBarForeground.setEffect(shadowLoopbarForeground);
-		loopBarForeground.setFill(SoundLooperColor.DARK_GRAY);
-
-		unselectedZoneBegin = new Rectangle(LEFT_MARGIN, TOP_MARGIN, 0, 0);
-		unselectedZoneBegin.setFill(new Color(0, 0, 0, 0.20));
-
-		unselectedZoneEnd = new Rectangle(0, TOP_MARGIN, 0, 0);
-		unselectedZoneEnd.setFill(new Color(0, 0, 0, 0.20));
-
-		currentTimeLine = new Line(0, 0, 100, 100);
-		currentTimeLine.setStroke(Color.RED);
-
-		loopPointEndLine.startXProperty().bind(rightHandleImage.xProperty());
-		loopPointEndLine.endXProperty().bind(rightHandleImage.xProperty());
-		unselectedZoneEnd.xProperty().bind(rightHandleImage.xProperty());
-
-		DoubleBinding leftPropertyBinding = leftHandleImage.xProperty().add(HANDLE_WIDTH);
-		loopPointBeginLine.startXProperty().bind(leftPropertyBinding);
-		loopPointBeginLine.endXProperty().bind(leftPropertyBinding);
-		unselectedZoneBegin.widthProperty().bind(leftPropertyBinding.subtract(LEFT_MARGIN));
-
-		loopBarForeground.xProperty().bind(leftPropertyBinding);
-		loopBarForeground.widthProperty().bind(rightHandleImage.xProperty().subtract(leftPropertyBinding));
-
-		getChildren().add(pane);
-		pane.getChildren().add(imageView);
-		pane.getChildren().add(currentTimeLine);
-		pane.getChildren().add(loopBarBackground);
-		pane.getChildren().add(loopBarForeground);
-		pane.getChildren().add(loopPointBeginLine);
-		pane.getChildren().add(loopPointEndLine);
-		pane.getChildren().add(rightHandleImage);
-		pane.getChildren().add(leftHandleImage);
-		pane.getChildren().add(unselectedZoneBegin);
-		pane.getChildren().add(unselectedZoneEnd);
-		// getChildren().add(label);
-
+		// --------------LISTENER DEFINITION----------------//
+		// Control listener definition
+		control.setOnMousePressed(e -> control.requestFocus());
 		control.widthProperty().addListener(l -> {
 			invalidWidth = true;
 		});
 		control.heightProperty().addListener(l -> {
 			invalidHeight = true;
 		});
+
+		// Player listener definition
+		player.markProperty().addListener((observable, oldValue, newValue) -> {
+			layout();
+			updateMarkTimeListener(oldValue, newValue);
+		});
+		updateMarkTimeListener(null, player.getCurrentMark());
+
+		player.currentSongImageProperty().addListener(observable -> {
+			Platform.runLater(() -> {
+				logger.info("The image is changing in the player view " + new Date().getTime());
+				File file = player.currentSongImageProperty().get();
+				try {
+					imageView.setImage(new Image(file.toURI().toURL().toExternalForm()));
+				} catch (MalformedURLException e) {
+					// This exception will normally never be throwed
+					logger.error("Unable to get new Image", e);
+				}
+			});
+		});
+
+		// -------------------UI DEFINITION----------------//
+		getChildren().add(flowPane);
+		flowPane.setPadding(new Insets(0, BORDER_PADDING, 0, BORDER_PADDING));
+
+		// Handle definitions
+		leftHandle = ArrowFactory.getArrow(0.7);
+		leftHandle.setFill(CssColor.BLUE.getColor());
+
+		handleWidth = leftHandle.getBoundsInParent().getWidth();
+		handleHeight = leftHandle.getBoundsInParent().getHeight();
+		double screenLeft = getScreenLeft();
+
+		rightHandle = ArrowFactory.getArrow(0.7);
+		rightHandle.setScaleX(-1);
+		rightHandle.setFill(CssColor.BLUE.getColor());
+
+		loopBarForeground = new Rectangle(screenLeft, 0, 0, TOP_MARGIN);
+		loopBarForeground.setFill(Color.TRANSPARENT);
+
+		Pane handlePanel = new Pane();
+		handlePanel.getChildren().add(leftHandle);
+		handlePanel.getChildren().add(rightHandle);
+		handlePanel.getChildren().add(loopBarForeground);
+
+		flowPane.getChildren().add(handlePanel);
+
+		// Border top definition
+		borderTop = new Border(screenLeft);
+		flowPane.getChildren().add(borderTop);
+
+		// Screen definition
+		imageView = new ImageView(ImageGetter.getDrawableURL("loading_32.png"));
+		imageView.setFitWidth(1);
+		imageView.setPreserveRatio(false);
+		imageView.setSmooth(true);
+
+		unselectedZoneBegin = new Rectangle(screenLeft, 0, 0, 0);
+		unselectedZoneBegin.setFill(CssColor.WHITE.getColor(0.6));
+
+		unselectedZoneEnd = new Rectangle(0, 0, 0, 0);
+		unselectedZoneEnd.setFill(CssColor.WHITE.getColor(0.6));
+
+		currentTimeLine = new Line(0, 0, 100, 100);
+		currentTimeLine.setStroke(CssColor.GRAY.getColor());
+
+		Pane imagePane = new Pane();
+		imagePane.getChildren().add(imageView);
+		imagePane.getChildren().add(unselectedZoneBegin);
+		imagePane.getChildren().add(unselectedZoneEnd);
+		imagePane.getChildren().add(currentTimeLine);
+		flowPane.getChildren().add(imagePane);
+
+		// Border bottom definition
+		borderBottom = new Border(screenLeft);
+		flowPane.getChildren().add(borderBottom);
+
+		initDragEvents();
 		startTimer();
-	}
-
-	protected void updateMarkTimeListener(Mark oldValue, Mark newValue) {
-
-		if (oldValue != null) {
-			oldValue.beginMillisecondProperty().removeListener(markTimeListener);
-			oldValue.endMillisecondProperty().removeListener(markTimeListener);
-		}
-		if (newValue != null) {
-			newValue.beginMillisecondProperty().addListener(markTimeListener);
-			newValue.endMillisecondProperty().addListener(markTimeListener);
-		}
-
-	}
-
-	private double getScreenRight(double contentWidth) {
-		return contentWidth - RIGTH_MARGIN;
 	}
 
 	@Override
 	protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
-		PlayerView playerView = getSkinnable();
-		SoundLooperPlayer player = playerView.getSoundLooperPlayer();
+		this.contentWidth = contentWidth;
 
-		int mediaTime;
-		int loopPointBegin;
-		int loopPointEnd;
-		int duration = 0;
-		if (!player.isSoundInitialized()) {
-			// there is no sound loaded, display en empty player
-			mediaTime = 0;
-			loopPointBegin = 0;
-			loopPointEnd = DEFAULT_DURATION;
-			duration = DEFAULT_DURATION;
-		} else {
+		// default values if there is no sound loaded, display en empty player
+		int mediaTime = 0;
+		int loopPointBegin = 0;
+		int loopPointEnd = PlayerExecutor.DEFAULT_DURATION;
+		int duration = PlayerExecutor.DEFAULT_DURATION;
+		if (player.isSoundInitialized()) {
 			mediaTime = player.getMediaTime();
 			loopPointBegin = player.getLoopPointBeginMillisecond();
 			loopPointEnd = player.getLoopPointEndMillisecond();
@@ -255,254 +195,120 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			}
 		}
 
-		// boundRectangle.setHeight(contentHeight);
-		// boundRectangle.setWidth(contentWidth);
+		double loopPointBeginPx = convertMsToPx(loopPointBegin, duration);
+		double loopPointEndPx = convertMsToPx(loopPointEnd, duration);
 
-		double loopPointBeginPx = convertMsToPx(contentWidth, loopPointBegin, duration, true);
-		double loopPointEndPx = convertMsToPx(contentWidth, loopPointEnd, duration, true);
+		double screenRight = getScreenRight();
+		double screenHeight = getScreenHeight(contentHeight);
+		double screenWidth = getScreenWidth();
 
 		// left handle and decorations
-		if (!leftHandleDrag && !loopBarForegroundDrag) {
-			leftHandleImage.setX(loopPointBeginPx - HANDLE_WIDTH);
+		if (leftHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
+			leftHandle.setTranslateX(loopPointBeginPx - handleWidth);
 		}
-		if (!rightHandleDrag && !loopBarForegroundDrag) {
-			rightHandleImage.setX(loopPointEndPx);
+		if (rightHandleDrag.isNotDrag() && loopBarDrag.isNotDrag()) {
+			rightHandle.setTranslateX(loopPointEndPx);
 		}
-		loopPointBeginLine.setEndY(contentHeight);
-		loopPointEndLine.setEndY(contentHeight);
-		double screenRight = getScreenRight(contentWidth);
 
-		unselectedZoneEnd.setWidth(screenRight - rightHandleImage.getX());
+		unselectedZoneEnd.setWidth(screenRight - rightHandle.getTranslateX());
+		unselectedZoneBegin.setWidth(leftHandle.getTranslateX());
+		unselectedZoneEnd.setX(rightHandle.getTranslateX());
+
+		double loopBarLeft = leftHandle.getTranslateX() + handleWidth;
+		loopBarForeground.setX(loopBarLeft);
+		loopBarForeground.setWidth(rightHandle.getTranslateX() - loopBarLeft);
+
 		if (invalidWidth || invalidHeight) {
-			loopBarBackground.setWidth(getScreenWidth(contentWidth));
-			double screenHeight = getScreenHeight(contentHeight);
 			unselectedZoneBegin.setHeight(screenHeight);
-			System.out.println("SCREEN HEIGHT : " + screenHeight + " - Content : " + contentHeight);
-
 			unselectedZoneEnd.setHeight(screenHeight);
-			pane.setPrefSize(contentWidth, contentHeight);
-			imageView.setFitHeight(screenHeight);
-			imageView.setFitWidth(getScreenWidth(contentWidth));
-			imageView.setX(LEFT_MARGIN);
-			imageView.setY(TOP_MARGIN);
-			imageView.setOnMouseClicked(me -> {
-				double newTimeMs = convertPxToMs(PlayerViewSkin.this.getSkinnable().getWidth(), me.getX());
-				setMediaTime(player, new Double(newTimeMs).intValue());
-				playerView.forceLayout();
-				me.consume();
 
+			imageView.setFitHeight(screenHeight);
+			imageView.setFitWidth(screenWidth);
+			imageView.setX(handleWidth);
+			imageView.setY(0);
+			imageView.setOnMouseClicked(me -> {
+				double newTimeMs = convertPxToMs(me.getX());
+				PlayerExecutor.setMediaTime(player, Double.valueOf(newTimeMs).intValue());
+				layout();
+				me.consume();
 			});
+
+			unselectedZoneBegin.setOnMouseClicked(me -> {
+				PlayerExecutor.setMediaTimeBegin(player);
+				layout();
+				me.consume();
+			});
+			unselectedZoneEnd.setOnMouseClicked(me -> {
+				PlayerExecutor.setMediaTimeBegin(player);
+				layout();
+				me.consume();
+			});
+
+			borderTop.setLineWidth(screenWidth);
+			borderBottom.setLineWidth(screenWidth);
 		}
 
-		double mediaTimePx = convertMsToPx(contentWidth, mediaTime, duration, true);
+		double mediaTimePx = convertMsToPx(mediaTime, duration);
 
 		currentTimeLine.setStartX(mediaTimePx);
 		currentTimeLine.setEndX(mediaTimePx);
-		currentTimeLine.setStartY(TOP_MARGIN);
-		currentTimeLine.setEndY(contentHeight);
+		currentTimeLine.setStartY(0);
+		currentTimeLine.setEndY(screenHeight);
 
-		if (invalidWidth) {
-			invalidWidth = false;
-			if (dragStartLeftHandlePx == 0) {
-				leftHandleImage.setOnMousePressed(me -> {
-					leftHandleDrag = true;
-					dragOffset = me.getSceneX() - leftHandleImage.getX();
-					dragStartLeftHandlePx = me.getSceneX();
-				});
-
-				leftHandleImage.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartLeftHandlePx;
-					double newHandleX = dragStartLeftHandlePx + move - dragOffset;
-					if (newHandleX < 0) {
-						newHandleX = 0;
-					}
-					if (newHandleX + HANDLE_WIDTH + MIN_HANDLE_SPACING > rightHandleImage.getX()) {
-						newHandleX = rightHandleImage.getX() - HANDLE_WIDTH - MIN_HANDLE_SPACING;
-					}
-					leftHandleImage.setX(newHandleX);
-				});
-
-				leftHandleImage.setOnMouseReleased(me -> {
-					double newTimePx = leftHandleImage.getX() + HANDLE_WIDTH;
-					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					leftHandleDrag = false;
-					dragStartLeftHandlePx = 0;
-
-					setMediaTimeIfNeeded(player, contentWidth);
-
-					setLoopPointBegin(player, newTimeMs);
-					playerView.forceLayout();
-					me.consume();
-				});
-			}
-
-			if (dragStartRightHandlePx == 0) {
-				rightHandleImage.setOnMousePressed(me -> {
-					rightHandleDrag = true;
-					dragOffset = me.getSceneX() - rightHandleImage.getX();
-					dragStartRightHandlePx = me.getSceneX();
-				});
-
-				rightHandleImage.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartRightHandlePx;
-					double newHandleX = dragStartRightHandlePx + move - dragOffset;
-
-					if (newHandleX > screenRight) {
-						newHandleX = screenRight;
-					}
-
-					if (newHandleX - MIN_HANDLE_SPACING < leftHandleImage.getX() + HANDLE_WIDTH) {
-						newHandleX = MIN_HANDLE_SPACING + leftHandleImage.getX() + HANDLE_WIDTH;
-					}
-
-					rightHandleImage.setX(newHandleX);
-				});
-
-				rightHandleImage.setOnMouseReleased(me -> {
-					double newTimePx = rightHandleImage.getX();
-					double newTimeMs = convertPxToMs(contentWidth, newTimePx);
-					dragStartRightHandlePx = 0;
-					rightHandleDrag = false;
-
-					setMediaTimeIfNeeded(player, contentWidth);
-					setLoopPointEnd(player, newTimeMs);
-					playerView.forceLayout();
-					me.consume();
-				});
-			}
-
-			if (dragStartLoopBarForegroundPx == 0) {
-				loopBarForeground.setOnMousePressed(me -> {
-					loopBarForegroundDrag = true;
-					dragOffset = me.getSceneX() - loopBarForeground.getX();
-					dragStartLoopBarForegroundPx = me.getSceneX();
-				});
-
-				loopBarForeground.setOnMouseDragged(me -> {
-					double move = me.getSceneX() - dragStartLoopBarForegroundPx;
-					double newHandleX = dragStartLoopBarForegroundPx + move - dragOffset;
-					double positionLeftHandle = newHandleX - HANDLE_WIDTH;
-					double positionRightHandle = newHandleX + loopBarForeground.getWidth();
-					if (positionLeftHandle <= 0) {
-						positionLeftHandle = 0;
-						positionRightHandle = loopBarForeground.getWidth() + HANDLE_WIDTH;
-					}
-					if (positionRightHandle >= screenRight) {
-						positionRightHandle = screenRight;
-						positionLeftHandle = screenRight - loopBarForeground.getWidth() - HANDLE_WIDTH;
-					}
-
-					leftHandleImage.setX(positionLeftHandle);
-					rightHandleImage.setX(positionRightHandle);
-
-				});
-
-				loopBarForeground.setOnMouseReleased(me -> {
-					double newTimeBeginPx = loopBarForeground.getX();
-					double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
-					double newTimeBeginMs = convertPxToMs(contentWidth, newTimeBeginPx);
-					double newTimeEndMs = convertPxToMs(contentWidth, newTimeEndPx);
-					dragStartLoopBarForegroundPx = 0;
-					loopBarForegroundDrag = false;
-
-					// setMediaTimeIfNeeded(player, contentWidth);
-
-						setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
-						playerView.forceLayout();
-						me.consume();
-					});
-			}
-		}
 		invalidWidth = false;
 		invalidHeight = false;
 	}
 
-	private void setLoopPointBegin(SoundLooperPlayer player, double newTimeBeginMs) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setLoopPointBegin(new Double(newTimeBeginMs).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position de début", e);
-		}
+	private double getScreenRight() {
+		return this.contentWidth - handleWidth - BORDER_PADDING * 2;
 	}
 
-	private void setLoopPoints(SoundLooperPlayer player, double newTimeBeginMs, double newTimeEndMs) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setLoopPoints(new Double(newTimeBeginMs).intValue(), new Double(newTimeEndMs).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier les positions", e);
-		}
+	private double getScreenLeft() {
+		return handleWidth;
 	}
 
-	private void setLoopPointEnd(SoundLooperPlayer player, double newTimeEndMs) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setLoopPointEnd(new Double(newTimeEndMs).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position de fin", e);
-		}
-	}
-
-	private void setMediaTimeIfNeeded(Player player, double contentWidth) {
-		if (currentTimeLine.getStartX() > loopPointEndLine.getStartX()
-				|| currentTimeLine.getStartX() < loopPointBeginLine.getStartX()) {
-			double newTime = convertPxToMs(contentWidth, loopPointBeginLine.getStartX());
-			setMediaTime(player, newTime);
-		}
-	}
-
-	private void setMediaTime(Player player, double newTime) {
-		try {
-			if (player.isSoundInitialized()) {
-				player.setMediaTime(new Double(newTime).intValue());
-			}
-		} catch (PlayerException e) {
-			MessagingUtil.displayError("Impossible de modifier la position actuelle", e);
-		}
-	}
-
-	private double convertMsToPx(double contentWidth, int ms, int totalMs, boolean addMargin) {
-		if (totalMs == 0) {
-			return 0;
-		}
-		int margin = 0;
-		if (addMargin) {
-			margin = LEFT_MARGIN;
-		}
-		return margin + (getScreenWidth(contentWidth) * ms) / totalMs;
-	}
-
-	private double convertPxToMs(double contentWidth, double px) {
-		double pxInScreen = px - LEFT_MARGIN;
-
-		int duration = getDuration();
-		double screenWidth = getScreenWidth(contentWidth);
-
-		double msPerPx = duration / screenWidth;
-		return msPerPx * pxInScreen;
-	}
-
-	private int getDuration() {
-		if (SoundLooperPlayer.getInstance().isSoundInitialized()) {
-			try {
-				return SoundLooperPlayer.getInstance().getCurrentSound().getDuration();
-			} catch (PlayerNotInitializedException e) {
-				MessagingUtil.displayError("Impossible de récupérer la durée", e);
-			}
-		}
-		return DEFAULT_DURATION;
-	}
-
-	private double getScreenWidth(double contentWidth) {
-		return contentWidth - LEFT_MARGIN - RIGTH_MARGIN;
+	private double getScreenWidth() {
+		return getScreenRight() - getScreenLeft();
 	}
 
 	private double getScreenHeight(double contentHeight) {
-		return contentHeight - TOP_MARGIN;
+		return contentHeight - handleHeight - borderBottom.getHeight() - borderTop.getHeight();
+	}
+
+	protected void updateMarkTimeListener(Mark oldValue, Mark newValue) {
+		if (oldValue != null) {
+			oldValue.beginMillisecondProperty().removeListener(markTimeListener);
+			oldValue.endMillisecondProperty().removeListener(markTimeListener);
+		}
+		if (newValue != null) {
+			newValue.beginMillisecondProperty().addListener(markTimeListener);
+			newValue.endMillisecondProperty().addListener(markTimeListener);
+		}
+	}
+
+	private void setMediaTimeIfNeeded(Player player) {
+		double startX = unselectedZoneBegin.getX() + unselectedZoneBegin.getWidth();
+		if (currentTimeLine.getStartX() > unselectedZoneEnd.getX() || currentTimeLine.getStartX() < startX) {
+			double newTime = convertPxToMs(startX);
+			PlayerExecutor.setMediaTime(player, newTime);
+		}
+	}
+
+	private double convertMsToPx(int ms, int totalMs) {
+		if (totalMs == 0) {
+			return 0;
+		}
+		return handleWidth + (getScreenWidth() * ms) / totalMs;
+	}
+
+	private double convertPxToMs(double px) {
+		double pxInScreen = px - handleWidth;
+
+		int duration = PlayerExecutor.getDuration();
+		double screenWidth = getScreenWidth();
+
+		double msPerPx = duration / screenWidth;
+		return msPerPx * pxInScreen;
 	}
 
 	public void startTimer() {
@@ -512,10 +318,155 @@ public class PlayerViewSkin extends SkinBase<PlayerView> {
 			public void run() {
 				SoundLooperPlayer soundLooperPlayer = SoundLooperPlayer.getInstance();
 				if (soundLooperPlayer.getState() == PlayerState.STATE_PLAYING) {
-					PlayerViewSkin.this.getSkinnable().forceLayout();
-
+					layout();
 				}
 			}
+
 		}, new Date(), 100);
+	}
+
+	protected void layout() {
+		Platform.runLater(() -> PlayerViewSkin.this.getSkinnable().forceLayout());
+	}
+
+	private void initDragEvents() {
+		if (leftHandleDrag.getStartPx() == 0) {
+			leftHandle.setOnMousePressed(me -> {
+				double dragOffset = me.getSceneX() - leftHandle.getTranslateX();
+				leftHandleDrag.startDrag(me.getSceneX(), dragOffset);
+			});
+
+			leftHandle.setOnMouseDragged(me -> {
+				double newHandleX = me.getSceneX() - leftHandleDrag.getDragOffset();
+				if (newHandleX < 0) {
+					newHandleX = 0;
+				}
+				if (newHandleX + handleWidth + MIN_HANDLE_SPACING > rightHandle.getTranslateX()) {
+					newHandleX = rightHandle.getTranslateX() - handleWidth - MIN_HANDLE_SPACING;
+				}
+				leftHandle.setTranslateX(newHandleX);
+				layout();
+				me.consume();
+			});
+
+			leftHandle.setOnMouseReleased(me -> {
+				double newTimePx = leftHandle.getTranslateX() + handleWidth;
+				double newTimeMs = convertPxToMs(newTimePx);
+				leftHandleDrag.endDrag();
+
+				setMediaTimeIfNeeded(player);
+
+				PlayerExecutor.setLoopPointBegin(player, newTimeMs);
+				layout();
+				me.consume();
+			});
+
+			rightHandle.setOnMousePressed(me -> {
+				double dragOffset = me.getSceneX() - rightHandle.getTranslateX();
+				rightHandleDrag.startDrag(me.getSceneX(), dragOffset);
+			});
+
+			rightHandle.setOnMouseDragged(me -> {
+				double newHandleX = me.getSceneX() - rightHandleDrag.getDragOffset();
+
+				double screenRight = getScreenRight();
+				if (newHandleX > screenRight) {
+					newHandleX = screenRight;
+				}
+
+				if (newHandleX - MIN_HANDLE_SPACING < leftHandle.getTranslateX() + handleWidth) {
+					newHandleX = MIN_HANDLE_SPACING + leftHandle.getTranslateX() + handleWidth;
+				}
+
+				rightHandle.setTranslateX(newHandleX);
+				layout();
+				me.consume();
+			});
+
+			rightHandle.setOnMouseReleased(me -> {
+				double newTimePx = rightHandle.getTranslateX();
+				double newTimeMs = convertPxToMs(newTimePx);
+				rightHandleDrag.endDrag();
+
+				setMediaTimeIfNeeded(player);
+				PlayerExecutor.setLoopPointEnd(player, newTimeMs);
+				layout();
+				me.consume();
+			});
+
+			loopBarForeground.setOnMousePressed(me -> {
+				double dragOffset = me.getSceneX() - loopBarForeground.getX();
+				loopBarDrag.startDrag(me.getSceneX(), dragOffset);
+			});
+
+			loopBarForeground.setOnMouseDragged(me -> {
+				double newHandleX = me.getSceneX() - loopBarDrag.getDragOffset();
+				double positionLeftHandle = newHandleX - handleWidth;
+				double positionRightHandle = newHandleX + loopBarForeground.getWidth();
+				if (positionLeftHandle <= 0) {
+					positionLeftHandle = 0;
+					positionRightHandle = loopBarForeground.getWidth() + handleWidth;
+				}
+				double screenRight = getScreenRight();
+				if (positionRightHandle >= screenRight) {
+					positionRightHandle = screenRight;
+					positionLeftHandle = screenRight - loopBarForeground.getWidth() - handleWidth;
+				}
+
+				leftHandle.setTranslateX(positionLeftHandle);
+				rightHandle.setTranslateX(positionRightHandle);
+
+				layout();
+				me.consume();
+			});
+
+			loopBarForeground.setOnMouseReleased(me -> {
+				double newTimeBeginPx = loopBarForeground.getX();
+				double newTimeEndPx = loopBarForeground.getX() + loopBarForeground.getWidth();
+				double newTimeBeginMs = convertPxToMs(newTimeBeginPx);
+				double newTimeEndMs = convertPxToMs(newTimeEndPx);
+				loopBarDrag.endDrag();
+
+				PlayerExecutor.setLoopPoints(player, newTimeBeginMs, newTimeEndMs);
+				layout();
+				me.consume();
+			});
+		}
+	}
+
+	@Override
+	protected double computeMaxHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return 400;
+	}
+
+	@Override
+	protected double computeMinHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return 50;
+	}
+
+	@Override
+	protected double computeMaxWidth(double height, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return super.computeMaxWidth(height, topInset, rightInset, bottomInset, leftInset);
+	}
+
+	@Override
+	protected double computeMinWidth(double height, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return super.computeMinWidth(height, topInset, rightInset, bottomInset, leftInset);
+	}
+
+	@Override
+	protected double computePrefHeight(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return 50;
+	}
+
+	@Override
+	protected double computePrefWidth(double width, double topInset, double rightInset, double bottomInset,
+			double leftInset) {
+		return super.computePrefWidth(width, topInset, rightInset, bottomInset, leftInset);
 	}
 }

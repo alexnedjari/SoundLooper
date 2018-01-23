@@ -9,39 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CustomMenuItem;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import javafx.stage.WindowEvent;
-import javafx.util.converter.NumberStringConverter;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,6 +32,40 @@ import com.soundlooper.system.preferences.SoundLooperProperties;
 import com.soundlooper.system.preferences.recentfile.RecentFile;
 import com.soundlooper.system.search.Searchable;
 import com.soundlooper.system.util.MessagingUtil;
+
+import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.MapChangeListener;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.WindowEvent;
+import javafx.util.converter.NumberStringConverter;
 
 public class SystemController {
 
@@ -118,19 +119,19 @@ public class SystemController {
 	@FXML
 	private TimeSelectionView timeSelectionView;
 
+	@FXML
+	private ImageView backgroundImage;
+
 	public void init() {
 		initInterfaceState();
-
-		// --------------------------------------------------
 
 		timestretchPotentiometer.setMin(50);
 		timestretchPotentiometer.setMax(200);
 		timestretchPotentiometer.setValue(100);
-		timestretchPotentiometer.valueProperty().bindBidirectional(
-				SoundLooperPlayer.getInstance().timeStretchProperty());
+		timestretchPotentiometer.valueProperty()
+				.bindBidirectional(SoundLooperPlayer.getInstance().timeStretchProperty());
 
 		MenuButton timestrechButton = new MenuButton();
-		timestrechButton.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
 
 		timestrechButton.getItems().add(createTimestrechMenuItem(50));
 		timestrechButton.getItems().add(createTimestrechMenuItem(90));
@@ -150,12 +151,17 @@ public class SystemController {
 
 		MenuItem menuItemSpinnerTimestrech = new MenuItem("", textfieldTimestretch);
 		timestrechButton.getItems().add(menuItemSpinnerTimestrech);
-		timestrechButton.setPrefSize(40, 32);
+		timestrechButton.setPrefSize(32, 32);
 		timestrechButton.setFocusTraversable(false);
 		timestrechButton.getStyleClass().add("timestrechButton");
+		timestrechButton.getStyleClass().add("player-button");
 
-		// timestrechButton.getStyleClass().add("toggleMuteButton");
-		timestretchPotentiometer.setCentralButton(timestrechButton);
+		timestretchPotentiometer.setBottomLeftControl(timestrechButton);
+		Label timestretchLabel = new Label();
+
+		timestretchLabel.getStyleClass().add("bluetext");
+		timestretchLabel.textProperty().bind(Bindings.convert(SoundLooperPlayer.getInstance().timeStretchProperty()));
+		timestretchPotentiometer.setBottomRightControl(timestretchLabel);
 
 		// -----------------------------------------------------
 		volumePotentiometer.setMin(0);
@@ -164,12 +170,13 @@ public class SystemController {
 		volumePotentiometer.setValue(100);
 
 		ToggleButton muteButton = new ToggleButton();
-		muteButton.setPrefSize(40, 32);
+		muteButton.setPrefSize(32, 32);
 		muteButton.selectedProperty().bindBidirectional(SoundLooperPlayer.getInstance().muteProperty());
 		muteButton.setFocusTraversable(false);
 
 		muteButton.getStyleClass().add("toggleMuteButton");
-		volumePotentiometer.setCentralButton(muteButton);
+		muteButton.getStyleClass().add("player-button");
+		volumePotentiometer.setBottomLeftControl(muteButton);
 
 		// --------------------------------------------
 		favoriteMenuButton.showingProperty().addListener(new ChangeListener<Boolean>() {
@@ -195,8 +202,6 @@ public class SystemController {
 			public void changed(ObservableValue<? extends Song> observable, Song oldSong, Song newSong) {
 
 				if (oldSong != null) {
-					// oldSong.isFavoriteProperty().unbindBidirectional(
-					// favoriteButton.selectedProperty());
 					favoriteButton.selectedProperty().unbindBidirectional(oldSong.isFavoriteProperty());
 				}
 				favoriteButton.selectedProperty().bindBidirectional(newSong.isFavoriteProperty());
@@ -342,8 +347,8 @@ public class SystemController {
 		pauseButton.disableProperty()
 				.bind(soundLooperPlayer.stateProperty().isEqualTo(PlayerState.STATE_PLAYING).not());
 		markMenuButton.disableProperty().bind(soundLooperPlayer.isCurrentSongFavoriteProperty().not());
-		saveMarkButton.disableProperty().bind(
-				soundLooperPlayer.isCurrentSongFavoriteProperty().not()
+		saveMarkButton.disableProperty()
+				.bind(soundLooperPlayer.isCurrentSongFavoriteProperty().not()
 						.or(soundLooperPlayer.isCurrentMarkEditableProperty().not())
 						.or(soundLooperPlayer.isCurrentMarkDirtyProperty().not()));
 
@@ -424,6 +429,9 @@ public class SystemController {
 			Scene scene = new Scene(root);
 			scene.getStylesheets().add("/style/application.css");
 
+			modalDialog.setWidth(800);
+			modalDialog.setHeight(600);
+
 			modalDialog.setScene(scene);
 			controller.initialize(modalDialog);
 
@@ -436,13 +444,12 @@ public class SystemController {
 	@FXML
 	public void searchFavorite() {
 		List<Song> favoriteSongList = SoundLooperPlayer.getInstance().getFavoriteSongList();
-		openSearchDialog(favoriteSongList, MessageReader.getInstance().getMessage("search.favorites"),
-				(controller) -> {
-					Song song = (Song) controller.getResult();
-					if (song != null) {
-						openFile(song.getFile());
-					}
-				});
+		openSearchDialog(favoriteSongList, MessageReader.getInstance().getMessage("search.favorites"), (controller) -> {
+			Song song = (Song) controller.getResult();
+			if (song != null) {
+				openFile(song.getFile());
+			}
+		});
 	}
 
 	private void openSearchDialog(List<? extends Searchable> favoriteSongList, String title,
@@ -476,7 +483,7 @@ public class SystemController {
 	public void searchMark() {
 		Song song = SoundLooperPlayer.getInstance().getSong();
 		if (song != null && song.isFavorite()) {
-			ArrayList<Mark> markList = new ArrayList<Mark>(song.getMarks().values());
+			ArrayList<Mark> markList = new ArrayList<>(song.getMarks().values());
 			openSearchDialog(markList, MessageReader.getInstance().getMessage("search.marks"), (controller) -> {
 				Mark mark = (Mark) controller.getResult();
 				if (mark != null) {
@@ -515,8 +522,8 @@ public class SystemController {
 				&& lastSelectedFile.getParentFile().exists()) {
 			fileChooser.setInitialDirectory(lastSelectedFile.getParentFile());
 		}
-		File selectedFile = fileChooser.showOpenDialog(SoundLooper.getInstance().getPrimaryStage().getScene()
-				.getWindow());
+		File selectedFile = fileChooser
+				.showOpenDialog(SoundLooper.getInstance().getPrimaryStage().getScene().getWindow());
 		if (selectedFile != null) {
 			openFile(selectedFile);
 		}
@@ -594,7 +601,7 @@ public class SystemController {
 
 	private void updateMarkList() {
 		markMenuButton.getItems().removeAll(markMenuButton.getItems());
-		List<Mark> markList = new ArrayList<Mark>(SoundLooperPlayer.getInstance().getSong().getMarks().values());
+		List<Mark> markList = new ArrayList<>(SoundLooperPlayer.getInstance().getSong().getMarks().values());
 		markList.sort(new Comparator<Mark>() {
 			@Override
 			public int compare(Mark o1, Mark o2) {
@@ -738,7 +745,9 @@ public class SystemController {
 			modalDialog.initModality(Modality.APPLICATION_MODAL);
 			modalDialog.initOwner(SoundLooper.getInstance().getPrimaryStage());
 			modalDialog.setTitle(MessageReader.getInstance().getMessage("window.addMark.title"));
+			modalDialog.setResizable(false);
 			Scene scene = new Scene(root);
+
 			scene.getStylesheets().add("/style/application.css");
 			modalDialog.setScene(scene);
 			controller.init(modalDialog);
@@ -768,8 +777,7 @@ public class SystemController {
 			SoundLooperPlayer.getInstance().saveCurrentMark();
 
 			// The begin or end of a mark was changed, we need to refresh list
-			// to update
-			// list entries time
+			// to update list entries time
 			updateMarkList();
 		} catch (SoundLooperException e) {
 			MessagingUtil.displayError("Impossible de sauvegarder le marqueur", e);

@@ -17,7 +17,7 @@ import javafx.css.StyleableBooleanProperty;
 import javafx.css.StyleableDoubleProperty;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleableStringProperty;
-import javafx.scene.control.ButtonBase;
+import javafx.scene.control.Control;
 import javafx.scene.control.Skin;
 import javafx.scene.control.Slider;
 
@@ -32,7 +32,8 @@ public class Potentiometer extends Slider {
 	private StyleableDoubleProperty sensibility;
 	private StyleableBooleanProperty displayValue;
 
-	private SimpleObjectProperty<ButtonBase> centralButton = new SimpleObjectProperty<>();
+	private SimpleObjectProperty<Control> bottomLeftControl = new SimpleObjectProperty<>();
+	private SimpleObjectProperty<Control> bottomRightControl = new SimpleObjectProperty<>();
 
 	@Override
 	protected Skin<?> createDefaultSkin() {
@@ -167,16 +168,28 @@ public class Potentiometer extends Slider {
 		return StyleableProperties.STYLEABLES;
 	}
 
-	public void setCentralButton(ButtonBase centralNode) {
-		this.centralButton.set(centralNode);
+	public void setBottomLeftControl(Control centralNode) {
+		this.bottomLeftControl.set(centralNode);
 	}
 
-	public ButtonBase getCentralButton() {
-		return centralButton.get();
+	public Control getBottomLeftControl() {
+		return bottomLeftControl.get();
 	}
 
-	public SimpleObjectProperty<ButtonBase> centralButtonProperty() {
-		return centralButton;
+	public SimpleObjectProperty<Control> bottomLeftControlProperty() {
+		return bottomLeftControl;
+	}
+
+	public void setBottomRightControl(Control centralNode) {
+		this.bottomRightControl.set(centralNode);
+	}
+
+	public Control getBottomRightControl() {
+		return bottomRightControl.get();
+	}
+
+	public SimpleObjectProperty<Control> bottomRightControlProperty() {
+		return bottomLeftControl;
 	}
 
 	public void forceLayout() {

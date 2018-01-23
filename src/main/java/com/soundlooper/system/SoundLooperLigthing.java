@@ -40,7 +40,7 @@ public class SoundLooperLigthing {
 
 	private static Lighting createPotentiometerLightingOver() {
 		potentiometerLightingOver = new Lighting();
-		Light light = new Light.Point(80, 40, 200, Color.WHITE);
+		Light light = new Light.Point(0, 0, 200, Color.WHITE);
 		potentiometerLightingOver.setLight(light);
 		return potentiometerLightingOver;
 	}

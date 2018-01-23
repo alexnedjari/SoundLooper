@@ -86,8 +86,8 @@ public class SongDAO extends SoundLooperDAO<Song> {
 			ResultSet checkQuery = statementCheckPath.executeQuery();
 			if (checkQuery.next()) {
 				// there is already a song for this path
-				throw new SoundLooperDatabaseException("Song with this path already exists in database : "
-						+ song.getDescription(),
+				throw new SoundLooperDatabaseException(
+						"Song with this path already exists in database : " + song.getDescription(),
 						SoundLooperDatabaseException.ERROR_CODE_SONG_PATH_ALREADY_EXISTS_IN_DATABASE);
 			}
 
@@ -104,16 +104,11 @@ public class SongDAO extends SoundLooperDAO<Song> {
 			if (generatedKeys.next()) {
 				song.setId(generatedKeys.getLong(1));
 			} else {
-				throw new SoundLooperDatabaseException("No ID generated when persisting song : "
-						+ song.getDescription(), SoundLooperDatabaseException.ERROR_CODE_NO_ID_GENERATED_FOR_NEW_SONG);
+				throw new SoundLooperDatabaseException(
+						"No ID generated when persisting song : " + song.getDescription(),
+						SoundLooperDatabaseException.ERROR_CODE_NO_ID_GENERATED_FOR_NEW_SONG);
 			}
 
-			// // sauvegarder dans la foulée les marqueurs de la chanson
-			// HashMap<String, Mark> marks = song.getMarks();
-			// for (String markName : marks.keySet()) {
-			// Mark mark = marks.get(markName);
-			// MarkDAO.getInstance().persist(mark);
-			// }
 			ConnectionFactory.commit();
 		} catch (SQLException | SoundLooperDatabaseException e) {
 			this.rollbackCurrentTransaction();
@@ -125,8 +120,8 @@ public class SongDAO extends SoundLooperDAO<Song> {
 	protected void update(Song song) {
 		try {
 			// check that the song with this ID exists
-			ResultSet checkQueryID = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT id FROM song WHERE id = '" + song.getId() + "'");
+			ResultSet checkQueryID = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT id FROM song WHERE id = '" + song.getId() + "'");
 			if (!checkQueryID.next()) {
 				// there is no song with this ID
 				throw new SoundLooperDatabaseException("Song with this ID is not persisted : " + song.getDescription(),
@@ -141,8 +136,8 @@ public class SongDAO extends SoundLooperDAO<Song> {
 			ResultSet checkQueryPath = statementCheckPath.executeQuery();
 			if (checkQueryPath.next()) {
 				// There is a song that have already the new path
-				throw new SoundLooperDatabaseException("Song with this path already exists in database : "
-						+ song.getDescription(),
+				throw new SoundLooperDatabaseException(
+						"Song with this path already exists in database : " + song.getDescription(),
 						SoundLooperDatabaseException.ERROR_CODE_SONG_PATH_ALREADY_EXISTS_IN_DATABASE);
 			}
 
@@ -171,8 +166,8 @@ public class SongDAO extends SoundLooperDAO<Song> {
 	public Song delete(Song song) {
 		try {
 			// check that the song with this ID exists
-			ResultSet checkQueryID = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT ID FROM SONG WHERE ID = '" + song.getId() + "'");
+			ResultSet checkQueryID = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT ID FROM SONG WHERE ID = '" + song.getId() + "'");
 			if (!checkQueryID.next()) {
 				// there is no song with this ID
 				throw new SoundLooperDatabaseException("Song with this ID is not persisted : " + song.getDescription(),
@@ -207,13 +202,12 @@ public class SongDAO extends SoundLooperDAO<Song> {
 		}
 	}
 
-	// @Override
 	public ArrayList<Song> getList() {
-		ArrayList<Song> songList = new ArrayList<Song>();
+		ArrayList<Song> songList = new ArrayList<>();
 		try {
 			// récupère la liste des chansons créées
-			ResultSet songsQuery = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT id, file, lastuse, isfavorite FROM song");
+			ResultSet songsQuery = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT id, file, lastuse, isfavorite FROM song");
 			while (songsQuery.next()) {
 				long id = songsQuery.getLong("id");
 				Timestamp lastUseDate = songsQuery.getTimestamp("lastuse");
@@ -265,8 +259,8 @@ public class SongDAO extends SoundLooperDAO<Song> {
 				return song;
 			}
 		} catch (SQLException | SoundLooperDatabaseException e) {
-			throw new SoundLooperRuntimeException("Error when trying to get song on file='" + file.getAbsolutePath()
-					+ "'", e);
+			throw new SoundLooperRuntimeException(
+					"Error when trying to get song on file='" + file.getAbsolutePath() + "'", e);
 		}
 
 		throw new SoundLooperRecordNotFoundException("chanson", "file = '" + file.getAbsolutePath() + "'");
@@ -288,11 +282,11 @@ public class SongDAO extends SoundLooperDAO<Song> {
 	 * @return the list of files that are in favorite
 	 */
 	public ArrayList<Song> getFavoriteSongList() {
-		ArrayList<Song> songList = new ArrayList<Song>();
+		ArrayList<Song> songList = new ArrayList<>();
 		try {
 			// récupère la liste des chansons créées
-			ResultSet songsQuery = ConnectionFactory.getNewStatement().executeQuery(
-					"SELECT id, file, lastuse, isfavorite FROM song WHERE isFavorite=1");
+			ResultSet songsQuery = ConnectionFactory.getNewStatement()
+					.executeQuery("SELECT id, file, lastuse, isfavorite FROM song WHERE isFavorite=1");
 			while (songsQuery.next()) {
 				long id = songsQuery.getLong("id");
 				Timestamp lastUseDate = songsQuery.getTimestamp("lastuse");

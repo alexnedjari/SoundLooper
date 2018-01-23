@@ -3,7 +3,6 @@
  */
 package com.soundlooper.audio.player;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -30,6 +29,7 @@ import org.jouvieje.fmodex.structures.FMOD_CREATESOUNDEXINFO;
 import org.jouvieje.fmodex.utils.BufferUtils;
 import org.jouvieje.fmodex.utils.SizeOfPrimitive;
 
+import com.soundlooper.CssColor;
 import com.soundlooper.exception.PlayerException;
 import com.soundlooper.model.SoundLooperPlayer;
 
@@ -147,15 +147,16 @@ public class SoundFile {
 
 		this.logger.info("JNI : Avant création du stream");
 		Player.errorCheck(Player.getSystem().createStream(this.file.getAbsolutePath(),
-				FMOD_MODE.FMOD_SOFTWARE | FMOD_MODE.FMOD_ACCURATETIME | FMOD_MODE.FMOD_LOOP_NORMAL, exinfo, this.sound));
+				FMOD_MODE.FMOD_SOFTWARE | FMOD_MODE.FMOD_ACCURATETIME | FMOD_MODE.FMOD_LOOP_NORMAL, exinfo,
+				this.sound));
 		this.logger.info("JNI : Après création du stream");
 		// soundBuffer.clear();
 		// soundBuffer = null;
 		exinfo.release();
 
 		this.logger.info("JNI : Avant lecture du son (pour initialiser le channel");
-		Player.errorCheck(Player.getSystem().playSound(FMOD_CHANNELINDEX.FMOD_CHANNEL_FREE, this.sound, false,
-				this.channel));
+		Player.errorCheck(
+				Player.getSystem().playSound(FMOD_CHANNELINDEX.FMOD_CHANNEL_FREE, this.sound, false, this.channel));
 		this.logger.info("JNI : Après lecture du son (pour initialiser le channel");
 
 		this.logger.info("JNI : Avant pause du son (pour initialiser le channel");
@@ -215,7 +216,8 @@ public class SoundFile {
 		FMOD_CREATESOUNDEXINFO exinfo = this.getExifInfo();
 		Sound soundImage = new Sound();
 		Player.errorCheck(Player.getSystem().createStream(fileLocal.getAbsolutePath(),
-				FMOD_MODE.FMOD_SOFTWARE | FMOD_MODE.FMOD_ACCURATETIME | FMOD_MODE.FMOD_LOOP_NORMAL, exinfo, soundImage));
+				FMOD_MODE.FMOD_SOFTWARE | FMOD_MODE.FMOD_ACCURATETIME | FMOD_MODE.FMOD_LOOP_NORMAL, exinfo,
+				soundImage));
 		exinfo.release();
 
 		// http: //www.asawicki.info/news_1385_music_analysis_-_spectrogram.html
@@ -227,8 +229,12 @@ public class SoundFile {
 		int max = 0;
 
 		int largeurImage = 2048;
-		int hauteurImage = 512;
-		int facteurImageY = Integer.MAX_VALUE / hauteurImage * 2;
+		int hauteurImage = 256;
+		int facteurImageY = (Integer.MAX_VALUE / hauteurImage * 2);
+
+		// The signal must take 60 percent of the total height
+		facteurImageY = facteurImageY / 60 * 100;
+
 		int sampleParPixel = tailleTotaleInt / largeurImage;
 
 		// La taille du beffer est un multiple du nombre de samble par pixel *
@@ -237,16 +243,17 @@ public class SoundFile {
 		ByteBuffer dataBuffer = BufferUtils.newByteBuffer(SizeOfPrimitive.SIZEOF_BYTE * tailleBuffer);
 		IntBuffer nbReadBuffer = BufferUtils.newIntBuffer(SizeOfPrimitive.SIZEOF_INT);
 
-		int minImage = new Double(min * facteurImageY).intValue();
-		int maxImage = new Double(max * facteurImageY).intValue();
+		int minImage = Double.valueOf(min * facteurImageY).intValue();
+		int maxImage = Double.valueOf(max * facteurImageY).intValue();
 
 		soundImage.seekData(0);
 		BufferedImage off_Image = new BufferedImage(largeurImage, hauteurImage, BufferedImage.TYPE_INT_RGB);
 		Graphics2D g2 = off_Image.createGraphics();
-		// g2.setColor(new Color(36, 168, 206));
-		g2.setColor(new Color(127, 127, 127));
+
+		g2.setColor(CssColor.WHITE.getAwtColor());
 		g2.fillRect(0, 0, largeurImage, hauteurImage);
-		g2.setColor(Color.WHITE);
+		g2.setColor(CssColor.BLUE.getAwtColor());
+
 		int pixelX = 0;
 		FMOD_RESULT resultat;
 		int lu;
@@ -442,8 +449,8 @@ public class SoundFile {
 	 */
 	public void setTimeStrechPercent(int percent) throws PlayerException {
 		if (percent > 200 || percent < 50) {
-			throw new PlayerException("for timeStretch, percent factor must be between 50% and 200%, here it's "
-					+ percent + "%");
+			throw new PlayerException(
+					"for timeStretch, percent factor must be between 50% and 200%, here it's " + percent + "%");
 		}
 
 		if (percent == 100) {
@@ -499,9 +506,11 @@ public class SoundFile {
 
 			// set new Timestretch
 			this.logger.info("JNI : Avant creation du DSP");
-			Player.errorCheck(Player.getSystem().createDSPByType(FMOD_DSP_TYPE.FMOD_DSP_TYPE_PITCHSHIFT, this.dspPitch));
+			Player.errorCheck(
+					Player.getSystem().createDSPByType(FMOD_DSP_TYPE.FMOD_DSP_TYPE_PITCHSHIFT, this.dspPitch));
 			this.logger.info("JNI : Avant setParameter du DSP");
-			Player.errorCheck(this.dspPitch.setParameter(FMOD_DSP_PITCHSHIFT.FMOD_DSP_PITCHSHIFT_PITCH.asInt(), facteur));
+			Player.errorCheck(
+					this.dspPitch.setParameter(FMOD_DSP_PITCHSHIFT.FMOD_DSP_PITCHSHIFT_PITCH.asInt(), facteur));
 
 			this.logger.info("JNI : Avant add du DSP");
 			Player.errorCheck(Player.getSystem().addDSP(this.dspPitch, null));

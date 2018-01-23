@@ -74,15 +74,9 @@ public class SearchEngine {
 	 */
 	protected ArrayList<StringTransformer> transformers;
 
-	/**
-	 * The listeners to notifie when a search event occurred
-	 */
-	// protected ArrayList<SearchListener> listeners;
-
 	protected List<Searchable> searchables;
 
-	// protected ArrayList<Searchable> lastResult = new ArrayList<Searchable>();
-	protected ListProperty<Searchable> lastResult = new SimpleListProperty<Searchable>(
+	protected ListProperty<Searchable> lastResult = new SimpleListProperty<>(
 			FXCollections.observableArrayList());
 
 	protected String lastSeach = null;
@@ -98,19 +92,10 @@ public class SearchEngine {
 	 * Constructor
 	 */
 	public SearchEngine(List<? extends Searchable> searchables) {
-		this.transformers = new ArrayList<StringTransformer>();
-		// this.listeners = new ArrayList<SearchListener>();
-		this.searchables = new ArrayList<Searchable>();
+		this.transformers = new ArrayList<>();
+		this.searchables = new ArrayList<>();
 		this.searchables.addAll(searchables);
 	}
-
-	// /**
-	// * Add a search listener
-	// * @param listener the listener
-	// */
-	// public void addSearchListener(SearchListener listener) {
-	// this.listeners.add(listener);
-	// }
 
 	/**
 	 * Add a string transformer
@@ -199,7 +184,7 @@ public class SearchEngine {
 		/**
 		 * The result. updated when a new result is found
 		 */
-		protected final ArrayList<Searchable> result = new ArrayList<Searchable>();
+		protected final ArrayList<Searchable> result = new ArrayList<>();
 
 		/**
 		 * Constructor
@@ -213,10 +198,8 @@ public class SearchEngine {
 			super();
 			this.searchState = SearchEngine.STATE_NOT_STARTED;
 			this.stringToSearch = stringToSearch;
-			// this.firstResult = true;
 
-			if ((SearchEngine.this.lastSeach != null)
-					&& stringToSearch.contains(SearchEngine.this.lastSeach)) {
+			if ((SearchEngine.this.lastSeach != null) && stringToSearch.contains(SearchEngine.this.lastSeach)) {
 				// affine le résultat actuel
 				this.searchables = SearchEngine.this.lastResult;
 			} else {
@@ -238,17 +221,13 @@ public class SearchEngine {
 		public void run() {
 
 			this.searchState = SearchEngine.STATE_RUNNING;
-			String transformedStringToSearch = this
-					.getTransformedString(this.stringToSearch);
+			String transformedStringToSearch = this.getTransformedString(this.stringToSearch);
 			for (Searchable searchableToCheck : this.searchables) {
 				if (this.canceled) {
 					break;
 				}
-				String transformedStringToCheck = this
-						.getTransformedString(searchableToCheck
-								.getSearchableString());
-				boolean match = this.isMatch(transformedStringToSearch,
-						transformedStringToCheck);
+				String transformedStringToCheck = this.getTransformedString(searchableToCheck.getSearchableString());
+				boolean match = this.isMatch(transformedStringToSearch, transformedStringToCheck);
 				if (match) {
 					this.result.add(searchableToCheck);
 				}
@@ -257,20 +236,15 @@ public class SearchEngine {
 			if (!this.canceled) {
 				this.searchState = SearchEngine.STATE_TERMINATED;
 				SearchEngine.this.lastSeach = this.stringToSearch;
-				Platform.runLater(() -> SearchEngine.this.lastResult
-						.setAll(this.result));
+				Platform.runLater(() -> SearchEngine.this.lastResult.setAll(this.result));
 			} else {
 				this.searchState = SearchEngine.STATE_CANCELED;
 			}
 
-			// this.notifieSearchListenersOfFullResult();
-
 			synchronized (SearchEngine.this.waitingSearch) {
-				if (!SearchEngine.this.waitingSearch
-						.equals(SearchEngine.PAS_DE_RECHERCHE_EN_ATTENTE)) {
+				if (!SearchEngine.this.waitingSearch.equals(SearchEngine.PAS_DE_RECHERCHE_EN_ATTENTE)) {
 					// il a une recherche en attente, on l'exécute
-					SearchEngine.this
-							.performSearch(SearchEngine.this.waitingSearch);
+					SearchEngine.this.performSearch(SearchEngine.this.waitingSearch);
 					// suppression de la recherche en attente
 					SearchEngine.this.waitingSearch = SearchEngine.PAS_DE_RECHERCHE_EN_ATTENTE;
 				}
@@ -287,10 +261,8 @@ public class SearchEngine {
 		 *            one of the Searchable)
 		 * @return
 		 */
-		protected boolean isMatch(String theTransformedStringToSearch,
-				String transformedStringToCheck) {
-			StringTokenizer tokenizer = new StringTokenizer(
-					theTransformedStringToSearch,
+		protected boolean isMatch(String theTransformedStringToSearch, String transformedStringToCheck) {
+			StringTokenizer tokenizer = new StringTokenizer(theTransformedStringToSearch,
 					StringTransformer.SPACE_STRING);
 			boolean allFinded = true;
 			tokenLoop: while (tokenizer.hasMoreElements()) {
@@ -311,8 +283,7 @@ public class SearchEngine {
 		protected String getTransformedString(String stringToTransform) {
 			String transformedString = stringToTransform;
 			for (StringTransformer transformer : SearchEngine.this.transformers) {
-				transformedString = transformer
-						.processTransformation(transformedString);
+				transformedString = transformer.processTransformation(transformedString);
 			}
 			return transformedString;
 		}

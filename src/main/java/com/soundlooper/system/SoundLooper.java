@@ -4,16 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
-import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonType;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,11 +19,20 @@ import com.soundlooper.system.util.IssueSender;
 import com.soundlooper.system.util.Lock;
 import com.soundlooper.system.util.MessagingUtil;
 
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+
 public class SoundLooper extends Application {
 
 	private static final String LOCK_NAME = ".lock";
 	private static Stage primaryStage;
-	private BorderPane rootLayout;
 	private static SoundLooper instance;
 	private SystemController controller;
 
@@ -48,11 +47,12 @@ public class SoundLooper extends Application {
 		primaryStage.getIcons().add(ImageGetter.getSoundLooper64().getImage());
 
 		primaryStage.setMinWidth(750);
-		primaryStage.setMinHeight(375);
+		primaryStage.setMinHeight(335);
 
 		instance = this;
 		SoundLooper.primaryStage = primaryStage;
 		SoundLooper.primaryStage.setTitle("Sound Looper");
+
 		primaryStage.setOnCloseRequest(e -> {
 			logger.info("On close request");
 			onWindowClose();
@@ -90,8 +90,8 @@ public class SoundLooper extends Application {
 			logger.info("User want to create a github issue");
 			GHIssue issue = IssueSender.sendIssue(e);
 			logger.info("Issue " + issue.getNumber() + " created");
-			Alert issueConfirmationAlert = new Alert(AlertType.INFORMATION, "Le ticket de bug numéro '"
-					+ issue.getNumber() + "' a bien été créé");
+			Alert issueConfirmationAlert = new Alert(AlertType.INFORMATION,
+					"Le ticket de bug numéro '" + issue.getNumber() + "' a bien été créé");
 			issueConfirmationAlert.setTitle("Création du rapport d'erreur");
 			issueConfirmationAlert.setHeaderText("Le rapport d'erreur a été envoyé avec succès");
 			issueConfirmationAlert.initOwner(primaryStage);
@@ -121,7 +121,7 @@ public class SoundLooper extends Application {
 
 			loader.setResources(MessageReader.getInstance().getBundle());
 			loader.setLocation(SoundLooper.class.getResource("/gui/RootLayout.fxml"));
-			rootLayout = (BorderPane) loader.load();
+			Pane rootLayout = (Pane) loader.load();
 
 			controller = (SystemController) loader.getController();
 			controller.init();
@@ -140,11 +140,6 @@ public class SoundLooper extends Application {
 			// Show the scene containing the root layout.
 			Scene scene = new Scene(rootLayout);
 			scene.getStylesheets().add("/style/application.css");
-
-			// Light light = new Light.Point(, 40, 300, Color.WHITE);
-			// Lighting lighting = new Lighting();
-			// lighting.setLight(light);
-			// scene.getRoot().setEffect(lighting);
 
 			primaryStage.setScene(scene);
 			primaryStage.setAlwaysOnTop(Preferences.getInstance().getAlwaysOnTop());
