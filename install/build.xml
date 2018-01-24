@@ -44,7 +44,8 @@
 		</fx:deploy> 
 		
 		<echo>Create SoundLooper-${version}.zip</echo>
-		<copy file="package/linux/SoundLooper.base.sh" tofile="package/linux/SoundLooper.sh">
+		<delete file="package/linux/SoundLooper.sh"/>
+		<copy file="package/linux/SoundLooper.base.sh" tofile="package/linux/SoundLooper.sh" failonerror="true">
 			<filterchain>
 				<expandproperties />
 			</filterchain>
@@ -58,6 +59,7 @@
 	    	<zipfileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
 	    	<zipfileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
 			<zipfileset dir="${basedir}/package/linux/" includes="SoundLooper.sh"/>
+			<zipfileset dir="${basedir}/package/linux/" includes="${jdk}/jre/**"/>
 		</zip>
 	</target>
 	

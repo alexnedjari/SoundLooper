@@ -3,8 +3,8 @@
 [Setup]
 AppId={{application}}
 AppName=SoundLooper
-AppVersion=2.2.0
-AppVerName=SoundLooper 2.2.0
+AppVersion=2.2.1
+AppVerName=SoundLooper 2.2.1
 AppPublisher=Alexandre NEDJARI
 AppComments=SoundLooper
 AppCopyright=Copyright (C) 2016
@@ -24,7 +24,7 @@ DefaultGroupName=Alexandre NEDJARI
 LicenseFile=
 ;WinXP or above
 MinVersion=0,5.1 
-OutputBaseFilename=SoundLooper-2.2.0
+OutputBaseFilename=SoundLooper-2.2.1
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=lowest
