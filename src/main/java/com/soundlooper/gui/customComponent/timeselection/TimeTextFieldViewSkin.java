@@ -19,7 +19,7 @@ public class TimeTextFieldViewSkin extends SkinBase<TimeTextFieldView> {
 	private static final int MILLISECOND_SECOND = 1000;
 	private static final int MILLISECOND_MINUT = 60000;
 
-	public static final int DIGIT_WIDTH = 8;
+	public static final int DIGIT_WIDTH = 9;
 
 	private static final int WIDTH = 85;
 	private static final int HEIGHT = 23;
