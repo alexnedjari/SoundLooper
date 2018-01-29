@@ -2,13 +2,14 @@
 	
 	<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
 						     uri="javafx:com.sun.javafx.tools.ant"
-						     classpath=".:C:\Program Files (x86)\Java\jdk1.8.0_60\lib\ant-javafx.jar"/>  	
+						     classpath=".:C:\Program Files (x86)\Java\jdk1.8.0_162\lib\ant-javafx.jar"/>  	
 	
 	<target name="deploy" description="Package the application">
 		<echo>DEPLOY ${version}</echo> 
 		<echo>BASE DIR : ${basedir}</echo>
 		
-		<property name="jdk" value="jdk1.8.0_77-32"/>
+		<property name="jdk.windows" value="jdk1.8.0_162-32"/>
+		<property name="jre.linux" value="jre1.8.0_162-64"/>
 
 		<echo message="Expand script file" />
 		<delete file="package/windows/SoundLooper.iss" failonerror="false"/>
@@ -38,7 +39,7 @@
 		    	<fx:fileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
 		    	<fx:fileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
 		    </fx:resources>
-			<fx:platform basedir="${basedir}/package/windows/${jdk}"/>
+			<fx:platform basedir="${basedir}/package/windows/${jdk.windows}"/>
 			<fx:info title="SoundLooper" vendor="Alexandre NEDJARI" />
 			<fx:preferences menu="true" shortcut="true"/>
 		</fx:deploy> 
@@ -59,7 +60,7 @@
 	    	<zipfileset dir="${basedir}/package/common/" includes="SoundLooper.properties"/>
 	    	<zipfileset dir="${basedir}/package/common/" includes="linkedlibrairies.txt"/>
 			<zipfileset dir="${basedir}/package/linux/" includes="SoundLooper.sh"/>
-			<zipfileset dir="${basedir}/package/linux/" includes="${jdk}/jre/**"/>
+			<zipfileset dir="${basedir}/package/linux/" includes="${jre.linux}/**"/>
 		</zip>
 	</target>
 	

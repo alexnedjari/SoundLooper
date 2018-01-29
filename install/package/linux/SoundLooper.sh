@@ -1,1 +1,1 @@
-java -jar SoundLooper-2.2.1.jar
+jre1.8.0_162-64/bin/java -jar SoundLooper-2.2.3.jar
