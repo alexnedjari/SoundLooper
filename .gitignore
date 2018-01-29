@@ -23,5 +23,5 @@ preferences.properties
 target/
 travail/
 /bin/
-install/package/linux/jdk1.8.0_77-32/
-install/package/windows/jdk1.8.0_77-32/
+install/package/linux/jre1.8.0_162-64/
+install/package/windows/jdk1.8.0_162-32/
