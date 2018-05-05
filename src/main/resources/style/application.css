@@ -26,6 +26,7 @@
 
 .toggleFavoriteButton {-fx-graphic: url('drawable/favoriteDisabled_32.png');}
 .toggleFavoriteButton:selected {-fx-graphic: url('drawable/favoriteEnabled_32.png');}
+.favoriteMenuButton {-fx-graphic: url('drawable/listFavorite_32.png'); -fx-padding: 0 0 0 8; }
 
 .bluetext {
     -fx-text-fill: #396e75;
@@ -43,6 +44,7 @@
 .saveMarkButton {-fx-graphic: url('drawable/saveMark_32.png');}
 .addMarkButton {-fx-graphic: url('drawable/addMark_32.png');}
 .markMenuButton {-fx-graphic: url('drawable/listMark_32.png'); -fx-padding: 0 0 0 8; }
+
 
 /* BOUTONS DU LECTEUR */
 .player-button {
@@ -99,6 +101,13 @@
 .markMenuButton > .arrow-button > .arrow {
     -fx-padding: 0;
 }
+.favoriteMenuButton .arrow, .timestrechButton .arrow-button {
+	-fx-background-color: transparent;
+	-fx-pref-width: 0;
+}
+.favoriteMenuButton > .arrow-button > .arrow {
+    -fx-padding: 0;
+}
 
 #toolbar {
 	-fx-padding: 0 0 0 16;
@@ -106,4 +115,18 @@
 
 #backgroundImage {
 	-fx-graphic: url("drawable/soundLooper.png");
+}
+
+.menuSeparator *.line {
+	-fx-border-style: solid;
+	-fx-border-color: #86c4be;
+    -fx-background-color: #396e75;
+}
+.verticalSeparator *.line {
+    -fx-border-width: 0 1 0 0; /* its make really one-pixel-border */
+    -fx-pref-width: 2px;
+}
+.horizontalSeparator *.line {
+    -fx-border-width: 0 1 0 0; /* its make really one-pixel-border */
+    -fx-pref-height: 1px;
 }
